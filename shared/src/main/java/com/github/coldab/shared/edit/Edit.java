@@ -1,25 +1,42 @@
 package com.github.coldab.shared.edit;
 
-import java.time.LocalDateTime;
+import com.github.coldab.shared.account.Account;
 
-public class Edit {
+import java.time.LocalDateTime;
+import java.util.Collection;
+
+/**
+ * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}
+ */
+public abstract class Edit {
     private LocalDateTime creationDate;
     private boolean applied;
+    /**
+     * The start position where the edit is applied
+     */
+    private Letter start;
+    private Account account;
 
     /**
-     * Apply's the letters in the array
-     * @param letters
+     * Apply this edit
+     * @param letters the letters to apply changes on
      *
      */
-    public void apply(Letter letters[]){
-
+    public void apply(Collection<Letter> letters) {
+        if (applied) {
+            throw new IllegalStateException();
+        }
+        applied = true;
     }
 
     /**
-     * Undo's the letters in the array
-     * @param letters
+     * Undo this edit
+     * @param letters the letters to undo changes on
      */
-    public void undo(Letter letters[]){
-
+    public void undo(Collection<Letter> letters) {
+        if (!applied) {
+            throw new IllegalStateException();
+        }
+        applied = false;
     }
 }
