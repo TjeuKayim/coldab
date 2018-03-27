@@ -1,5 +1,9 @@
 package com.github.coldab.shared.edit;
 
+import com.github.coldab.shared.account.Account;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +14,16 @@ import java.util.List;
  */
 public class Addition extends Edit {
     private Collection<Letter> letters;
+
+    public Addition(Account account, LocalDateTime creationDate, Letter start, String text) {
+        super(account, creationDate, start);
+        letters = new ArrayList<>();
+        char[] charArray = text.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            letters.add(new Letter(charArray[i], i));
+        }
+    }
+
 
     @Override
     public void apply(List<Letter> letters) {

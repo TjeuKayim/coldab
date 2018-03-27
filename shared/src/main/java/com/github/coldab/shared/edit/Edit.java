@@ -3,20 +3,25 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}
  */
 public abstract class Edit {
-    private LocalDateTime creationDate;
-    private boolean applied;
+    private final LocalDateTime creationDate;
     /**
      * The start position where the edit is applied
      */
-    protected Letter start;
-    private Account account;
+    protected final Letter start;
+    private final Account account;
+    private boolean applied = false;
+
+    public Edit(Account account, LocalDateTime creationDate, Letter start) {
+        this.creationDate = creationDate;
+        this.start = start;
+        this.account = account;
+    }
 
     /**
      * Apply this edit
