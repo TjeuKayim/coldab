@@ -1,7 +1,6 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;

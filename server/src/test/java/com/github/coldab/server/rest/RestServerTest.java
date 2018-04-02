@@ -1,8 +1,8 @@
 package com.github.coldab.server.rest;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 public class RestServerTest {
     @Test
