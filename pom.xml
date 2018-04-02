@@ -42,6 +42,9 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+                <configuration>
+                    <configLocation></configLocation>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

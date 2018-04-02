@@ -8,13 +8,22 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * An Addition is an insertion of certain characters
+ * An Addition is an insertion of certain characters.
  *
- * For or example an insertion of the characters "Hello World"
+ * <p>For or example an insertion of the characters "Hello World".</p>
  */
 public class Addition extends Edit {
     private Collection<Letter> letters;
 
+    /**
+     * Create an addition.
+     *
+     * @param account      the author
+     * @param creationDate the date of creation
+     * @param start        the start position,
+     *                     or null if adding at the start of the document
+     * @param text         the characters to insert
+     */
     public Addition(Account account, LocalDateTime creationDate, Letter start, String text) {
         super(account, creationDate, start);
         letters = new ArrayList<>();

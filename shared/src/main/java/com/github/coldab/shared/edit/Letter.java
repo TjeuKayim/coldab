@@ -13,11 +13,15 @@ public class Letter {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Letter letter = (Letter) o;
-        return character == letter.character &&
-                position == letter.position;
+        return character == letter.character
+                && position == letter.position;
     }
 
     @Override

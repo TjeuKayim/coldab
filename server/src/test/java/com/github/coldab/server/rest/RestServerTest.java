@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class RESTServerTest {
+public class RestServerTest {
     @Test
     public void isTrueTrue() {
         assertTrue("true is true", true);
