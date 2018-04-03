@@ -4,6 +4,7 @@ import com.github.coldab.shared.edit.Edit;
 import java.util.Collection;
 
 public class TextFile extends File {
-    private Collection<Annotation> annotations;
-    private Collection<Edit> edits;
+
+  private Collection<Annotation> annotations;
+  private Collection<Edit> edits;
 }

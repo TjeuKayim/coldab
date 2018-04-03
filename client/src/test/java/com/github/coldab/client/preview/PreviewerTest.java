@@ -5,8 +5,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class PreviewerTest {
-    @Test
-    public void isTrueTrue() {
-        assertTrue("true is true", true);
-    }
+
+  @Test
+  public void isTrueTrue() {
+    assertTrue("true is true", true);
+  }
 }

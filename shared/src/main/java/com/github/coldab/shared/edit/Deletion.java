@@ -7,19 +7,19 @@ import java.time.LocalDateTime;
  * A deletion is the removal of letters between a start (exclusive) and end (inclusive).
  */
 public class Deletion extends Edit {
-    private final Letter end;
 
-    /**
-     * Create an deletion.
-     *
-     * @param account      the author of this deletion
-     * @param creationDate the date of creation
-     * @param start        the start position (exclusive),
-     *                     or null if adding at the start of the document
-     * @param end          the end position (inclusive)
-     */
-    public Deletion(Account account, LocalDateTime creationDate, Letter start, Letter end) {
-        super(account, creationDate, start);
-        this.end = end;
-    }
+  private final Letter end;
+
+  /**
+   * Create an deletion.
+   *
+   * @param account the author of this deletion
+   * @param creationDate the date of creation
+   * @param start the start position (exclusive), or null if adding at the start of the document
+   * @param end the end position (inclusive)
+   */
+  public Deletion(Account account, LocalDateTime creationDate, Letter start, Letter end) {
+    super(account, creationDate, start);
+    this.end = end;
+  }
 }
