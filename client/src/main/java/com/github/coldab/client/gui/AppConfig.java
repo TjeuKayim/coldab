@@ -1,22 +1,18 @@
 package com.github.coldab.client.gui;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan("com.github.coldab.client")
 public class AppConfig {
-  @Bean
-  public MainController mainController() {
-    return new MainController();
-  }
-
+  /**
+   * Test dependency injection.
+   * @return a Greeter implementation
+   */
   @Bean
   public Greeter greeter() {
-    return new Greeter() {
-      @Override
-      public String sayHello() {
-        return "My greeter implementation";
-      }
-    };
+    return () -> "My greeter implementation";
   }
 }

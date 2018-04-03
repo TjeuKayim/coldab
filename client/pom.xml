@@ -22,6 +22,17 @@
       <artifactId>spring-context</artifactId>
       <version>5.0.4.RELEASE</version>
     </dependency>
+    <!-- Icons -->
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-javafx</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-fontawesome5-pack</artifactId>
+      <version>2.1.1</version>
+    </dependency>
   </dependencies>
 
   <build>
