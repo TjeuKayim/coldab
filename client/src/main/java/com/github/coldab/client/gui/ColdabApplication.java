@@ -16,7 +16,7 @@ public class ColdabApplication extends Application {
     loader.setControllerFactory(context::getBean);
     Parent root = loader.load();
     primaryStage.setTitle("Coldab text");
-    Scene scene = new Scene(root, 500, 500);
+    Scene scene = new Scene(root);
     primaryStage.setScene(scene);
     primaryStage.show();
   }

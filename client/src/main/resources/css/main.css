@@ -1,0 +1,4 @@
+#leftStatusBar, #rightStatusBar {
+  -fx-padding: 5;
+  -fx-spacing: 15;
+}

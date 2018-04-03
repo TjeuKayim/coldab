@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.coldab.client.gui.MainController">
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.coldab.client.gui.MainController"
+  stylesheets="/css/main.css">
+  <top>
+    <MenuBar>
+      <Menu text="File">
+        <MenuItem text="New File"/>
+        <!-- "Keep things separated" - Marijn 2018 -->
+        <SeparatorMenuItem/>
+        <MenuItem text="New Project"/>
+        <MenuItem text="Open Project"/>
+        <MenuItem text="Open Recent"/>
+      </Menu>
+      <Menu text="Edit">
+        <MenuItem text="Undo"/>
+        <MenuItem text="Redo"/>
+      </Menu>
+      <Menu text="View">
+        <MenuItem text="Toggle World Wrap"/>
+      </Menu>
+    </MenuBar>
+  </top>
   <center>
-    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS"
       BorderPane.alignment="CENTER">
       <Tab text="File A">
-        <TextArea
-          wrapText="true">
+        <TextArea wrapText="true">
           <font>
             <Font name="Monospaced Regular" size="13.0"/>
           </font>
@@ -45,4 +70,16 @@
   <left>
     <TreeView fx:id="fileTree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
   </left>
+  <bottom>
+    <HBox>
+      <HBox fx:id="leftStatusBar">
+        <Label>{{FileName}}</Label>
+        <Label>5:10</Label>
+      </HBox>
+      <HBox fx:id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
+        <Label>UTF-8</Label>
+        <Label>text/html</Label>
+      </HBox>
+    </HBox>
+  </bottom>
 </BorderPane>
