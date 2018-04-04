@@ -8,13 +8,15 @@ import java.util.List;
  * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
  */
 public abstract class Edit {
+  private int id;
 
   private final LocalDateTime creationDate;
-  /**
-   * The start position where the edit is applied.
-   */
+
+  /** The start position where the edit is applied. */
   protected final Letter start;
+
   private final Account account;
+
   private boolean applied = false;
 
   /**
