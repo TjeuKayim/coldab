@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * </p>
  */
 public abstract class File {
+  private int id;
   private String path;
   private LocalDateTime creationDate;
 
