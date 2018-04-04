@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Project {
-
+  private int id;
   private String name;
   private LocalDateTime creationDate;
   private Collection<File> files = new ArrayList<>();
