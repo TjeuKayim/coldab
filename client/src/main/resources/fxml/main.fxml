@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.coldab.client.gui.MainController"
-  stylesheets="/css/main.css">
+<BorderPane stylesheets="@../css/main.css"
+  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="com.github.coldab.client.gui.MainController">
   <top>
     <MenuBar>
       <Menu text="File">
@@ -35,8 +35,7 @@
     </MenuBar>
   </top>
   <center>
-    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS"
-      BorderPane.alignment="CENTER">
+    <TabPane prefHeight="200.0" prefWidth="400.0" tabClosingPolicy="ALL_TABS">
       <Tab text="File A">
         <TextArea wrapText="true">
           <font>
@@ -68,15 +67,15 @@
     </TabPane>
   </center>
   <left>
-    <TreeView fx:id="fileTree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+    <TreeView fx:id="fileTree" prefWidth="200"/>
   </left>
   <bottom>
     <HBox>
-      <HBox fx:id="leftStatusBar">
+      <HBox id="leftStatusBar">
         <Label>{{FileName}}</Label>
         <Label>5:10</Label>
       </HBox>
-      <HBox fx:id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
+      <HBox id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
         <Label>UTF-8</Label>
         <Label>text/html</Label>
       </HBox>
