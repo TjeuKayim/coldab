@@ -1,6 +1,12 @@
 package com.github.coldab.client.gui;
 
+import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.shared.project.File;
+import com.github.coldab.shared.project.TextFile;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
@@ -11,28 +17,46 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MainController implements Initializable {
-  public TreeView<String> fileTree;
-
-  private final Greeter greeter;
-
-  public MainController(Greeter greeter) {
-    this.greeter = greeter;
-  }
+  public TreeView<String> fileTreeView;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    TreeItem<String> rootItem = new TreeItem<>(greeter.sayHello());
+    updateFileTree();
+  }
+
+  private void updateFileTree() {
+    // Create root
+    TreeItem<String> rootItem = new TreeItem<>();
     rootItem.expandedProperty().addListener((observable, oldValue, newValue) -> {
       FontAwesomeRegular iconCode =
           newValue ? FontAwesomeRegular.FOLDER_OPEN : FontAwesomeRegular.FOLDER;
       rootItem.setGraphic(new FontIcon(iconCode));
     });
-    rootItem.setExpanded(true);
-    for (int i = 1; i < 6; i++) {
-      FontIcon fileIcon = new FontIcon(FontAwesomeRegular.FILE_ALT);
-      TreeItem<String> item = new TreeItem<>("File " + i, fileIcon);
-      rootItem.getChildren().add(item);
+
+    // Test files
+    LocalDateTime now = LocalDateTime.now();
+    Collection<File> files = Arrays.asList(
+        new TextFile("path/to/file.txt", now),
+        new TextFile("path/to/another-file.txt", now),
+        new TextFile("website/index.html", now)
+    );
+
+    DirectoryNode fileTree = FileTree.createFrom(files);
+
+    // Add files
+    addNodesToFileTree(rootItem, fileTree);
+
+    fileTreeView.setShowRoot(false);
+    fileTreeView.setRoot(rootItem);
+  }
+
+  private void addNodesToFileTree(TreeItem<String> treeItem, DirectoryNode fileTree) {
+    for (FileTree child : fileTree.getChildren()) {
+      TreeItem<String> childItem = new TreeItem<>(child.toString());
+      treeItem.getChildren().add(childItem);
+      if (child instanceof DirectoryNode) {
+        addNodesToFileTree(childItem, (DirectoryNode) child);
+      }
     }
-    fileTree.setRoot(rootItem);
   }
 }

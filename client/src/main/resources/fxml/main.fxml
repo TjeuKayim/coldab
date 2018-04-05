@@ -67,7 +67,7 @@
     </TabPane>
   </center>
   <left>
-    <TreeView fx:id="fileTree" prefWidth="200"/>
+    <TreeView fx:id="fileTreeView" prefWidth="200"/>
   </left>
   <bottom>
     <HBox>

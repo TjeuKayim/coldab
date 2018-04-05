@@ -20,15 +20,16 @@ public abstract class File {
     this.creationDate = creationDate;
   }
 
-  public String getPath() {
-    return path;
-  }
-
-  public String[] getSplittedPath() {
+  public String[] getPath() {
     return path.split("/");
   }
 
   public String getExtension() {
     throw new UnsupportedOperationException();
+  }
+
+  public String getName() {
+    String[] pathParts = getPath();
+    return pathParts[pathParts.length - 1];
   }
 }
