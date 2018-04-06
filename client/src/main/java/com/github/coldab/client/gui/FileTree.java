@@ -8,6 +8,11 @@ import java.util.Optional;
 
 abstract class FileTree {
 
+  /**
+   * Creates a file-tree from a list of files.
+   * @param files files with a path
+   * @return a tree with files stored in directories
+   */
   static DirectoryNode createFrom(Collection<File> files) {
     DirectoryNode root = new DirectoryNode("");
     for (File file : files) {
