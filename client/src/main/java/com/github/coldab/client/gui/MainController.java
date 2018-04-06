@@ -55,6 +55,7 @@ public class MainController implements Initializable {
       TreeItem<String> childItem = new TreeItem<>(child.toString());
       treeItem.getChildren().add(childItem);
       if (child instanceof DirectoryNode) {
+        childItem.setExpanded(true);
         addNodesToFileTree(childItem, (DirectoryNode) child);
       }
     }

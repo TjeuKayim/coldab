@@ -4,33 +4,37 @@ import com.github.coldab.shared.project.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 abstract class FileTree {
 
   static DirectoryNode createFrom(Collection<File> files) {
-    // TODO: fix double nodes
     DirectoryNode root = new DirectoryNode("");
     for (File file : files) {
       String[] path = file.getPath();
       DirectoryNode parent = root;
-      for (String dir : path) {
-        DirectoryNode child = root.fileTrees.stream()
-            .filter(f -> f instanceof DirectoryNode)
+      for (int i = 0; i < path.length - 1; i++) {
+        String dir = path[i];
+        Optional<DirectoryNode> child = parent.children.stream()
             .map(f -> (DirectoryNode) f)
             .filter(f -> f.name.equals(dir))
-            .findAny()
-            .orElse(new DirectoryNode(dir));
-        child.fileTrees.add(new FileNode(file));
-        parent.fileTrees.add(child);
-        parent = child;
+            .findAny();
+        if (!child.isPresent()) {
+          // Create new directory
+          DirectoryNode newDir = new DirectoryNode(dir);
+          parent.children.add(newDir);
+          child = Optional.of(newDir);
+        }
+        parent = child.get();
       }
+      parent.children.add(new FileNode(file));
     }
     return root;
   }
 
   static class DirectoryNode extends FileTree {
 
-    private final List<FileTree> fileTrees = new ArrayList<>();
+    private final List<FileTree> children = new ArrayList<>();
 
     private final String name;
 
@@ -39,7 +43,7 @@ abstract class FileTree {
     }
 
     List<FileTree> getChildren() {
-      return fileTrees;
+      return children;
     }
 
     @Override
