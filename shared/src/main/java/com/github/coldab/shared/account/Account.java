@@ -1,10 +1,11 @@
 package com.github.coldab.shared.account;
 
 public class Account {
-    private String nickName;
-    private String email;
+  private int id;
+  private String nickName;
+  private String email;
 
-    public Account(){
+  public Account() {
 
-    }
+  }
 }
