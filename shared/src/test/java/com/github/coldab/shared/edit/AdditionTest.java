@@ -32,7 +32,7 @@ public class AdditionTest {
    * Benchmark that creates 10 files with 1000 lines of "Lorem ipsum ...".
    */
   @Test(timeout = 1500)
-  public void benchmarkLetter() throws Exception {
+  public void benchmarkLetter() {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < 1000; i++) {
       stringBuilder.append("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.");
