@@ -28,6 +28,9 @@ public class AdditionTest {
   public void undo() {
   }
 
+  /**
+   * Benchmark that creates 10 files with 1000 lines of "Lorem ipsum ...".
+   */
   @Test(timeout = 1500)
   public void benchmarkLetter() throws Exception {
     StringBuilder stringBuilder = new StringBuilder();
