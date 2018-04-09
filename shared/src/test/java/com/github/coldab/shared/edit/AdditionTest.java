@@ -27,4 +27,16 @@ public class AdditionTest {
   @Test
   public void undo() {
   }
+
+  @Test(timeout = 1000)
+  public void benchmarkLetter() throws Exception {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < 1000; i++) {
+      stringBuilder.append("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.");
+    }
+    String text = stringBuilder.toString();
+    for (int i = 0; i < 1000; i++) {
+      new Addition(null, null, null, text);
+    }
+  }
 }
