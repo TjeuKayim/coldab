@@ -35,7 +35,7 @@ public class AdditionTest {
       stringBuilder.append("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.");
     }
     String text = stringBuilder.toString();
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 10; i++) {
       new Addition(null, null, null, text);
     }
   }
