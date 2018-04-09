@@ -27,11 +27,6 @@ public class MainController implements Initializable {
   private void updateFileTree() {
     // Create root
     TreeItem<String> rootItem = new TreeItem<>();
-    rootItem.expandedProperty().addListener((observable, oldValue, newValue) -> {
-      FontAwesomeRegular iconCode =
-          newValue ? FontAwesomeRegular.FOLDER_OPEN : FontAwesomeRegular.FOLDER;
-      rootItem.setGraphic(new FontIcon(iconCode));
-    });
 
     // Test files
     LocalDateTime now = LocalDateTime.now();
@@ -55,8 +50,17 @@ public class MainController implements Initializable {
       TreeItem<String> childItem = new TreeItem<>(child.toString());
       treeItem.getChildren().add(childItem);
       if (child instanceof DirectoryNode) {
+        // Directory
+        childItem.expandedProperty().addListener((observable, oldValue, newValue) -> {
+          FontAwesomeRegular iconCode =
+              newValue ? FontAwesomeRegular.FOLDER_OPEN : FontAwesomeRegular.FOLDER;
+          childItem.setGraphic(new FontIcon(iconCode));
+        });
         childItem.setExpanded(true);
         addNodesToFileTree(childItem, (DirectoryNode) child);
+      } else {
+        // File
+        childItem.setGraphic(new FontIcon(FontAwesomeRegular.FILE_ALT));
       }
     }
   }
