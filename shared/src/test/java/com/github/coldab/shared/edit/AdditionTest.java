@@ -28,7 +28,7 @@ public class AdditionTest {
   public void undo() {
   }
 
-  @Test(timeout = 1000)
+  @Test(timeout = 1500)
   public void benchmarkLetter() throws Exception {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < 1000; i++) {
