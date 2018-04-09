@@ -18,8 +18,6 @@ public class Addition extends Edit {
   /**
    * Create an addition.
    *
-   * @param account the author
-   * @param creationDate the date of creation
    * @param start the start position, or null if adding at the start of the document
    * @param text the characters to insert
    */

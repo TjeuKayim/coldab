@@ -13,8 +13,6 @@ public class Deletion extends Edit {
   /**
    * Create an deletion.
    *
-   * @param account the author of this deletion
-   * @param creationDate the date of creation
    * @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
