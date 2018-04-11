@@ -16,6 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/bin/")
 public class BinaryController {
 
+  /**
+   * Download a binary file.
+   *
+   * <p>
+   *   How to return binary?
+   *   https://stackoverflow.com/a/44943494/5537074
+   *
+   *   Which MIME type to use?
+   *   https://stackoverflow.com/a/6783972/5537074
+   * </p>
+   * @param fileId
+   * @return
+   */
   @GetMapping(value = "download/{fileId}", produces = "application/octet-stream")
   byte[] download(@PathVariable Integer fileId) {
     return null;
