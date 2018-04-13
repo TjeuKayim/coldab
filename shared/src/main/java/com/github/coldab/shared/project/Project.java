@@ -10,6 +10,10 @@ public class Project {
   private LocalDateTime creationDate;
   private Collection<File> files = new ArrayList<>();
 
+  public Project(String name) {
+    this.name = name;
+  }
+
   public String getName() {
     return name;
   }
