@@ -16,7 +16,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MainController implements Initializable {
+public class EditorController implements Initializable {
   public TreeView<String> fileTreeView;
 
   @Override

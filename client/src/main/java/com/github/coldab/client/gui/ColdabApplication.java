@@ -1,19 +1,21 @@
 package com.github.coldab.client.gui;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class ColdabApplication extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
-    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-    loader.setControllerFactory(context::getBean);
+  }
+
+  private void startEditor() throws IOException {
+    Stage primaryStage = new Stage();
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editor.fxml"));
+    loader.setControllerFactory(c -> new EditorController());
     Parent root = loader.load();
     primaryStage.setTitle("Coldab text");
     Scene scene = new Scene(root);
