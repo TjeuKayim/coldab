@@ -13,9 +13,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.springframework.stereotype.Component;
 
-@Component
 public class EditorController implements Initializable {
   public TreeView<String> fileTreeView;
 
