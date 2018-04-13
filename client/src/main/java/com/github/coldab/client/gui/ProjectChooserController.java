@@ -3,6 +3,7 @@ package com.github.coldab.client.gui;
 import com.github.coldab.shared.project.Project;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,10 +20,15 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class ProjectChooserController implements Initializable {
 
+  private final Consumer<Project> resultCallback;
   @FXML
   public ListView<Project> projectsListView;
 
   private ObservableList<Project> projects = FXCollections.observableArrayList();
+
+  public ProjectChooserController(Consumer<Project> resultCallback) {
+    this.resultCallback = resultCallback;
+  }
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -36,7 +42,7 @@ public class ProjectChooserController implements Initializable {
   }
 
   private void openProject(Project project) {
-
+    resultCallback.accept(project);
   }
 
   private class ProjectRow extends ListCell<Project> {
