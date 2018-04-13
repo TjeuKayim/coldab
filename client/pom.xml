@@ -17,7 +17,7 @@
       <artifactId>shared</artifactId>
       <version>0.1</version>
     </dependency>
-    <!-- Icons -->
+    <!-- Icons http://aalmiray.github.io/ikonli/cheat-sheet-fontawesome5.html -->
     <dependency>
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-javafx</artifactId>
