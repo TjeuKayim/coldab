@@ -47,7 +47,7 @@ public class ProjectChooserController implements Initializable {
 
   private class ProjectRow extends ListCell<Project> {
 
-    private final HBox hBox;
+    private final HBox box;
     private final Label label;
     private final Button open;
 
@@ -57,7 +57,7 @@ public class ProjectChooserController implements Initializable {
       HBox.setHgrow(pane, Priority.ALWAYS);
       open = new Button("Open");
       Button remove = new Button(null, new FontIcon(FontAwesomeRegular.TRASH_ALT));
-      hBox = new HBox(label, pane, open, remove);
+      box = new HBox(label, pane, open, remove);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ProjectChooserController implements Initializable {
         setText(null);
         label.setText(project.getName());
         open.setOnAction(event -> openProject(project));
-        setGraphic(hBox);
+        setGraphic(box);
       }
     }
   }
