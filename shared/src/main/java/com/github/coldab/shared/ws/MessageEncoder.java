@@ -10,10 +10,34 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+/**
+ * Encode and decodes SocketMessages to JSON.
+ *
+ * <p>
+ *   This class makes use of
+ *   <a href="https://github.com/TjeuKayim/socket-interface">
+ *     com.github.tjeukayim.socketinterface
+ *   </a>
+ * </p>
+ *
+ * <pre>
+ * <code>
+ * [
+ *   "interface",
+ *   "method",
+ *   "arg1",
+ *   "arg2"
+ * ]
+ * </code>
+ * </pre>
+ */
 public class MessageEncoder {
 
   private static final Gson gson = new Gson();
 
+  /**
+   * Encodes message to JSON and returns bytes.
+   */
   public static byte[] encodeMessage(SocketMessage socketMessage) {
     JsonArray jsonArray = new JsonArray();
     jsonArray.add(socketMessage.getEndpoint());
@@ -26,6 +50,9 @@ public class MessageEncoder {
     return outputStream.toByteArray();
   }
 
+  /**
+   * Decodes bytes from JSON to a SocketMessage.
+   */
   public static void decodeMessage(byte[] bytes, SocketReceiver receiver) {
     // Read bytes
     ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
