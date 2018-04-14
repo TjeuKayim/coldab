@@ -5,8 +5,10 @@ import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
@@ -39,15 +41,21 @@ public class MessageEncoder {
    * Encodes message to JSON and returns bytes.
    */
   public static byte[] encodeMessage(SocketMessage socketMessage) {
-    JsonArray jsonArray = new JsonArray();
-    jsonArray.add(socketMessage.getEndpoint());
-    jsonArray.add(socketMessage.getMethod());
-    for (Object argument : socketMessage.getArguments()) {
-      jsonArray.add(gson.toJsonTree(argument));
-    }
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    gson.toJson(jsonArray, new OutputStreamWriter(outputStream));
-    return outputStream.toByteArray();
+    JsonWriter writer = null;
+    try {
+      writer = new JsonWriter(new OutputStreamWriter(outputStream))
+          .beginArray()
+          .value(socketMessage.getEndpoint())
+          .value(socketMessage.getMethod());
+      for (Object argument : socketMessage.getArguments()) {
+        writer.jsonValue(gson.toJson(argument));
+      }
+      writer.endArray().close();
+      return outputStream.toByteArray();
+    } catch (IOException e) {
+      return null;
+    }
   }
 
   /**
