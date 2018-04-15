@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class MessageEncoderTest {
   }
 
   @Test
-  public void encodeDecode() {
+  public void encodeDecode() throws IOException {
     SocketMessage message = new SocketMessage("e", "m", "a1", 2);
     byte[] bytes = MessageEncoder.encodeMessage(message);
     String debug = new String(bytes);
