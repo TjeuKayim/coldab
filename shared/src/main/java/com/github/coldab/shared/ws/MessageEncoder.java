@@ -40,22 +40,18 @@ public class MessageEncoder {
   /**
    * Encodes message to JSON and returns bytes.
    */
-  public static byte[] encodeMessage(SocketMessage socketMessage) {
+  public static byte[] encodeMessage(SocketMessage socketMessage) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     JsonWriter writer = null;
-    try {
-      writer = new JsonWriter(new OutputStreamWriter(outputStream))
-          .beginArray()
-          .value(socketMessage.getEndpoint())
-          .value(socketMessage.getMethod());
-      for (Object argument : socketMessage.getArguments()) {
-        writer.jsonValue(gson.toJson(argument));
-      }
-      writer.endArray().close();
-      return outputStream.toByteArray();
-    } catch (IOException e) {
-      return null;
+    writer = new JsonWriter(new OutputStreamWriter(outputStream))
+        .beginArray()
+        .value(socketMessage.getEndpoint())
+        .value(socketMessage.getMethod());
+    for (Object argument : socketMessage.getArguments()) {
+      writer.jsonValue(gson.toJson(argument));
     }
+    writer.endArray().close();
+    return outputStream.toByteArray();
   }
 
   /**
