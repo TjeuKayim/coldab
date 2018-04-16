@@ -17,6 +17,14 @@ public class Letter {
     return String.format("%d:'%s'", position, character);
   }
 
+  public char getCharacter() {
+    return character;
+  }
+
+  public int getPosition() {
+    return position;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

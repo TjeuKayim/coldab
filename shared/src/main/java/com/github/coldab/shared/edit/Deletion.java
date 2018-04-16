@@ -41,8 +41,8 @@ public class Deletion extends Edit {
     // Delete letters, but save deletedLetters
     deletedLetters.clear();
     for (int index = startPosition; index <= endPosition; index++) {
-      deletedLetters.add(letters.get(index));
-      letters.remove(index);
+      deletedLetters.add(letters.get(startPosition));
+      letters.remove(startPosition);
     }
   }
 
