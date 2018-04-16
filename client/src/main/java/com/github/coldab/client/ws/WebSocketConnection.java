@@ -17,18 +17,27 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 public class WebSocketConnection extends TextWebSocketHandler {
 
-  public static void main(String[] args) throws Exception {
-    new WebSocketConnection("ws://localhost:8080/ws");
-    Thread.sleep(3000);
-  }
-
+  public static final String WS_ENDPOINT = "ws://localhost:8080/ws/";
   private WebSocketSession session;
   private SocketReceiver socketReceiver;
+  private final ClientEndpoint clientEndpoint;
+  private ServerEndpoint serverEndpoint;
 
-  public WebSocketConnection(String url) {
+//  public static void main(String[] args) throws Exception {
+//    new WebSocketConnection(1234, clientEndpoint);
+//    Thread.sleep(3000);
+//  }
+
+  public WebSocketConnection(int projectId, ClientEndpoint clientEndpoint) {
+    this.clientEndpoint = clientEndpoint;
     WebSocketClient client = new StandardWebSocketClient();
+    String url = WS_ENDPOINT + projectId;
     WebSocketConnectionManager manager = new WebSocketConnectionManager(client, this, url);
     manager.start();
+  }
+
+  public ServerEndpoint getServerEndpoint() {
+    return serverEndpoint;
   }
 
   @Override
@@ -36,9 +45,8 @@ public class WebSocketConnection extends TextWebSocketHandler {
     this.session = session;
     System.out.println("Connected WebSocket");
     this.session = session;
-    ClientEndpoint clientEndpoint = SocketSender.create(ClientEndpoint.class, this::sendMessage);
-    ServerEndpoint serverEndpoint = null;
-    socketReceiver = new SocketReceiver(ServerEndpoint.class, serverEndpoint);
+    serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
+    socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
   }
 
   @Override
@@ -49,7 +57,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-
+    this.session = null;
   }
 
   private void sendMessage(SocketMessage socketMessage) {
