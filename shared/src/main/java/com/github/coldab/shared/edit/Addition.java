@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Addition extends Edit {
 
-  private Collection<Letter> letters;
+  private Collection<Letter> insertedLetters;
 
   /**
    * Create an addition.
@@ -23,10 +23,10 @@ public class Addition extends Edit {
    */
   public Addition(Account account, LocalDateTime creationDate, Letter start, String text) {
     super(account, creationDate, start);
-    letters = new ArrayList<>();
+    insertedLetters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
-      letters.add(new Letter(charArray[i], i));
+      insertedLetters.add(new Letter(charArray[i], i));
     }
   }
 
@@ -41,12 +41,12 @@ public class Addition extends Edit {
         throw new IllegalStateException();
       }
     }
-    letters.addAll(index + 1, this.letters);
+    letters.addAll(index + 1, insertedLetters);
   }
 
   @Override
   public void undo(List<Letter> letters) {
     super.undo(letters);
-    throw new UnsupportedOperationException();
+    letters.removeAll(insertedLetters);
   }
 }
