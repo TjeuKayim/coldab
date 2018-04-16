@@ -15,7 +15,7 @@ public class AdditionTest {
     Addition a = new Addition(null, null, null, "Hello");
     List<Letter> letters = new ArrayList<>();
     a.apply(letters);
-    assertEquals("Letters schould be 'Hello'", letters, Arrays.asList(
+    assertEquals("Letters should be 'Hello'", letters, Arrays.asList(
         new Letter('H', 0),
         new Letter('e', 1),
         new Letter('l', 2),
