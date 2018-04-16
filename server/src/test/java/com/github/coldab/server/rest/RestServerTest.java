@@ -8,6 +8,7 @@ public class RestServerTest {
 
   @Test
   public void isTrueTrue() {
+    // TODO: remove placeholder
     assertTrue("true is true", true);
   }
 }

@@ -17,8 +17,19 @@
       <artifactId>shared</artifactId>
       <version>0.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.0.5.RELEASE</version>
+    </dependency>
     <!-- Icons http://aalmiray.github.io/ikonli/cheat-sheet-fontawesome5.html -->
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-websocket</artifactId>
+      <version>5.0.5.RELEASE</version>
+    </dependency>
+    <dependency>
+      <!-- Icons -->
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-javafx</artifactId>
       <version>2.1.1</version>
@@ -27,6 +38,16 @@
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-fontawesome5-pack</artifactId>
       <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.tyrus.bundles</groupId>
+      <artifactId>tyrus-standalone-client-jdk</artifactId>
+      <version>1.12</version>
     </dependency>
   </dependencies>
 
