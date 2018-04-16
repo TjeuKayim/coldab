@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * </p>
  */
 public abstract class File {
+  // This is not the database ID, but it's unique for the project
   private int id;
   private String path;
   private LocalDateTime creationDate;
