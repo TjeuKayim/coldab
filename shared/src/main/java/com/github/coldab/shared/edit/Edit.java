@@ -30,6 +30,10 @@ public abstract class Edit {
     this.account = account;
   }
 
+  public int getIndex() {
+    return index;
+  }
+
   /**
    * Apply this edit.
    *
