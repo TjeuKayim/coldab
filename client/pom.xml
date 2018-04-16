@@ -17,12 +17,7 @@
       <artifactId>shared</artifactId>
       <version>0.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>5.0.4.RELEASE</version>
-    </dependency>
-    <!-- Icons -->
+    <!-- Icons http://aalmiray.github.io/ikonli/cheat-sheet-fontawesome5.html -->
     <dependency>
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-javafx</artifactId>
