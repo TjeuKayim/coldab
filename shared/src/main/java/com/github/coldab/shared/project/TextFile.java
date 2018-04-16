@@ -6,7 +6,6 @@ import java.util.Collection;
 
 public class TextFile extends File {
 
-  private Collection<Annotation> annotations;
   private Collection<Edit> edits;
 
   public TextFile(String path, LocalDateTime creationDate) {
