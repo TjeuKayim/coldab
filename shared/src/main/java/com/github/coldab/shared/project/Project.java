@@ -25,4 +25,8 @@ public class Project {
   public Collection<File> getFiles() {
     return files;
   }
+
+  public int getId() {
+    return id;
+  }
 }
