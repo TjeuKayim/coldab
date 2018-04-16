@@ -13,6 +13,11 @@ public class Letter {
   }
 
   @Override
+  public String toString() {
+    return String.format("%d:'%s'", position, character);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
