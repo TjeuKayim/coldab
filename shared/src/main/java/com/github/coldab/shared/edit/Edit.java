@@ -8,7 +8,7 @@ import java.util.List;
  * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
  */
 public abstract class Edit {
-  private int id;
+  private int index;
 
   private final LocalDateTime creationDate;
 
