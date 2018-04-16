@@ -12,13 +12,11 @@ public class DeletionTest {
   @Before
   public void setUp() throws Exception {
     letters = new ArrayList<>();
+    new Addition(null, null, null, "Hello #remove this#World").apply(letters);
   }
 
   @Test
   public void apply() {
-    new Addition(null, null, null, "Hello #remove this#World").apply(letters);
-    System.out.println(letters);
-    EditTest.lettersEqual("Hello #remove this#World", letters);
     Deletion deletion = new Deletion(null, null, letters.get(5), letters.get(18));
     deletion.apply(letters);
     EditTest.lettersEqual("Hello World", letters);
@@ -26,6 +24,11 @@ public class DeletionTest {
 
   @Test
   public void undo() {
+    Deletion deletion = new Deletion(null, null, letters.get(5), letters.get(18));
+    deletion.apply(letters);
+    EditTest.lettersEqual("Hello World", letters);
+    deletion.undo(letters);
+    EditTest.lettersEqual("Hello #remove this#World", letters);
   }
 
 }
