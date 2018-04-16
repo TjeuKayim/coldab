@@ -42,6 +42,23 @@ public class ColdabApplication extends Application {
     stage.setOnCloseRequest(event -> projectChooserStage.show());
   }
 
+  private void startAuthentication(){
+    projectChooserStage.hide();
+    Stage stage = new Stage();
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
+    loader.setControllerFactory(c -> new AuthenticationController());
+    Parent root = null;
+    try {
+      root = loader.load();
+    } catch (IOException e) {
+      throw new IllegalStateException("Could not load FXML");
+    }
+    stage.setTitle(String.format("%s - Coldab text"));
+    Scene scene = new Scene(root);
+    stage.setScene(scene);
+    stage.show();
+  }
+
   public static void main(String[] args) {
     launch(args);
   }
