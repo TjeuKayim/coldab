@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <BorderPane stylesheets="@../css/main.css"
   xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="com.github.coldab.client.gui.MainController">
+  fx:controller="com.github.coldab.client.gui.EditorController">
   <top>
     <MenuBar>
       <Menu text="File">
