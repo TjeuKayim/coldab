@@ -9,7 +9,6 @@ import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -54,7 +53,12 @@ public class WebSocketConnection extends TextWebSocketHandler {
   }
 
   private void sendMessage(SocketMessage socketMessage) {
-    byte[] payload = MessageEncoder.encodeMessage(socketMessage);
+    byte[] payload = new byte[0];
+    try {
+      payload = MessageEncoder.encodeMessage(socketMessage);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     try {
       session.sendMessage(new TextMessage(payload));
     } catch (IOException e) {
