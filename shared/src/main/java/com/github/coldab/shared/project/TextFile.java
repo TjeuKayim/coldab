@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class TextFile extends File {
 
   private HashMap<Integer, Edit> edits = new HashMap<>();
+  private HashMap<Integer, Annotation> annotations = new HashMap<>();
 
   public TextFile(String path, LocalDateTime creationDate) {
     super(path, creationDate);

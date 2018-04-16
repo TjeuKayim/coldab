@@ -1,18 +1,42 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Letter;
 import java.time.LocalDateTime;
 
-public class Annotation extends Edit {
+public class Annotation {
   private final boolean todo;
   private final String text;
+  private final Account account;
+  private final LocalDateTime creationDate;
+  private final Letter start;
 
   public Annotation(Account account, LocalDateTime creationDate,
       Letter start, boolean todo, String text) {
-    super(account, creationDate, start);
+    this.account = account;
+    this.creationDate = creationDate;
+    this.start = start;
     this.todo = todo;
     this.text = text;
+  }
+
+  public boolean isTodo() {
+    return todo;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public Letter getStart() {
+    return start;
   }
 }
