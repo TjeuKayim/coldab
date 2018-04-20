@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 public abstract class File {
   // This is not the database ID, but it's unique for the project
   private int id;
-  private String path;
+  private String[] path;
   private LocalDateTime creationDate;
 
   public File(String path, LocalDateTime creationDate) {
-    this.path = path;
+    this.path = path.split("/");
     this.creationDate = creationDate;
   }
 
   public String[] getPath() {
-    return path.split("/");
+    return path;
   }
 
   public String getExtension() {
@@ -32,5 +32,9 @@ public abstract class File {
   public String getName() {
     String[] pathParts = getPath();
     return pathParts[pathParts.length - 1];
+  }
+
+  public void setPath(String[] path) {
+    this.path = path;
   }
 }
