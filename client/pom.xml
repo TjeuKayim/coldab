@@ -49,6 +49,11 @@
       <artifactId>tyrus-standalone-client-jdk</artifactId>
       <version>1.12</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>1.23.0</version>
+    </dependency>
   </dependencies>
 
   <build>
