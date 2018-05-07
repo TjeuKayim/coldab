@@ -5,7 +5,20 @@ public class Account {
   private String nickName;
   private String email;
 
-  public Account() {
+  public Account(String nickName, String email) {
+    this.nickName = nickName;
+    this.email = email;
+  }
 
+  public int getId() {
+    return id;
+  }
+
+  public String getNickName() {
+    return nickName;
+  }
+
+  public String getEmail() {
+    return email;
   }
 }

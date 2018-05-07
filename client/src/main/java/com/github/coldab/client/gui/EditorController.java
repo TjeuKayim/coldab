@@ -1,25 +1,83 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.chat.Chat;
+import com.github.coldab.shared.chat.Chat.ChatObserver;
+import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.TextFile;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorController implements Initializable {
-  public TreeView<String> fileTreeView;
+public class EditorController implements Initializable, ChatObserver {
+
+  @FXML
+  private TextField textFieldChatMessage;
+  @FXML
+  private Button btnChatMessage;
+  @FXML
+  private ListView chatPane;
+  @FXML
+  private VBox chatVBox;
+  @FXML
+  private TreeView<String> fileTreeView;
+  @FXML
+  private MenuItem menuOpenChat;
+
+  private Chat chat;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     updateFileTree();
+    initChat();
+  }
+
+  private void initChat() {
+    chat = new Chat();
+    chat.addObserver(this);
+    menuOpenChat.setOnAction(this::toggleChat);
+    btnChatMessage.setOnAction(this::btnChatMessagePressed);
+  }
+
+  private void btnChatMessagePressed(ActionEvent actionEvent) {
+    String messageText = textFieldChatMessage.getText();
+    if (messageText.length() < 1) return;
+    ChatMessage message = new ChatMessage(messageText, new Account("ThisAccount", "Me@mail.com"));
+    chat.addMessage(message);
+    textFieldChatMessage.setText("");
+  }
+
+  private void toggleChat(ActionEvent actionEvent) {
+    if (chatVBox.getMaxWidth() == 0) {
+      chatVBox.setMaxWidth(Double.MAX_VALUE);
+    } else {
+      chatVBox.setMaxWidth(0);
+    }
+  }
+
+  @Override
+  public void chatUpdated(List<ChatMessage> messages) {
+    chatPane.getItems().clear();
+    for (ChatMessage message : messages) {
+      chatPane.getItems().add(message);
+    }
   }
 
   private void updateFileTree() {
