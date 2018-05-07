@@ -1,7 +1,9 @@
 package com.github.coldab.shared.edit;
 
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Letter {
 
   private char character;

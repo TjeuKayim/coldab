@@ -5,14 +5,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
  * An Addition is an insertion of certain characters.
  *
  * <p>For or example an insertion of the characters "Hello World".</p>
  */
+@Entity
 public class Addition extends Edit {
 
+  @Column(nullable = false)
   private Collection<Letter> letters;
 
   /**

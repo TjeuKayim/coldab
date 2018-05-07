@@ -1,18 +1,70 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Letter;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Annotation extends Edit {
-  private final boolean todo;
-  private final String text;
+@Entity
+public class Annotation {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
+  private int id;
+
+  @Column(nullable = false)
+  private boolean todo;
+
+  @Column(nullable = false)
+  private String text;
+
+  @Column(nullable = false)
+  private Account account;
+
+  @Column(nullable = false)
+  private LocalDateTime creationDate;
+
+  @Column(nullable = false)
+  private Letter start;
 
   public Annotation(Account account, LocalDateTime creationDate,
       Letter start, boolean todo, String text) {
-    super(account, creationDate, start);
+    this.account = account;
+    this.creationDate = creationDate;
+    this.start = start;
     this.todo = todo;
     this.text = text;
+  }
+
+  // this constructor is used by JPA.
+  protected Annotation() {
+  }
+
+  public boolean isTodo() {
+    return todo;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public Letter getStart() {
+    return start;
   }
 }
