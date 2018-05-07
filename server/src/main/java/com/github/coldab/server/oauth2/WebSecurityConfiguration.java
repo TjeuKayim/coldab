@@ -10,15 +10,19 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http
-        .csrf()
-        .disable()
-        .antMatcher("/**")
-        .authorizeRequests()
-        .antMatchers("/", "/index.html")
-        .permitAll()
-        .anyRequest()
-        .authenticated();
+  protected void configure(HttpSecurity http) {
+    try {
+      http
+          .csrf()
+          .disable()
+          .antMatcher("/**")
+          .authorizeRequests()
+          .antMatchers("/", "/index.html")
+          .permitAll()
+          .anyRequest()
+          .authenticated();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

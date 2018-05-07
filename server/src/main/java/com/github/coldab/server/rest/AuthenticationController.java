@@ -9,8 +9,13 @@ import java.security.Principal;
 @RequestMapping("/authentication/")
 public class AuthenticationController {
 
-  @RequestMapping(value = "/user")
+  @RequestMapping(value = "user")
   public Principal user(Principal principal) {
     return principal;
+  }
+
+  @RequestMapping("succes")
+  public boolean succes() {
+    return false;
   }
 }
