@@ -4,9 +4,7 @@ import com.github.coldab.shared.account.Account;
 import java.util.Date;
 
 public class ChatMessage implements Comparable<ChatMessage> {
-  private int id;
   private Date postDate;
-public class ChatMessage {
   private int index;
   private String text;
   private Account author;
@@ -21,8 +19,8 @@ public class ChatMessage {
     return postDate;
   }
 
-  public int getId() {
-    return id;
+  public int getIndex() {
+    return index;
   }
 
   public String getText() {
