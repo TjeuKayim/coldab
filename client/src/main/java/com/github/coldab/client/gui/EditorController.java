@@ -7,6 +7,7 @@ import com.github.coldab.shared.chat.Chat.ChatObserver;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.File;
+import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.google.gson.Gson;
 import java.net.URL;
@@ -30,6 +31,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class EditorController implements Initializable, ChatObserver {
 
+  private final Project project;
   @FXML
   private TextField textFieldChatMessage;
   @FXML
@@ -44,6 +46,10 @@ public class EditorController implements Initializable, ChatObserver {
   private MenuItem menuOpenChat;
 
   private Chat chat;
+
+  public EditorController(Project project) {
+    this.project = project;
+  }
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {

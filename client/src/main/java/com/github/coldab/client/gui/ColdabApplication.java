@@ -28,7 +28,7 @@ public class ColdabApplication extends Application {
     projectChooserStage.hide();
     Stage stage = new Stage();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editor.fxml"));
-    loader.setControllerFactory(c -> new EditorController());
+    loader.setControllerFactory(c -> new EditorController(project));
     Parent root = null;
     try {
       root = loader.load();
