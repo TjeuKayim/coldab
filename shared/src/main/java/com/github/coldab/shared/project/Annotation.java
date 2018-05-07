@@ -5,6 +5,7 @@ import com.github.coldab.shared.edit.Letter;
 import java.time.LocalDateTime;
 
 public class Annotation {
+  private int id;
   private final boolean todo;
   private final String text;
   private final Account account;
@@ -22,6 +23,10 @@ public class Annotation {
 
   public boolean isTodo() {
     return todo;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public String getText() {

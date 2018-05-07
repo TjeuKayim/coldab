@@ -37,4 +37,8 @@ public abstract class File {
   public void setPath(String[] path) {
     this.path = path;
   }
+
+  public int getId() {
+    return id;
+  }
 }
