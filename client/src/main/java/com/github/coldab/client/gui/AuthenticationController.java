@@ -10,18 +10,21 @@ import java.util.ResourceBundle;
 
 public class AuthenticationController implements Initializable {
 
-    @FXML
-    private WebView googleWebview;
+  @FXML
+  private WebView googleWebview;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        WebEngine browser = googleWebview.getEngine();
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
 
-        googleWebview.prefHeight(400);
-        googleWebview.prefWidth(600);
+    String url = getClass().getResource("/html/index.html").toExternalForm();
 
-        browser.load("https://google.nl");
+    WebEngine browser = googleWebview.getEngine();
+
+    googleWebview.prefHeight(400);
+    googleWebview.prefWidth(600);
+
+    browser.load(url);
 
 
-    }
+  }
 }
