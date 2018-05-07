@@ -40,6 +40,7 @@ public class TextFileService implements TextFileObserver {
   @Override
   public void newAnnotation(Annotation annotation) {
     file.getAnnotations().put(annotation.getId(), annotation);
+    editorController.showAnnotation(annotation);
   }
 
   /**
