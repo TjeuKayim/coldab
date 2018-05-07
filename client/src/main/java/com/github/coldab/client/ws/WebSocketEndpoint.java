@@ -5,9 +5,7 @@ import com.github.coldab.client.project.ChatService;
 import com.github.coldab.client.project.ProjectService;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
-import com.github.coldab.shared.ws.ChatClient;
 import com.github.coldab.shared.ws.ClientEndpoint;
-import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ServerEndpoint;
 
 public class WebSocketEndpoint implements ClientEndpoint {
@@ -28,12 +26,12 @@ public class WebSocketEndpoint implements ClientEndpoint {
   }
 
   @Override
-  public ProjectClient project() {
+  public ProjectService project() {
     return projectService;
   }
 
   @Override
-  public ChatClient chat() {
+  public ChatService chat() {
     return chatService;
   }
 }

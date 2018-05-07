@@ -34,6 +34,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
     String url = WS_ENDPOINT + projectId;
     WebSocketConnectionManager manager = new WebSocketConnectionManager(client, this, url);
     manager.start();
+    // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
   }
 
   public ServerEndpoint getServerEndpoint() {

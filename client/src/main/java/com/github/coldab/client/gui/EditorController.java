@@ -1,6 +1,9 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.client.project.ChatService;
+import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.Chat.ChatObserver;
@@ -46,6 +49,9 @@ public class EditorController implements Initializable, ChatObserver {
   private MenuItem menuOpenChat;
 
   private Chat chat;
+  private Account account;
+  private ChatService chatService;
+  private ProjectService projectService;
 
   public EditorController(Project project) {
     this.project = project;
@@ -55,6 +61,9 @@ public class EditorController implements Initializable, ChatObserver {
   public void initialize(URL location, ResourceBundle resources) {
     updateFileTree();
     initChat();
+    WebSocketEndpoint webSocketEndpoint = new WebSocketEndpoint(project, account, this);
+    chatService = webSocketEndpoint.chat();
+    projectService = webSocketEndpoint.project();
   }
 
   private void initChat() {
@@ -67,7 +76,8 @@ public class EditorController implements Initializable, ChatObserver {
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) return;
-    ChatMessage message = new ChatMessage(messageText, new Account("ThisAccount", "Me@mail.com"));
+    account = new Account("ThisAccount", "Me@mail.com");
+    ChatMessage message = new ChatMessage(messageText, account);
     chat.addMessage(message);
     textFieldChatMessage.setText("");
   }
