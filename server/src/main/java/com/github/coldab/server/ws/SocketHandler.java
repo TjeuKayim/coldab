@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
 import com.github.coldab.shared.ws.ServerEndpoint;
@@ -19,12 +20,16 @@ public class SocketHandler extends TextWebSocketHandler {
 
   private final HashMap<WebSocketSession, SocketSession> sessions = new HashMap<>();
 
+  private final Project testProject = new Project("Project 77");
+
   @Override
-  public void afterConnectionEstablished(WebSocketSession session) {
+  public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     System.out.println("Connected WebSocket");
     int projectId = (int) session.getAttributes().get("projectId");
+    if (projectId != 77) {
+      session.close();
+    }
     // TODO: get project somewhere and create ClientEndpoint
-    ClientEndpoint clientEndpoint = null;
     ServerEndpoint serverEndpoint = SocketSender.create(ServerEndpoint.class,
         socketMessage -> {
           try {
@@ -34,6 +39,7 @@ public class SocketHandler extends TextWebSocketHandler {
             e.printStackTrace();
           }
         });
+    ClientEndpoint clientEndpoint = new WebSocketEndpoint(serverEndpoint);
     SocketReceiver socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
     sessions.put(session, new SocketSession(socketReceiver));
   }
