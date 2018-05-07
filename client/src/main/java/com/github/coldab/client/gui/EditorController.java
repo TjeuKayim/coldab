@@ -40,7 +40,7 @@ public class EditorController implements Initializable, ChatObserver {
   @FXML
   private Button btnChatMessage;
   @FXML
-  private ListView chatPane;
+  private ListView<ChatMessage> chatPane;
   @FXML
   private VBox chatVBox;
   @FXML
@@ -77,9 +77,8 @@ public class EditorController implements Initializable, ChatObserver {
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) return;
-    account = new Account("ThisAccount", "Me@mail.com");
     ChatMessage message = new ChatMessage(messageText, account);
-    chat.addMessage(message);
+    chatService.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
