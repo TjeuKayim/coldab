@@ -69,6 +69,7 @@ public class EditorController implements Initializable, ChatObserver {
   private void initChat() {
     chat = new Chat();
     chat.addObserver(this);
+    project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Project {
+
   private int id;
   private String name;
   private LocalDateTime creationDate;
@@ -33,5 +34,9 @@ public class Project {
 
   public Chat getChat() {
     return chat;
+  }
+
+  public void setChat(Chat chat) {
+    this.chat = chat;
   }
 }
