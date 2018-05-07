@@ -1,8 +1,10 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.TextFile;
+import com.google.gson.Gson;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -61,5 +63,10 @@ public class EditorController implements Initializable {
         childItem.setGraphic(new FontIcon(FontAwesomeRegular.FILE_ALT));
       }
     }
+  }
+
+  public void showAnnotation(Annotation annotation) {
+    // FIXME: 7-5-2018 Update GUI
+    System.out.println("Annotation: " + new Gson().toJson(annotation));
   }
 }
