@@ -27,4 +27,19 @@ public class AdditionTest {
   @Test
   public void undo() {
   }
+
+  /**
+   * Benchmark that creates 10 files with 1000 lines of "Lorem ipsum ...".
+   */
+  @Test(timeout = 1500)
+  public void benchmarkLetter() {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (int i = 0; i < 1000; i++) {
+      stringBuilder.append("Lorem ipsum dolor sit amet, consectetuer adipiscing elit.");
+    }
+    String text = stringBuilder.toString();
+    for (int i = 0; i < 10; i++) {
+      new Addition(null, null, null, text);
+    }
+  }
 }
