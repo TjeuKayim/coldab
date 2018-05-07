@@ -17,8 +17,9 @@ public interface UpdateSender {
 
   void removeFile(int fileId);
 
-  void edits(int fileId, List<Addition> additions, List<Deletion> deletions,
-      List<Annotation> annotations);
+  void edits(int fileId, List<Addition> additions, List<Deletion> deletions);
+
+  void annotations(int fileId, List<Annotation> annotations);
 
   void caret(int fileId, Caret caret);
 }
