@@ -6,9 +6,9 @@ import com.github.coldab.shared.project.TextFile;
 
 public interface TextFileObserver {
 
-  void receiveEdit(Edit edit);
+  void newEdit(Edit edit);
 
-  void receiveAnnotation(Annotation annotation);
+  void newAnnotation(Annotation annotation);
 
-  void receiveUpdate(TextFile updatedFile);
+  void updateTextFile(TextFile updatedFile);
 }
