@@ -11,9 +11,11 @@ import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TextFileService implements TextFileObserver {
+
   private final TextFile file;
   private final Account account;
   private final TextFileObserver server;
@@ -60,7 +62,8 @@ public class TextFileService implements TextFileObserver {
   }
 
   public void createAnnotation(int position, boolean todo, String text) {
-    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text);
+    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text,
+        Collections.emptyList());
     server.newAnnotation(annotation);
   }
 
@@ -70,6 +73,7 @@ public class TextFileService implements TextFileObserver {
 
   /**
    * Create a new deletion and send it to the server.
+   *
    * @param position start (inclusive)
    * @param length amount of characters to remove
    */
