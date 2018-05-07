@@ -20,4 +20,8 @@ public class TextFile extends File {
   public void setEdits(HashMap<Integer, Edit> revision) {
     edits = revision;
   }
+
+  public HashMap<Integer, Annotation> getAnnotations() {
+    return annotations;
+  }
 }
