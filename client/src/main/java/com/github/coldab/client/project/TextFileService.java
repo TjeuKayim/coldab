@@ -12,45 +12,42 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class TextFileService {
+public class TextFileService implements TextFileObserver {
   private final TextFile file;
   private final Account account;
-  private final Consumer<Edit> editSender;
+  private final TextFileObserver server;
   private final EditorController editorController;
-  private final List<Edit> localState = new ArrayList<>();
+  private final List<Edit> localStateEdits = new ArrayList<>();
+  private final List<Letter> localStateLetters = new ArrayList<>();
 
-  public TextFileService(TextFile file, Account account, Consumer<Edit> editSender,
-      EditorController editorController) {
+  public TextFileService(TextFile file, Account account,
+      TextFileObserver server, EditorController editorController) {
     this.file = file;
     this.account = account;
-    this.editSender = editSender;
+    this.server = server;
     this.editorController = editorController;
   }
 
   /**
    * Receive an update from the server.
    */
-  public void receiveEdit(Edit edit) {
+  @Override
+  public void newEdit(Edit edit) {
     file.getEdits().put(edit.getIndex(), edit);
-    // Try to add the edit
-
   }
 
-  public void receiveAnnotation(Annotation annotation) {
-    throw new UnsupportedOperationException();
+  @Override
+  public void newAnnotation(Annotation annotation) {
+    file.getAnnotations().put(annotation.getId(), annotation);
   }
 
   /**
    * Receive update about file, like changing the filename.
    */
-  public void receiveUpdate(TextFile updatedFile) {
+  @Override
+  public void updateTextFile(TextFile updatedFile) {
     file.setPath(updatedFile.getPath());
-  }
-
-  public void addObserver(Consumer<String> observer) {
-
   }
 
   /**
@@ -58,8 +55,12 @@ public class TextFileService {
    */
   public void createAddition(int position, String text) {
     Addition addition = new Addition(account, now(), letterAt(position), text);
-    localState.add(addition);
-    editSender.accept(addition);
+    createEdit(addition);
+  }
+
+  public void createAnnotation(int position, boolean todo, String text) {
+    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text);
+    server.newAnnotation(annotation);
   }
 
   private static LocalDateTime now() {
@@ -75,11 +76,16 @@ public class TextFileService {
     Letter start = letterAt(position);
     Letter end = letterAt(position + length);
     Deletion deletion = new Deletion(account, now(), start, end);
-    localState.add(deletion);
-    editSender.accept(deletion);
+    createEdit(deletion);
+  }
+
+  private void createEdit(Edit edit) {
+    localStateEdits.add(edit);
+    edit.apply(localStateLetters);
+    server.newEdit(edit);
   }
 
   private Letter letterAt(int index) {
-    return null;
+    return localStateLetters.get(index);
   }
 }
