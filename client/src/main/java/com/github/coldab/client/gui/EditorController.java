@@ -7,7 +7,6 @@ import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
-import com.github.coldab.shared.chat.Chat.ChatObserver;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.File;
@@ -34,7 +33,7 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorController implements Initializable, ChatObserver {
+public class EditorController implements Initializable {
 
   private final Project project;
   @FXML
@@ -77,7 +76,7 @@ public class EditorController implements Initializable, ChatObserver {
   }
 
   private void initChat() {
-    chat.addObserver(this);
+    chat.addObserver(messages -> Platform.runLater(() -> chatUpdated(messages)));
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
@@ -99,7 +98,6 @@ public class EditorController implements Initializable, ChatObserver {
     }
   }
 
-  @Override
   public void chatUpdated(List<ChatMessage> messages) {
     chatPane.getItems().clear();
     for (ChatMessage message : messages) {
