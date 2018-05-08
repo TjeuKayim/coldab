@@ -13,6 +13,19 @@ public class Letter {
   }
 
   @Override
+  public String toString() {
+    return String.format("%d:'%s'", position, character);
+  }
+
+  public char getCharacter() {
+    return character;
+  }
+
+  public int getPosition() {
+    return position;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
