@@ -7,6 +7,7 @@ import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -62,12 +63,12 @@ public class WebSocketConnection extends TextWebSocketHandler {
     try {
       payload = MessageEncoder.encodeMessage(socketMessage);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, e.toString(), e);
     }
     try {
       session.sendMessage(new TextMessage(payload));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, e.toString(), e);
     }
   }
 }
