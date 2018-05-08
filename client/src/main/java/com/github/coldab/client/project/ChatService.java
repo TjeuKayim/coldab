@@ -1,6 +1,5 @@
 package com.github.coldab.client.project;
 
-import com.github.coldab.client.gui.EditorController;
 import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.ws.ChatClient;
@@ -11,8 +10,7 @@ public class ChatService implements ChatClient {
   private final Chat chat;
   private final ChatServer server;
 
-  public ChatService(Chat chat, ChatServer server,
-      EditorController editorController) {
+  public ChatService(Chat chat, ChatServer server) {
     this.chat = chat;
     this.server = server;
   }

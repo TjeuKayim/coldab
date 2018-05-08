@@ -22,7 +22,7 @@ public class WebSocketEndpoint implements ClientEndpoint {
     serverEndpoint = webSocketConnection.getServerEndpoint();
     projectService = new ProjectService(project, serverEndpoint.project(), account,
         editorController);
-    chatService = new ChatService(project.getChat(), serverEndpoint.chat(), editorController);
+    chatService = new ChatService(project.getChat(), serverEndpoint.chat());
   }
 
   @Override
