@@ -40,7 +40,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
   public void afterConnectionEstablished(WebSocketSession session) {
     this.session = session;
     System.out.println("Connected WebSocket");
-    this.session = session;
     serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
     socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
   }
