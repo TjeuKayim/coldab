@@ -7,6 +7,7 @@ import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
+import java.util.logging.Logger;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,6 +23,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
   private SocketReceiver socketReceiver;
   private final ClientEndpoint clientEndpoint;
   private ServerEndpoint serverEndpoint;
+  private static final Logger LOGGER = Logger.getLogger(WebSocketConnection.class.getName());
 
   public WebSocketConnection(int projectId, ClientEndpoint clientEndpoint) {
     this.clientEndpoint = clientEndpoint;
@@ -39,7 +41,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     this.session = session;
-    System.out.println("Connected WebSocket");
+    LOGGER.fine("WebSocket connection established");
     serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
     socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
   }
