@@ -36,8 +36,8 @@ public class ProjectChooserController implements Initializable {
     projectsListView.setCellFactory(ProjectRow::new);
 
     projects.addAll(
-        new Project("Hello World"),
-        new Project("My first project!")
+        new Project(77, "Hello World"),
+        new Project(77, "My first project!")
     );
   }
 

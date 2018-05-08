@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,8 +50,8 @@ public class EditorController implements Initializable, ChatObserver {
   @FXML
   private MenuItem menuOpenChat;
 
-  private Chat chat;
-  private Account account;
+  private final Chat chat = new Chat();
+  private Account account = new Account("Henkie", "henkie@gmail.com");
   private ChatService chatService;
   private ProjectService projectService;
 
@@ -60,11 +61,12 @@ public class EditorController implements Initializable, ChatObserver {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+
     new WebSocketConnection(project, serverEndpoint -> {
       chatService = new ChatService(chat, serverEndpoint.chat());
       projectService = new ProjectService(project, serverEndpoint.project(), account,
           this);
-      afterConnectionEstablished();
+      Platform.runLater(this::afterConnectionEstablished);
       return new WebSocketEndpoint(chatService, projectService);
     });
   }
@@ -75,7 +77,6 @@ public class EditorController implements Initializable, ChatObserver {
   }
 
   private void initChat() {
-    chat = new Chat();
     chat.addObserver(this);
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
