@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Project {
 
@@ -14,7 +15,7 @@ public class Project {
   private final List<Account> admins = new ArrayList<>();
   private final List<Account> collaborators = new ArrayList<>();
   private LocalDateTime creationDate;
-  private  final HashMap<Integer, File> files = new HashMap<>();
+  private  final Map<Integer, File> files = new HashMap<>();
   private Chat chat;
 
   public Project(String name) {
@@ -37,7 +38,7 @@ public class Project {
     return creationDate;
   }
 
-  public HashMap<Integer, File> getFiles() {
+  public Map<Integer, File> getFiles() {
     return files;
   }
 

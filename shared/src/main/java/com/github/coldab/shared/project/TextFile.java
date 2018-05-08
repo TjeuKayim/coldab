@@ -3,25 +3,26 @@ package com.github.coldab.shared.project;
 import com.github.coldab.shared.edit.Edit;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TextFile extends File {
 
-  private HashMap<Integer, Edit> edits = new HashMap<>();
-  private HashMap<Integer, Annotation> annotations = new HashMap<>();
+  private Map<Integer, Edit> edits = new HashMap<>();
+  private Map<Integer, Annotation> annotations = new HashMap<>();
 
   public TextFile(String path, LocalDateTime creationDate) {
     super(path, creationDate);
   }
 
-  public HashMap<Integer, Edit> getEdits() {
+  public Map<Integer, Edit> getEdits() {
     return edits;
   }
 
-  public void setEdits(HashMap<Integer, Edit> revision) {
+  public void setEdits(Map<Integer, Edit> revision) {
     edits = revision;
   }
 
-  public HashMap<Integer, Annotation> getAnnotations() {
+  public Map<Integer, Annotation> getAnnotations() {
     return annotations;
   }
 }
