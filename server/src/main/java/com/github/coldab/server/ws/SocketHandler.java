@@ -62,7 +62,9 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     SocketSession socketSession = sessions.remove(session);
-    projects.remove(socketSession.clientEndpoint);
+    for (ProjectClients projectClients : projects.values()) {
+      projectClients.clients.remove(socketSession.clientEndpoint);
+    }
   }
 
   private class SocketSession {
