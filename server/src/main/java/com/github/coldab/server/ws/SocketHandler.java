@@ -20,14 +20,14 @@ public class SocketHandler extends TextWebSocketHandler {
 
   private final HashMap<WebSocketSession, SocketSession> sessions = new HashMap<>();
 
-  private final Project testProject = new Project("Project 77");
+  private final Project testProject = new Project(77, "Project 77");
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     System.out.println("Connected WebSocket");
     int projectId = (int) session.getAttributes().get("projectId");
-    if (projectId != 77) {
-      session.close();
+    if (projectId != testProject.getId()) {
+      session.close(new CloseStatus(1000, "ProjectId not found"));
     }
     // TODO: get project somewhere and create ClientEndpoint
     ServerEndpoint serverEndpoint = SocketSender.create(ServerEndpoint.class,
