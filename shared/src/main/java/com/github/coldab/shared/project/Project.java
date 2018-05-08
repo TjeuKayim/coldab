@@ -10,15 +10,16 @@ import java.util.Map;
 
 public class Project {
 
-  private int id;
-  private String name;
+  private final int id;
+  private final String name;
   private final List<Account> admins = new ArrayList<>();
   private final List<Account> collaborators = new ArrayList<>();
   private LocalDateTime creationDate;
   private  final Map<Integer, File> files = new HashMap<>();
   private Chat chat;
 
-  public Project(String name) {
+  public Project(int id, String name) {
+    this.id = id;
     this.name = name;
   }
 
