@@ -1,28 +1,18 @@
 package com.github.coldab.client.ws;
 
-import com.github.coldab.client.gui.EditorController;
 import com.github.coldab.client.project.ChatService;
 import com.github.coldab.client.project.ProjectService;
-import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
-import com.github.coldab.shared.ws.ServerEndpoint;
 
 public class WebSocketEndpoint implements ClientEndpoint {
 
-  private final ServerEndpoint serverEndpoint;
-  private final Project project;
   private final ChatService chatService;
-  private ProjectService projectService;
+  private final ProjectService projectService;
 
-  public WebSocketEndpoint(Project project, Account account,
-      EditorController editorController) {
-    this.project = project;
-    WebSocketConnection webSocketConnection = new WebSocketConnection(project.getId(), this);
-    serverEndpoint = webSocketConnection.getServerEndpoint();
-    projectService = new ProjectService(project, serverEndpoint.project(), account,
-        editorController);
-    chatService = new ChatService(project.getChat(), serverEndpoint.chat());
+  public WebSocketEndpoint(ChatService chatService,
+      ProjectService projectService) {
+    this.chatService = chatService;
+    this.projectService = projectService;
   }
 
   @Override

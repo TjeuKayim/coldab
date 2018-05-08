@@ -3,6 +3,7 @@ package com.github.coldab.client.gui;
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.project.ChatService;
 import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
@@ -61,9 +62,12 @@ public class EditorController implements Initializable, ChatObserver {
   public void initialize(URL location, ResourceBundle resources) {
     updateFileTree();
     initChat();
-    WebSocketEndpoint webSocketEndpoint = new WebSocketEndpoint(project, account, this);
-    chatService = webSocketEndpoint.chat();
-    projectService = webSocketEndpoint.project();
+    new WebSocketConnection(project, serverEndpoint -> {
+      chatService = new ChatService(chat, serverEndpoint.chat());
+      projectService = new ProjectService(project, serverEndpoint.project(), account,
+          this);
+      return new WebSocketEndpoint(chatService, projectService);
+    });
   }
 
   private void initChat() {
