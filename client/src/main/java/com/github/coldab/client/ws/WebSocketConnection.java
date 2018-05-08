@@ -49,7 +49,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
     serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
     ClientEndpoint clientEndpoint = endpointFactory.apply(serverEndpoint);
     socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
-
   }
 
   @Override

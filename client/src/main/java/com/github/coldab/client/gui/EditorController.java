@@ -60,14 +60,18 @@ public class EditorController implements Initializable, ChatObserver {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    updateFileTree();
-    initChat();
     new WebSocketConnection(project, serverEndpoint -> {
       chatService = new ChatService(chat, serverEndpoint.chat());
       projectService = new ProjectService(project, serverEndpoint.project(), account,
           this);
+      afterConnectionEstablished();
       return new WebSocketEndpoint(chatService, projectService);
     });
+  }
+
+  private void afterConnectionEstablished() {
+    updateFileTree();
+    initChat();
   }
 
   private void initChat() {
