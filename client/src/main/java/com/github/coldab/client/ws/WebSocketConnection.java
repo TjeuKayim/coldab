@@ -23,11 +23,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
   private final ClientEndpoint clientEndpoint;
   private ServerEndpoint serverEndpoint;
 
-//  public static void main(String[] args) throws Exception {
-//    new WebSocketConnection(1234, clientEndpoint);
-//    Thread.sleep(3000);
-//  }
-
   public WebSocketConnection(int projectId, ClientEndpoint clientEndpoint) {
     this.clientEndpoint = clientEndpoint;
     WebSocketClient client = new StandardWebSocketClient();
