@@ -7,7 +7,10 @@ import com.github.coldab.shared.ws.ServerEndpoint;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -18,19 +21,22 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 public class SocketHandler extends TextWebSocketHandler {
 
-  private final HashMap<WebSocketSession, SocketSession> sessions = new HashMap<>();
+  private final Map<WebSocketSession, SocketSession> sessions = new HashMap<>();
+  private final Map<Integer, ProjectClients> projects = new HashMap<>();
 
-  private final Project testProject = new Project(77, "Project 77");
+  public SocketHandler() {
+    projects.put(77, new ProjectClients(new Project(77, "Project 77")));
+  }
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     System.out.println("Connected WebSocket");
     int projectId = (int) session.getAttributes().get("projectId");
-    if (projectId != testProject.getId()) {
+    if (!projects.keySet().contains(projectId)) {
       session.close(new CloseStatus(1000, "ProjectId not found"));
     }
     // TODO: get project somewhere and create ClientEndpoint
-    ServerEndpoint serverEndpoint = SocketSender.create(ServerEndpoint.class,
+    ClientEndpoint clientEndpoint = SocketSender.create(ClientEndpoint.class,
         socketMessage -> {
           try {
             byte[] payload = MessageEncoder.encodeMessage(socketMessage);
@@ -39,9 +45,11 @@ public class SocketHandler extends TextWebSocketHandler {
             e.printStackTrace();
           }
         });
-    ClientEndpoint clientEndpoint = new WebSocketEndpoint(serverEndpoint);
-    SocketReceiver socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
-    sessions.put(session, new SocketSession(socketReceiver));
+    ProjectClients projectClients = projects.get(projectId);
+    ServerEndpoint serverEndpoint = new WebSocketEndpoint(clientEndpoint, projectClients.clients);
+    SocketReceiver socketReceiver = new SocketReceiver(ServerEndpoint.class, serverEndpoint);
+    sessions.put(session, new SocketSession(socketReceiver, clientEndpoint));
+    projectClients.clients.add(clientEndpoint);
   }
 
   @Override
@@ -53,16 +61,28 @@ public class SocketHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-    sessions.remove(session);
+    SocketSession socketSession = sessions.remove(session);
+    projects.remove(socketSession.clientEndpoint);
   }
 
   private class SocketSession {
 
     final SocketReceiver socketReceiver;
+    final ClientEndpoint clientEndpoint;
 
-    private SocketSession(SocketReceiver socketReceiver) {
+    private SocketSession(SocketReceiver socketReceiver,
+        ClientEndpoint clientEndpoint) {
       this.socketReceiver = socketReceiver;
+      this.clientEndpoint = clientEndpoint;
     }
   }
 
+  private class ProjectClients {
+    final Project project;
+    final List<ClientEndpoint> clients = new ArrayList<>();
+
+    private ProjectClients(Project project) {
+      this.project = project;
+    }
+  }
 }
