@@ -35,6 +35,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
     String url = WS_ENDPOINT + project.getId();
     WebSocketConnectionManager manager = new WebSocketConnectionManager(client, this, url);
     manager.start();
+    LOGGER.info("Connecting to WebSocket");
     // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
   }
 
@@ -44,8 +45,8 @@ public class WebSocketConnection extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
+    LOGGER.info("WebSocket connection established");
     this.session = session;
-    LOGGER.fine("WebSocket connection established");
     serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
     ClientEndpoint clientEndpoint = endpointFactory.apply(serverEndpoint);
     socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
@@ -59,6 +60,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    LOGGER.log(Level.INFO, "WebSocket disconnected, status: {0}", status);
     this.session = null;
   }
 
