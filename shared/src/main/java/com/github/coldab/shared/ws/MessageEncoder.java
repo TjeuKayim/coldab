@@ -16,10 +16,10 @@ import java.io.OutputStreamWriter;
  * Encode and decodes SocketMessages to JSON.
  *
  * <p>
- *   This class makes use of
- *   <a href="https://github.com/TjeuKayim/socket-interface">
- *     com.github.tjeukayim.socketinterface
- *   </a>
+ * This class makes use of
+ * <a href="https://github.com/TjeuKayim/socket-interface">
+ * com.github.tjeukayim.socketinterface
+ * </a>
  * </p>
  *
  * <pre>
@@ -34,6 +34,10 @@ import java.io.OutputStreamWriter;
  * </pre>
  */
 public class MessageEncoder {
+
+  private MessageEncoder() {
+    throw new IllegalStateException("Utility class");
+  }
 
   private static final Gson gson = new Gson();
 
