@@ -1,15 +1,15 @@
 package com.github.coldab.server.ws;
 
-import com.github.coldab.shared.project.Project;
+import com.github.coldab.server.dal.ProjectStore;
+import com.github.coldab.shared.ws.ChatServer;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
+import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.ServerEndpoint;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -22,17 +22,19 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class SocketHandler extends TextWebSocketHandler {
 
   private final Map<WebSocketSession, SocketSession> sessions = new HashMap<>();
-  private final Map<Integer, ProjectClients> projects = new HashMap<>();
+  private final Map<Integer, ProjectService> projects = new HashMap<>();
+  private final ProjectStore projectStore;
 
-  public SocketHandler() {
-    projects.put(77, new ProjectClients(new Project(77, "Project 77")));
+  public SocketHandler(ProjectStore projectStore) {
+    this.projectStore = projectStore;
   }
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     System.out.println("Connected WebSocket");
     int projectId = (int) session.getAttributes().get("projectId");
-    if (!projects.keySet().contains(projectId)) {
+    ProjectService projectService = getProject(projectId);
+    if (projectService == null) {
       session.close(new CloseStatus(1000, "ProjectId not found"));
     }
     // TODO: get project somewhere and create ClientEndpoint
@@ -45,11 +47,29 @@ public class SocketHandler extends TextWebSocketHandler {
             e.printStackTrace();
           }
         });
-    ProjectClients projectClients = projects.get(projectId);
-    ServerEndpoint serverEndpoint = new WebSocketEndpoint(clientEndpoint, projectClients.clients);
+    ProjectServer projectServer = projectService.addClient(clientEndpoint);
+    ChatServer chatServer = new ChatService(projectService.getClients(), clientEndpoint.chat());
+    ServerEndpoint serverEndpoint =
+        new WebSocketEndpoint(chatServer, projectServer);
     SocketReceiver socketReceiver = new SocketReceiver(ServerEndpoint.class, serverEndpoint);
     sessions.put(session, new SocketSession(socketReceiver, clientEndpoint));
-    projectClients.clients.add(clientEndpoint);
+  }
+
+  /**
+   * Get project from database, and construct a service.
+   * @return null if project doesn't exist
+   */
+  private ProjectService getProject(int projectId) {
+    ProjectService service = projects.get(projectId);
+    if (service == null) {
+      // Load from database
+      service = projectStore.findById(projectId)
+          .map(ProjectService::new).orElse(null);
+      if (service != null) {
+        projects.put(projectId, service);
+      }
+    }
+    return service;
   }
 
   @Override
@@ -62,8 +82,8 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     SocketSession socketSession = sessions.remove(session);
-    for (ProjectClients projectClients : projects.values()) {
-      projectClients.clients.remove(socketSession.clientEndpoint);
+    for (ProjectService projectService : projects.values()) {
+      projectService.removeClient(socketSession.clientEndpoint);
     }
   }
 
@@ -79,12 +99,4 @@ public class SocketHandler extends TextWebSocketHandler {
     }
   }
 
-  private class ProjectClients {
-    final Project project;
-    final List<ClientEndpoint> clients = new ArrayList<>();
-
-    private ProjectClients(Project project) {
-      this.project = project;
-    }
-  }
 }
