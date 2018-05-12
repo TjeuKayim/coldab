@@ -23,7 +23,7 @@ public class ProjectService implements ProjectClient {
   private final Project project;
   private final Account account;
   private final EditorController editorController;
-  private HashMap<Integer, TextFileObserver> textFileServices = new HashMap<>();
+  private HashMap<Integer, TextFileService> textFileServices = new HashMap<>();
 
   public ProjectService(Project project, ProjectServer projectServer,
       Account account, EditorController editorController) {
@@ -57,6 +57,16 @@ public class ProjectService implements ProjectClient {
     for (Deletion deletion : deletions) {
       textFileServices.get(fileId).newEdit(deletion);
     }
+  }
+
+  @Override
+  public void confirmAddition(int fileId, Addition addition) {
+    textFileServices.get(fileId).confirmEdit(addition);
+  }
+
+  @Override
+  public void confirmDeletion(int fileId, Deletion deletion) {
+    textFileServices.get(fileId).confirmEdit(deletion);
   }
 
   @Override
@@ -96,14 +106,11 @@ public class ProjectService implements ProjectClient {
 
     @Override
     public void newEdit(Edit edit) {
-      List<Deletion> deletions = Collections.emptyList();
-      List<Addition> additions = Collections.emptyList();
       if (edit instanceof Addition) {
-        additions = Collections.singletonList((Addition) edit);
+        projectServer.addition(file.getId(), (Addition) edit);
       } else if (edit instanceof Deletion) {
-        deletions = Collections.singletonList((Deletion) edit);
+        projectServer.deletion(file.getId(), (Deletion) edit);
       }
-      projectServer.edits(file.getId(), additions, deletions);
     }
 
     @Override

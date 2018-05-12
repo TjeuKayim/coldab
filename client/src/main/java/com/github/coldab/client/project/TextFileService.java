@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TextFileService implements TextFileObserver {
 
@@ -22,6 +23,7 @@ public class TextFileService implements TextFileObserver {
   private final EditorController editorController;
   private final List<Edit> localStateEdits = new ArrayList<>();
   private final List<Letter> localStateLetters = new ArrayList<>();
+  private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
 
   public TextFileService(TextFile file, Account account,
       TextFileObserver server, EditorController editorController) {
@@ -32,7 +34,7 @@ public class TextFileService implements TextFileObserver {
   }
 
   /**
-   * Receive an update from the server.
+   * Server notifies about new edit.
    */
   @Override
   public void newEdit(Edit edit) {
@@ -45,9 +47,6 @@ public class TextFileService implements TextFileObserver {
     editorController.showAnnotation(annotation);
   }
 
-  /**
-   * Receive update about file, like changing the filename.
-   */
   @Override
   public void updateTextFile(TextFile updatedFile) {
     file.setPath(updatedFile.getPath());
@@ -65,6 +64,10 @@ public class TextFileService implements TextFileObserver {
     Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text,
         Collections.emptyList());
     server.newAnnotation(annotation);
+  }
+
+  public void confirmEdit(Edit edit) {
+    LOGGER.fine("confirmed edit");
   }
 
   private static LocalDateTime now() {
