@@ -11,8 +11,10 @@ import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.ProjectServer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectService {
   private final Project project;
@@ -24,7 +26,7 @@ public class ProjectService {
 
   public ProjectServer addClient(ClientEndpoint clientEndpoint) {
     clients.add(clientEndpoint);
-    return new MessageReceiver();
+    return new MessageReceiver(clientEndpoint);
   }
 
   public void removeClient(ClientEndpoint clientEndpoint) {
@@ -36,6 +38,18 @@ public class ProjectService {
   }
 
   private class MessageReceiver implements ProjectServer {
+
+    private final ClientEndpoint clientEndpoint;
+
+    public MessageReceiver(ClientEndpoint clientEndpoint) {
+      this.clientEndpoint = clientEndpoint;
+    }
+
+    private Collection<ClientEndpoint> getOtherClients() {
+      return clients.stream()
+          .filter(ce -> ce != clientEndpoint)
+          .collect(Collectors.toList());
+    }
 
     @Override
     public void subscribe(int fileId) {
@@ -82,10 +96,12 @@ public class ProjectService {
       List<Addition> additions = Collections.emptyList();
       if (edit instanceof Addition) {
         additions = Collections.singletonList((Addition) edit);
+        clientEndpoint.project().confirmAddition(fileId, (Addition) edit);
       } else if (edit instanceof Deletion) {
         deletions = Collections.singletonList((Deletion) edit);
+        clientEndpoint.project().confirmDeletion(fileId, (Deletion) edit);
       }
-      for (ClientEndpoint client : clients) {
+      for (ClientEndpoint client : getOtherClients()) {
         client.project().edits(fileId, additions, deletions);
       }
     }
