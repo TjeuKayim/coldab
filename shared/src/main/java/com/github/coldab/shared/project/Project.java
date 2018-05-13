@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class Project {
@@ -26,7 +27,9 @@ public class Project {
   private final int id;
   @Column(nullable = false)
   private final String name;
+  @OneToMany
   private final List<Account> admins = new ArrayList<>();
+  @OneToMany
   private final List<Account> collaborators = new ArrayList<>();
   @Column(nullable = false)
   private LocalDateTime creationDate;
