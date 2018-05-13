@@ -2,7 +2,6 @@ package com.github.coldab.shared.project;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,12 +29,12 @@ public abstract class File {
   private LocalDateTime creationDate;
 
   public File(String path, LocalDateTime creationDate) {
-    this.path = path.split("/");
+    this.path = path;
     this.creationDate = creationDate;
   }
 
   public String[] getPath() {
-    return path;
+    return path.split("/");
   }
 
   public String getExtension() {
@@ -48,7 +47,7 @@ public abstract class File {
   }
 
   public void setPath(String[] path) {
-    this.path = path;
+    this.path = String.join("/", path);
   }
 
   public int getId() {
