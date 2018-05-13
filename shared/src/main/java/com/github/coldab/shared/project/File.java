@@ -1,6 +1,12 @@
 package com.github.coldab.shared.project;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * A binary-file or text-file.
@@ -10,10 +16,17 @@ import java.time.LocalDateTime;
  *   Example: "path/to/file.txt"
  * </p>
  */
+@MappedSuperclass
 public abstract class File {
-  // This is not the database ID, but it's unique for the project
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
   private int id;
-  private String[] path;
+
+  @Column(unique = true, nullable = false)
+  private String path;
+
+  @Column(nullable = false)
   private LocalDateTime creationDate;
 
   public File(String path, LocalDateTime creationDate) {

@@ -7,14 +7,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+@Entity
 public class Project {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
   private final int id;
+  @Column(nullable = false)
   private final String name;
   private final List<Account> admins = new ArrayList<>();
   private final List<Account> collaborators = new ArrayList<>();
+  @Column(nullable = false)
   private LocalDateTime creationDate;
+
+  @OneToMany
+  @Column
   private  final Map<Integer, File> files = new HashMap<>();
   private Chat chat;
 

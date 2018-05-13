@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+
 public class Chat {
   private List<ChatMessage> messages;
   private List<ChatObserver> chatObservers;
