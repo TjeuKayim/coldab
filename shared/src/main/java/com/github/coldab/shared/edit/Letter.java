@@ -6,10 +6,12 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Letter {
 
+  private final Addition addition;
   private char character;
   private int position;
 
-  public Letter(char c, int position) {
+  public Letter(Addition addition, char c, int position) {
+    this.addition = addition;
     this.character = c;
     this.position = position;
   }

@@ -2,10 +2,11 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * A deletion is the removal of letters between a start (exclusive) and end (inclusive).
@@ -15,6 +16,8 @@ public class Deletion extends Edit {
 
   @Column(nullable = false)
   private final Letter end;
+
+  @Transient
   private final List<Letter> deletedLetters = new ArrayList<>();
 
   /**

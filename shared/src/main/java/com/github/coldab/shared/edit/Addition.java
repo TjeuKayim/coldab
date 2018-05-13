@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * An Addition is an insertion of certain characters.
@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 public class Addition extends Edit {
 
   //FIXME: how are letters stored in the db?
+  @Transient
   private List<Letter> insertedLetters;
 
   /**
@@ -30,7 +31,7 @@ public class Addition extends Edit {
     insertedLetters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
-      insertedLetters.add(new Letter(charArray[i], i));
+      insertedLetters.add(new Letter(this, charArray[i], i));
     }
     // Lock modifications
     insertedLetters = Collections.unmodifiableList(insertedLetters);
