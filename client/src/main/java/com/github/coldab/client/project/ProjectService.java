@@ -41,12 +41,12 @@ public class ProjectService implements ProjectClient {
   @Override
   public void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles) {
     Stream.concat(textFiles.stream(), binaryFiles.stream())
-        .forEach(file -> project.getFiles().put(file.getId(), file));
+        .forEach(file -> project.getFilesById().put(file.getId(), file));
   }
 
   @Override
   public void removeFile(int fileId) {
-    project.getFiles().remove(fileId);
+    project.getFilesById().remove(fileId);
   }
 
   @Override
