@@ -11,7 +11,6 @@ import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -61,8 +60,7 @@ public class TextFileService implements TextFileObserver {
   }
 
   public void createAnnotation(int position, boolean todo, String text) {
-    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text,
-        Collections.emptyList());
+    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text);
     server.newAnnotation(annotation);
   }
 
