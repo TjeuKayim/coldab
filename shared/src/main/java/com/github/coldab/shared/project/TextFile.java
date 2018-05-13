@@ -10,12 +10,15 @@ import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class TextFile extends File {
 
+  @Transient
   private Map<Integer, Edit> editsByIndex = new HashMap<>();
 
+  @Transient
   private Map<Integer, Annotation> annotationsById = new HashMap<>();
 
   public TextFile(String path, LocalDateTime creationDate) {
