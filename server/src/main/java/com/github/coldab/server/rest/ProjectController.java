@@ -1,7 +1,7 @@
 package com.github.coldab.server.rest;
 
+import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.project.Project;
-import java.util.Collection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/account/project")
 public class ProjectController {
+
+  private final ProjectStore projectStore;
+
+  public ProjectController(ProjectStore projectStore) {
+    this.projectStore = projectStore;
+  }
 
   /**
    * Create a new project.
@@ -27,7 +33,8 @@ public class ProjectController {
    * Get all projects the current user collaborates on.
    */
   @GetMapping
-  Collection<Project> get() {
-    return null;
+  Iterable<Project> get() {
+    //TODO: find by account
+    return projectStore.findAll();
   }
 }
