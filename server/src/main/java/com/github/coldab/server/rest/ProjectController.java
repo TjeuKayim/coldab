@@ -25,7 +25,7 @@ public class ProjectController {
    * @return a empty project with the current user as admin
    */
   @PostMapping
-  ResponseEntity<?> create(@RequestBody Project input) {
+  ResponseEntity<Project> createProject(@RequestBody Project input) {
     return ResponseEntity.noContent().build();
   }
 
@@ -33,7 +33,7 @@ public class ProjectController {
    * Get all projects the current user collaborates on.
    */
   @GetMapping
-  Iterable<Project> get() {
+  Iterable<Project> getProjects() {
     //TODO: find by account
     return projectStore.findAll();
   }
