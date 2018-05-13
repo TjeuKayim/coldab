@@ -24,9 +24,9 @@ public class Project {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
-  private final int id;
+  private int id;
   @Column(nullable = false)
-  private final String name;
+  private String name;
   @OneToMany
   private final List<Account> admins = new ArrayList<>();
   @OneToMany
@@ -39,6 +39,9 @@ public class Project {
 
   @Transient
   private Chat chat;
+
+  public Project() {
+  }
 
   public Project(int id, String name) {
     this.id = id;
