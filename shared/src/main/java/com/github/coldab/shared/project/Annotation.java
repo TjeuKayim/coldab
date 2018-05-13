@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+// TODO: Should annotation have a list of mentioned accounts?
 @Entity
 public class Annotation {
   @Id

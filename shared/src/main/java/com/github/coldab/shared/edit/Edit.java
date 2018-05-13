@@ -4,7 +4,6 @@ import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +14,13 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class Edit {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
+  private int id;
+
+  @Column(nullable = false)
   private int index;
 
   @Column(nullable = false)
