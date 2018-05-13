@@ -35,6 +35,8 @@ public class Project {
   private LocalDateTime creationDate;
 
   private final Map<Integer, File> filesById = new HashMap<>();
+
+  @Transient
   private Chat chat;
 
   public Project(int id, String name) {
