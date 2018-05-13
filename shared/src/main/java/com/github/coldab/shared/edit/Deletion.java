@@ -4,7 +4,6 @@ import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -14,7 +13,7 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
-  @Column(nullable = false)
+  @Transient
   private final Letter end;
 
   @Transient

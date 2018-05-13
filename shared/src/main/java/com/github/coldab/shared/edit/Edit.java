@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Transient;
 
 /**
  * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
@@ -30,7 +31,7 @@ public abstract class Edit {
   private final LocalDateTime creationDate;
 
   /** The start position where the edit is applied. */
-  @Column(nullable = false)
+  @Transient
   protected final Letter start;
 
   @Column(nullable = false)
