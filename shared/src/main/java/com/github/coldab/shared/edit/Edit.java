@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
@@ -31,10 +32,11 @@ public abstract class Edit {
   private final LocalDateTime creationDate;
 
   /** The start position where the edit is applied. */
+  // FIXME: 13-5-2018
   @Transient
   protected final Letter start;
 
-  @Column(nullable = false)
+  @ManyToOne
   private final Account account;
 
   @Column(nullable = false)
