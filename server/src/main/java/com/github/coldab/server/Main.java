@@ -19,7 +19,7 @@ public class Main {
   @Bean
   public CommandLineRunner demo(ProjectStore projectStore) {
     return args -> {
-      projectStore.save(new Project(77, "Seventy-seven"));
+      projectStore.save(new Project("TestProject"));
     };
   }
 }
