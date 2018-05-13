@@ -36,6 +36,7 @@ public class SocketHandler extends TextWebSocketHandler {
     ProjectService projectService = getProject(projectId);
     if (projectService == null) {
       session.close(new CloseStatus(1000, "ProjectId not found"));
+      return;
     }
     // TODO: get project somewhere and create ClientEndpoint
     ClientEndpoint clientEndpoint = SocketSender.create(ClientEndpoint.class,
