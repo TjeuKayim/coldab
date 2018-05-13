@@ -37,12 +37,12 @@ public class TextFileService implements TextFileObserver {
    */
   @Override
   public void newEdit(Edit edit) {
-    file.getEdits().put(edit.getIndex(), edit);
+    file.getEditsByIndex().put(edit.getIndex(), edit);
   }
 
   @Override
   public void newAnnotation(Annotation annotation) {
-    file.getAnnotations().put(annotation.getId(), annotation);
+    file.getAnnotationsById().put(annotation.getId(), annotation);
     editorController.showAnnotation(annotation);
   }
 
