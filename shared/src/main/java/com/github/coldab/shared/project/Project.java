@@ -34,6 +34,7 @@ public class Project {
   @Column(nullable = false)
   private LocalDateTime creationDate;
 
+  @Transient
   private final Map<Integer, File> filesById = new HashMap<>();
 
   @Transient
