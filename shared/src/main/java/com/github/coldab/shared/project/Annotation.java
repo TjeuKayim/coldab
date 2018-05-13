@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 // TODO: Should annotation have a list of mentioned accounts?
 @Entity
@@ -23,7 +24,7 @@ public class Annotation {
   @Column(nullable = false)
   private String text;
 
-  @Column(nullable = false)
+  @ManyToOne
   private Account account;
 
   @Column(nullable = false)
