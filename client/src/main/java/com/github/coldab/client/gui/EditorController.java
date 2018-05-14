@@ -1,6 +1,7 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.client.gui.FileTree.FileNode;
 import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
@@ -22,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -43,7 +45,7 @@ public class EditorController implements Initializable {
   @FXML
   private VBox chatVBox;
   @FXML
-  private TreeView<String> fileTreeView;
+  private TreeView<FileTree> fileTreeView;
   @FXML
   private MenuItem menuOpenChat;
 
@@ -87,7 +89,9 @@ public class EditorController implements Initializable {
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
-    if (messageText.length() < 1) return;
+    if (messageText.length() < 1) {
+      return;
+    }
     ChatMessage message = new ChatMessage(messageText, account);
     chatComponent.sendMessage(message);
     textFieldChatMessage.setText("");
@@ -103,7 +107,7 @@ public class EditorController implements Initializable {
 
   private void updateFileTree() {
     // Create root
-    TreeItem<String> rootItem = new TreeItem<>();
+    TreeItem<FileTree> rootItem = new TreeItem<>();
 
     // Test files
     Collection<File> files = Arrays.asList(
@@ -119,11 +123,21 @@ public class EditorController implements Initializable {
 
     fileTreeView.setShowRoot(false);
     fileTreeView.setRoot(rootItem);
+
+    MenuItem openBtn = new MenuItem("Open in editor");
+    openBtn.setOnAction(e -> {
+      FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+      if (selected instanceof FileNode) {
+        System.out.println(selected);
+      }
+    });
+    ContextMenu menu = new ContextMenu(openBtn);
+    fileTreeView.setContextMenu(menu);
   }
 
-  private void addNodesToFileTree(TreeItem<String> treeItem, DirectoryNode fileTree) {
+  private void addNodesToFileTree(TreeItem<FileTree> treeItem, DirectoryNode fileTree) {
     for (FileTree child : fileTree.getChildren()) {
-      TreeItem<String> childItem = new TreeItem<>(child.toString());
+      TreeItem<FileTree> childItem = new TreeItem<>(child);
       treeItem.getChildren().add(childItem);
       if (child instanceof DirectoryNode) {
         // Directory
