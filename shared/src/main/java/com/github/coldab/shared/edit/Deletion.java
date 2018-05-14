@@ -13,7 +13,6 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
-  @Transient
   private final Letter end;
 
   @Transient

@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 // TODO: Should annotation have a list of mentioned accounts?
 @Entity
@@ -31,8 +30,6 @@ public class Annotation {
   @Column(nullable = false)
   private LocalDateTime creationDate;
 
-  // FIXME: 13-5-2018
-  @Transient
   private Letter start;
 
   public Annotation(Account account, LocalDateTime creationDate,

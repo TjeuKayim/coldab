@@ -2,6 +2,7 @@ package com.github.coldab.shared.edit;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 /**
  * In database saved as:
@@ -11,7 +12,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Letter {
 
+  @Transient
   private final Addition addition;
+
   private final int position;
 
   public Letter(Addition addition, int position) {
