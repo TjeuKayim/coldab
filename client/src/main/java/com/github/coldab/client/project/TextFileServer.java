@@ -4,7 +4,7 @@ import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 
-public interface TextFileObserver {
+public interface TextFileServer {
 
   void newEdit(Edit edit);
 
