@@ -14,7 +14,6 @@ import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.google.gson.Gson;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -107,11 +106,10 @@ public class EditorController implements Initializable {
     TreeItem<String> rootItem = new TreeItem<>();
 
     // Test files
-    LocalDateTime now = LocalDateTime.now();
     Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt", now),
-        new TextFile("path/to/another-file.txt", now),
-        new TextFile("website/index.html", now)
+        new TextFile("path/to/file.txt"),
+        new TextFile("path/to/another-file.txt"),
+        new TextFile("website/index.html")
     );
 
     DirectoryNode fileTree = FileTree.createFrom(files);

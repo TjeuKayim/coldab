@@ -72,7 +72,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
    */
   @Override
   public void createAddition(int position, String text) {
-    Addition addition = new Addition(account, now(), letterAt(position), text);
+    Addition addition = new Addition(account, letterAt(position), text);
     createEdit(addition);
   }
 
@@ -86,7 +86,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   public void createDeletion(int position, int length) {
     Letter start = letterAt(position);
     Letter end = letterAt(position + length);
-    Deletion deletion = new Deletion(account, now(), start, end);
+    Deletion deletion = new Deletion(account, start, end);
     createEdit(deletion);
   }
 

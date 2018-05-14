@@ -12,19 +12,19 @@ public class DeletionTest {
   @Before
   public void setUp() throws Exception {
     letters = new ArrayList<>();
-    new Addition(null, null, null, "Hello #remove this#World").apply(letters);
+    new Addition(null, null, "Hello #remove this#World").apply(letters);
   }
 
   @Test
   public void apply() {
-    Deletion deletion = new Deletion(null, null, letters.get(5), letters.get(18));
+    Deletion deletion = new Deletion(null, letters.get(5), letters.get(18));
     deletion.apply(letters);
     EditTest.lettersEqual("Hello World", letters);
   }
 
   @Test
   public void undo() {
-    Deletion deletion = new Deletion(null, null, letters.get(5), letters.get(18));
+    Deletion deletion = new Deletion(null, letters.get(5), letters.get(18));
     deletion.apply(letters);
     EditTest.lettersEqual("Hello World", letters);
     deletion.undo(letters);
