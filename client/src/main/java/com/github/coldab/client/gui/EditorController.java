@@ -75,14 +75,15 @@ public class EditorController implements Initializable {
   }
 
   private void initChat() {
-    chat.addObserver(message -> Platform.runLater(() -> receiveChatMessage(message)));
+    chat.addObserver(this::receiveChatMessage);
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }
 
   private void receiveChatMessage(ChatMessage message) {
-    chatPane.getItems().add(message);
+    Platform.runLater(() ->
+        chatPane.getItems().add(message));
   }
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
