@@ -112,7 +112,7 @@ public class EditorController implements Initializable {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    TabController tabController = new TabController(file, tab);
+    TabController tabController = new TabController(file, tab, projectComponent.openFile(file));
   }
 
   private void updateFileTree() {

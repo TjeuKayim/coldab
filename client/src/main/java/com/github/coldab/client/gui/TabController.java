@@ -1,5 +1,6 @@
 package com.github.coldab.client.gui;
 
+import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Duration;
 import java.util.Collection;
@@ -18,10 +19,12 @@ public class TabController {
 
   private final TextFile file;
   private final Tab tab;
+  private final TextFileController textFileController;
 
-  public TabController(TextFile file, Tab tab) {
+  public TabController(TextFile file, Tab tab, TextFileController textFileController) {
     this.file = file;
     this.tab = tab;
+    this.textFileController = textFileController;
     tab.setText(file.getName());
     CodeArea codeArea = new CodeArea();
 
