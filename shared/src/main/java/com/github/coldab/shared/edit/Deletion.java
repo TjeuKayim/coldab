@@ -1,7 +1,6 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
@@ -20,12 +19,19 @@ public class Deletion extends Edit {
 
   /**
    * Create an deletion.
-   *
-   * @param start the start position (exclusive), or null if adding at the start of the document
+   *  @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
-  public Deletion(Account account, LocalDateTime creationDate, Letter start, Letter end) {
-    super(account, creationDate, start);
+  public Deletion(Account account, Letter start, Letter end) {
+    super(0, account, start);
+    if (end == null) {
+      throw new IllegalArgumentException("End cannot be null");
+    }
+    this.end = end;
+  }
+
+  public Deletion(int index, Account account, Letter start, Letter end) {
+    super(index, account, start);
     if (end == null) {
       throw new IllegalArgumentException("End cannot be null");
     }
