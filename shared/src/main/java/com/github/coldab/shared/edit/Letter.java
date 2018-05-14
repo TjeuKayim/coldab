@@ -1,15 +1,32 @@
 package com.github.coldab.shared.edit;
 
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Letter {
 
+  private final Addition addition;
   private char character;
   private int position;
 
-  public Letter(char c, int position) {
+  public Letter(Addition addition, char c, int position) {
+    this.addition = addition;
     this.character = c;
     this.position = position;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%d:'%s'", position, character);
+  }
+
+  public char getCharacter() {
+    return character;
+  }
+
+  public int getPosition() {
+    return position;
   }
 
   @Override

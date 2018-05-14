@@ -3,20 +3,43 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
  */
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Edit {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", updatable = false, nullable = false)
   private int id;
 
+  @Column(nullable = false)
+  private int index;
+
+  @Column(nullable = false)
   private final LocalDateTime creationDate;
 
   /** The start position where the edit is applied. */
+  // FIXME: 13-5-2018
+  @Transient
   protected final Letter start;
 
+  @ManyToOne
   private final Account account;
 
+  @Column(nullable = false)
   private boolean applied = false;
 
   /**
@@ -28,6 +51,10 @@ public abstract class Edit {
     this.creationDate = creationDate;
     this.start = start;
     this.account = account;
+  }
+
+  public int getIndex() {
+    return index;
   }
 
   /**

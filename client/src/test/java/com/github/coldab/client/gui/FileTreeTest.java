@@ -1,6 +1,6 @@
 package com.github.coldab.client.gui;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.shared.project.File;
@@ -35,7 +35,7 @@ public class FileTreeTest {
     // Subdirectory path
     DirectoryNode path = (DirectoryNode) children.get(0);
     List<FileTree> pathChildren = path.getChildren();
-    assertEquals(pathChildren.size(), 1);
+    assertEquals(1, pathChildren.size());
     DirectoryNode to = (DirectoryNode) pathChildren.get(0);
     assertEquals("to", to.toString());
     assertEquals(2, to.getChildren().size());
