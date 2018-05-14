@@ -2,26 +2,60 @@ package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.edit.Edit;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
+@Entity
 public class TextFile extends File {
 
-  private HashMap<Integer, Edit> edits = new HashMap<>();
-  private HashMap<Integer, Annotation> annotations = new HashMap<>();
+  @Transient
+  private Map<Integer, Edit> editsByIndex = new HashMap<>();
+
+  @Transient
+  private Map<Integer, Annotation> annotationsById = new HashMap<>();
 
   public TextFile(String path, LocalDateTime creationDate) {
     super(path, creationDate);
   }
 
-  public HashMap<Integer, Edit> getEdits() {
-    return edits;
+  @OneToMany
+  @Column
+  public Collection<Edit> getEdits() {
+    return editsByIndex.values();
   }
 
-  public void setEdits(HashMap<Integer, Edit> revision) {
-    edits = revision;
+  public void setEdits(Collection<Edit> edits) {
+    this.editsByIndex = edits.stream()
+        .collect(Collectors.toMap(
+            Edit::getIndex, Function.identity()
+        ));
   }
 
-  public HashMap<Integer, Annotation> getAnnotations() {
-    return annotations;
+  @OneToMany
+  @Column
+  public Collection<Annotation> getAnnotations() {
+    return annotationsById.values();
+  }
+
+  public void setAnnotations(Collection<Annotation> edits) {
+    this.annotationsById = edits.stream()
+        .collect(Collectors.toMap(
+            Annotation::getId, Function.identity()
+        ));
+  }
+
+  public Map<Integer, Edit> getEditsByIndex() {
+    return editsByIndex;
+  }
+
+  public Map<Integer, Annotation> getAnnotationsById() {
+    return annotationsById;
   }
 }

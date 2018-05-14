@@ -4,13 +4,19 @@ import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * A deletion is the removal of letters between a start (exclusive) and end (inclusive).
  */
+@Entity
 public class Deletion extends Edit {
 
+  @Transient
   private final Letter end;
+
+  @Transient
   private final List<Letter> deletedLetters = new ArrayList<>();
 
   /**

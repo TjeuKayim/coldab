@@ -14,8 +14,14 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+  private final SocketHandler webSocketHandler;
+
+  public WebSocketConfig(SocketHandler webSocketHandler) {
+    this.webSocketHandler = webSocketHandler;
+  }
+
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(new SocketHandler(), "/ws/*")
+    registry.addHandler(webSocketHandler, "/ws/*")
         .addInterceptors(new Interceptor())
         .setAllowedOrigins("*");
   }
