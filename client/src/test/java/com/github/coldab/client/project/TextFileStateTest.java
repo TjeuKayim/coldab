@@ -68,6 +68,11 @@ public class TextFileStateTest implements Observer {
     state.confirmLocalEdit(new Addition(2, null, null, "invalid"));
   }
 
+  @Test(expected = Throwable.class)
+  public void invalidConfirmation() {
+    state.confirmLocalEdit(new Addition(0, null, null, "invalid"));
+  }
+
   @Override
   public void updateText(String text) {
     assertNotEquals("New text should be differnt", text, this.text);
