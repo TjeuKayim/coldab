@@ -4,6 +4,7 @@ import com.github.coldab.shared.edit.Edit;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,11 +25,18 @@ public class TextFile extends File {
 
   @Column
   public Collection<Edit> getEdits() {
-    return edits;
+    return Collections.unmodifiableList(edits);
   }
 
   @Column
   public List<Annotation> getAnnotations() {
     return annotations;
+  }
+
+  public void addEdit(Edit edit) {
+    if (edits.size() != edit.getIndex()) {
+      throw new IllegalStateException("Invalid index");
+    }
+    edits.add(edit);
   }
 }
