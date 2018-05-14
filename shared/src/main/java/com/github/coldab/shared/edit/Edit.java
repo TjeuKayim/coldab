@@ -62,9 +62,6 @@ public abstract class Edit {
    * @param letters the letters to apply changes on
    */
   public void apply(List<Letter> letters) {
-    if (applied) {
-      throw new IllegalStateException();
-    }
     applied = true;
   }
 
@@ -74,9 +71,6 @@ public abstract class Edit {
    * @param letters the letters to undo changes on
    */
   public void undo(List<Letter> letters) {
-    if (!applied) {
-      throw new IllegalStateException();
-    }
     applied = false;
   }
 }
