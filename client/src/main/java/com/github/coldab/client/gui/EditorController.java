@@ -59,7 +59,7 @@ public class EditorController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
+    //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
       chatComponent = new ChatComponent(chat, serverEndpoint.chat());
       projectComponent = new ProjectComponent(project, serverEndpoint.project(), account,
