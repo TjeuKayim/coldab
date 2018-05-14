@@ -46,13 +46,7 @@
   </top>
   <center>
     <TabPane prefHeight="200.0" prefWidth="400.0" tabClosingPolicy="ALL_TABS" fx:id="tabPane">
-      <Tab text="File A">
-        <StyleClassedTextArea xmlns:fx="http://javafx.com/fxml/1"
-                              editable="true" wrapText="true" autoScrollOnDragDesired="true">
 
-        </StyleClassedTextArea>
-      </Tab>
-      <Tab text="File B" />
     </TabPane>
   </center>
   <left>

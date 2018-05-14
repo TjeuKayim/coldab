@@ -1,6 +1,7 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
+import com.github.coldab.client.gui.FileTree.FileNode;
 import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
@@ -14,8 +15,6 @@ import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.google.gson.Gson;
 import java.net.URL;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -24,26 +23,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.model.StyleSpans;
-import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.reactfx.Subscription;
 
 public class EditorController implements Initializable {
 
   private final Project project;
   @FXML
-  public TabPane tabPane;
+  private TabPane tabPane;
   @FXML
   private TextField textFieldChatMessage;
   @FXML
@@ -53,9 +49,10 @@ public class EditorController implements Initializable {
   @FXML
   private VBox chatVBox;
   @FXML
-  private TreeView<String> fileTreeView;
+  private TreeView<FileTree> fileTreeView;
   @FXML
   private MenuItem menuOpenChat;
+
   private final Chat chat = new Chat();
   private Account account = new Account("Henkie", "henkie@gmail.com");
   private ChatComponent chatComponent;
@@ -67,14 +64,6 @@ public class EditorController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    CodeArea codeArea = new CodeArea();
-
-    codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-    Subscription subscription = codeArea
-        .multiPlainChanges()
-        .successionEnds(Duration.ofMillis(500))
-        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
-
     //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
       chatComponent = new ChatComponent(chat, serverEndpoint.chat());
@@ -82,7 +71,6 @@ public class EditorController implements Initializable {
           this);
       Platform.runLater(this::afterConnectionEstablished);
       return new WebSocketEndpoint(chatComponent, projectComponent);
-
     });
   }
 
@@ -105,7 +93,9 @@ public class EditorController implements Initializable {
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
-    if (messageText.length() < 1) return;
+    if (messageText.length() < 1) {
+      return;
+    }
     ChatMessage message = new ChatMessage(messageText, account);
     chatComponent.sendMessage(message);
     textFieldChatMessage.setText("");
@@ -119,16 +109,21 @@ public class EditorController implements Initializable {
     }
   }
 
+  private void openFile(TextFile file) {
+    Tab tab = new Tab();
+    tabPane.getTabs().add(tab);
+    TabController tabController = new TabController(file, tab);
+  }
+
   private void updateFileTree() {
     // Create root
-    TreeItem<String> rootItem = new TreeItem<>();
+    TreeItem<FileTree> rootItem = new TreeItem<>();
 
     // Test files
-    LocalDateTime now = LocalDateTime.now();
     Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt", now),
-        new TextFile("path/to/another-file.txt", now),
-        new TextFile("website/index.html", now)
+        new TextFile("path/to/file.txt"),
+        new TextFile("path/to/another-file.txt"),
+        new TextFile("website/index.html")
     );
 
     DirectoryNode fileTree = FileTree.createFrom(files);
@@ -138,11 +133,24 @@ public class EditorController implements Initializable {
 
     fileTreeView.setShowRoot(false);
     fileTreeView.setRoot(rootItem);
+
+    MenuItem openBtn = new MenuItem("Open in editor");
+    openBtn.setOnAction(e -> {
+      FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+      if (selected instanceof FileNode) {
+        File file = ((FileNode) selected).getFile();
+        if (file instanceof TextFile) {
+          openFile(((TextFile) file));
+        }
+      }
+    });
+    ContextMenu menu = new ContextMenu(openBtn);
+    fileTreeView.setContextMenu(menu);
   }
 
-  private void addNodesToFileTree(TreeItem<String> treeItem, DirectoryNode fileTree) {
+  private void addNodesToFileTree(TreeItem<FileTree> treeItem, DirectoryNode fileTree) {
     for (FileTree child : fileTree.getChildren()) {
-      TreeItem<String> childItem = new TreeItem<>(child.toString());
+      TreeItem<FileTree> childItem = new TreeItem<>(child);
       treeItem.getChildren().add(childItem);
       if (child instanceof DirectoryNode) {
         // Directory
@@ -159,10 +167,6 @@ public class EditorController implements Initializable {
       }
     }
   }
-  private static StyleSpans<Collection<String>> computeHighlighting(String text) {
-    return null;
-  }
-
 
   public void showAnnotation(Annotation annotation) {
     // FIXME: 7-5-2018 Update GUI
