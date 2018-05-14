@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ProjectService implements ProjectClient {
+public class ProjectComponent implements ProjectClient {
 
   private final ProjectServer projectServer;
   private final Project project;
@@ -25,7 +25,7 @@ public class ProjectService implements ProjectClient {
   private final EditorController editorController;
   private HashMap<Integer, TextFileClient> textFileServices = new HashMap<>();
 
-  public ProjectService(Project project, ProjectServer projectServer,
+  public ProjectComponent(Project project, ProjectServer projectServer,
       Account account, EditorController editorController) {
     this.project = project;
     this.projectServer = projectServer;

@@ -2,7 +2,7 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.project.ChatService;
-import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
@@ -51,7 +51,7 @@ public class EditorController implements Initializable {
   private final Chat chat = new Chat();
   private Account account = new Account("Henkie", "henkie@gmail.com");
   private ChatService chatService;
-  private ProjectService projectService;
+  private ProjectComponent projectComponent;
 
   public EditorController(Project project) {
     this.project = project;
@@ -62,10 +62,10 @@ public class EditorController implements Initializable {
 
     new WebSocketConnection(project, serverEndpoint -> {
       chatService = new ChatService(chat, serverEndpoint.chat());
-      projectService = new ProjectService(project, serverEndpoint.project(), account,
+      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account,
           this);
       Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatService, projectService);
+      return new WebSocketEndpoint(chatService, projectComponent);
     });
   }
 
