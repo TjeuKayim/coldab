@@ -60,9 +60,17 @@ public class TextFileStateTest implements Observer {
     assertEquals(file.getEdits(), Collections.singletonList(confirmedAlpha));
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void invalidConfirmationIndex() {
+    text = "Local change";
+    Addition alpha = new Addition(null, null, "Local change\n");
+    state.addLocalEdit(alpha);
+    state.confirmLocalEdit(new Addition(2, null, null, "invalid"));
+  }
 
+  @Test(expected = Throwable.class)
+  public void invalidConfirmation() {
+    state.confirmLocalEdit(new Addition(0, null, null, "invalid"));
   }
 
   @Override
