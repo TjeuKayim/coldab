@@ -10,8 +10,10 @@ import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 public class TextFileService implements TextFileObserver {
@@ -20,7 +22,7 @@ public class TextFileService implements TextFileObserver {
   private final Account account;
   private final TextFileObserver server;
   private final EditorController editorController;
-  private final List<Edit> localStateEdits = new ArrayList<>();
+  private final Queue<Edit> unconfirmedEdits = new ArrayDeque<>();
   private final List<Letter> localStateLetters = new ArrayList<>();
   private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
 
@@ -37,12 +39,12 @@ public class TextFileService implements TextFileObserver {
    */
   @Override
   public void newEdit(Edit edit) {
-    file.getEditsByIndex().put(edit.getIndex(), edit);
+    file.getEdits().add(edit);
   }
 
   @Override
   public void newAnnotation(Annotation annotation) {
-    file.getAnnotationsById().put(annotation.getId(), annotation);
+    file.getAnnotations().add(annotation);
     editorController.showAnnotation(annotation);
   }
 
@@ -65,7 +67,11 @@ public class TextFileService implements TextFileObserver {
   }
 
   public void confirmEdit(Edit edit) {
-    LOGGER.fine("confirmed edit");
+    unconfirmedEdits.remove();
+    if (file.getEdits().size() != edit.getIndex()) {
+      throw new IllegalStateException("Invalid index");
+    }
+    file.getEdits().add(edit);
   }
 
   private static LocalDateTime now() {
@@ -86,7 +92,7 @@ public class TextFileService implements TextFileObserver {
   }
 
   private void createEdit(Edit edit) {
-    localStateEdits.add(edit);
+    unconfirmedEdits.add(edit);
     edit.apply(localStateLetters);
     server.newEdit(edit);
   }
