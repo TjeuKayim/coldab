@@ -34,6 +34,7 @@ public class Addition extends Edit {
   public Addition(int index, Account account, Letter start, String text) {
     super(index, account, start);
     this.text = text;
+    createLetters();
   }
 
   private void createLetters() {
