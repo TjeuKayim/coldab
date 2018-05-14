@@ -82,7 +82,7 @@ public class ProjectService implements ProjectClient {
   }
 
   public TextFileClient openFile(TextFile file) {
-    TextFileClient textFileClient = new TextFileService(file, account, new TextFileHandler(file),
+    TextFileClient textFileClient = new TextFileComponent(file, account, new TextFileHandler(file),
         editorController);
     projectServer.subscribe(file.getId());
     textFileServices.put(file.getId(), textFileClient);
@@ -94,7 +94,7 @@ public class ProjectService implements ProjectClient {
   }
 
   /**
-   * Passes messages from TextFileService to the server.
+   * Passes messages from TextFileComponent to the server.
    */
   private class TextFileHandler implements TextFileServer {
 
