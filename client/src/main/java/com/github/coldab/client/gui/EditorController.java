@@ -1,7 +1,7 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
-import com.github.coldab.client.project.ChatService;
+import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
@@ -50,7 +50,7 @@ public class EditorController implements Initializable {
 
   private final Chat chat = new Chat();
   private Account account = new Account("Henkie", "henkie@gmail.com");
-  private ChatService chatService;
+  private ChatComponent chatComponent;
   private ProjectComponent projectComponent;
 
   public EditorController(Project project) {
@@ -61,11 +61,11 @@ public class EditorController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
 
     new WebSocketConnection(project, serverEndpoint -> {
-      chatService = new ChatService(chat, serverEndpoint.chat());
+      chatComponent = new ChatComponent(chat, serverEndpoint.chat());
       projectComponent = new ProjectComponent(project, serverEndpoint.project(), account,
           this);
       Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatService, projectComponent);
+      return new WebSocketEndpoint(chatComponent, projectComponent);
     });
   }
 
@@ -89,7 +89,7 @@ public class EditorController implements Initializable {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) return;
     ChatMessage message = new ChatMessage(messageText, account);
-    chatService.sendMessage(message);
+    chatComponent.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
