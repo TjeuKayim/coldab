@@ -17,7 +17,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -76,10 +75,14 @@ public class EditorController implements Initializable {
   }
 
   private void initChat() {
-    chat.addObserver(messages -> Platform.runLater(() -> chatUpdated(messages)));
+    chat.addObserver(message -> Platform.runLater(() -> receiveChatMessage(message)));
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
+  }
+
+  private void receiveChatMessage(ChatMessage message) {
+    chatPane.getItems().add(message);
   }
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
@@ -95,13 +98,6 @@ public class EditorController implements Initializable {
       chatVBox.setMaxWidth(Double.MAX_VALUE);
     } else {
       chatVBox.setMaxWidth(0);
-    }
-  }
-
-  public void chatUpdated(List<ChatMessage> messages) {
-    chatPane.getItems().clear();
-    for (ChatMessage message : messages) {
-      chatPane.getItems().add(message);
     }
   }
 

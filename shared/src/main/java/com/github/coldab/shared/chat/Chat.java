@@ -17,7 +17,7 @@ public class Chat {
   public void addMessage(ChatMessage message) {
     messages.add(message);
     Collections.sort(messages);
-    notifyObservers();
+    notifyObservers(message);
   }
 
   public List<ChatMessage> getMessages() {
@@ -25,9 +25,9 @@ public class Chat {
     return Collections.unmodifiableList(messages);
   }
 
-  private void notifyObservers() {
+  private void notifyObservers(ChatMessage message) {
     for (ChatObserver chatObserver : chatObservers) {
-      chatObserver.chatUpdated(getMessages());
+      chatObserver.receiveChatMessage(message);
     }
   }
   public void addObserver(ChatObserver chatObserver) {
@@ -35,6 +35,6 @@ public class Chat {
   }
 
   public interface ChatObserver {
-    void chatUpdated(List<ChatMessage> messages);
+    void receiveChatMessage(ChatMessage message);
   }
 }
