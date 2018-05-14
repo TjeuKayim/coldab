@@ -26,6 +26,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -36,6 +38,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 public class EditorController implements Initializable {
 
   private final Project project;
+  @FXML
+  private TabPane tabPane;
   @FXML
   private TextField textFieldChatMessage;
   @FXML
@@ -106,7 +110,9 @@ public class EditorController implements Initializable {
   }
 
   private void openFile(TextFile file) {
-
+    Tab tab = new Tab();
+    tabPane.getTabs().add(tab);
+    TabController tabController = new TabController(file, tab);
   }
 
   private void updateFileTree() {
