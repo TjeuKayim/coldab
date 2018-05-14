@@ -65,6 +65,10 @@ interface FileTree {
       this.file = file;
     }
 
+    public File getFile() {
+      return file;
+    }
+
     @Override
     public String toString() {
       return file.getName();

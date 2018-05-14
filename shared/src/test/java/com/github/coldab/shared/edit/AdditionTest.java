@@ -17,17 +17,17 @@ public class AdditionTest {
 
   @Test
   public void apply() {
-    Addition addition = new Addition(null, null, null, "Hello");
+    Addition addition = new Addition(null, null, "Hello");
     addition.apply(letters);
     EditTest.lettersEqual("Hello", letters);
   }
 
   @Test
   public void undo() {
-    Addition a1 = new Addition(null, null, null, "Hello");
+    Addition a1 = new Addition(null, null, "Hello");
     a1.apply(letters);
     Letter position = letters.get(4);
-    Addition a2 = new Addition(null, null, position, " World");
+    Addition a2 = new Addition(null, position, " World");
     a2.apply(letters);
     System.out.println(letters);
     EditTest.lettersEqual("Hello World", letters);

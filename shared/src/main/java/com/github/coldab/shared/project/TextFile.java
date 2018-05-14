@@ -1,7 +1,6 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.edit.Edit;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,8 +18,8 @@ public class TextFile extends File {
   @OneToMany
   private List<Annotation> annotations = new ArrayList<>();
 
-  public TextFile(String path, LocalDateTime creationDate) {
-    super(path, creationDate);
+  public TextFile(String path) {
+    super(path);
   }
 
   @Column

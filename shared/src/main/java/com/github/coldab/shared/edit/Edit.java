@@ -1,6 +1,7 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -43,8 +44,9 @@ public abstract class Edit {
    *
    * @param start the start position, or null if adding at the start of the document
    */
-  public Edit(Account account, LocalDateTime creationDate, Letter start) {
-    this.creationDate = creationDate;
+  public Edit(int index, Account account, Letter start) {
+    this.index = index;
+    this.creationDate = LocalDateTime.now(Clock.systemUTC());
     this.start = start;
     this.account = account;
   }
