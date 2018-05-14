@@ -3,22 +3,17 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 /**
  * An Addition is an insertion of certain characters.
  *
  * <p>For or example an insertion of the characters "Hello World".</p>
  */
-@Entity
 public class Addition extends Edit {
 
-  //FIXME: how are letters stored in the db?
-  @Transient
-  private List<Letter> insertedLetters;
+  private Collection<Letter> letters;
 
   /**
    * Create an addition.
@@ -28,18 +23,13 @@ public class Addition extends Edit {
    */
   public Addition(Account account, LocalDateTime creationDate, Letter start, String text) {
     super(account, creationDate, start);
-    insertedLetters = new ArrayList<>();
+    letters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
-      insertedLetters.add(new Letter(this, charArray[i], i));
+      letters.add(new Letter(charArray[i], i));
     }
-    // Lock modifications
-    insertedLetters = Collections.unmodifiableList(insertedLetters);
   }
 
-  public List<Letter> getLetters() {
-    return insertedLetters;
-  }
 
   @Override
   public void apply(List<Letter> letters) {
@@ -51,12 +41,12 @@ public class Addition extends Edit {
         throw new IllegalStateException();
       }
     }
-    letters.addAll(index + 1, insertedLetters);
+    letters.addAll(index + 1, this.letters);
   }
 
   @Override
   public void undo(List<Letter> letters) {
     super.undo(letters);
-    letters.removeAll(insertedLetters);
+    throw new UnsupportedOperationException();
   }
 }

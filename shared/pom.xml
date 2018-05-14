@@ -17,11 +17,6 @@
       <artifactId>socket-interface</artifactId>
       <version>v0.3.3</version>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>2.0.1.RELEASE</version>
-    </dependency>
   </dependencies>
 
   <repositories>
@@ -30,4 +25,5 @@
       <url>https://jitpack.io</url>
     </repository>
   </repositories>
+
 </project>

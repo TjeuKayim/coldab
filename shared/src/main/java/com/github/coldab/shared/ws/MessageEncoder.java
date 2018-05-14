@@ -3,9 +3,7 @@ package com.github.coldab.shared.ws;
 import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
 import java.io.ByteArrayInputStream;
@@ -13,16 +11,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.time.LocalDateTime;
 
 /**
  * Encode and decodes SocketMessages to JSON.
  *
  * <p>
- * This class makes use of
- * <a href="https://github.com/TjeuKayim/socket-interface">
- * com.github.tjeukayim.socketinterface
- * </a>
+ *   This class makes use of
+ *   <a href="https://github.com/TjeuKayim/socket-interface">
+ *     com.github.tjeukayim.socketinterface
+ *   </a>
  * </p>
  *
  * <pre>
@@ -38,21 +35,7 @@ import java.time.LocalDateTime;
  */
 public class MessageEncoder {
 
-  private MessageEncoder() {
-    throw new IllegalStateException("Utility class");
-  }
-
-  private static final Gson gson = createGson();
-
-  private static Gson createGson() {
-    return new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-        (JsonDeserializer<LocalDateTime>) (json, type, context) ->
-            LocalDateTime.parse(json.getAsString())).create();
-  }
-
-  public static Gson getGson() {
-    return gson;
-  }
+  private static final Gson gson = new Gson();
 
   /**
    * Encodes message to JSON and returns bytes.

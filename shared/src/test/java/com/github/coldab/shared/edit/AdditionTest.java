@@ -1,38 +1,30 @@
 package com.github.coldab.shared.edit;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
 
 
 public class AdditionTest {
 
-  private List<Letter> letters;
-
-  @Before
-  public void setUp() throws Exception {
-    letters = new ArrayList<>();
-  }
-
   @Test
   public void apply() {
-    Addition addition = new Addition(null, null, null, "Hello");
-    addition.apply(letters);
-    EditTest.lettersEqual("Hello", letters);
+    Addition a = new Addition(null, null, null, "Hello");
+    List<Letter> letters = new ArrayList<>();
+    a.apply(letters);
+    assertEquals("Letters schould be 'Hello'", letters, Arrays.asList(
+        new Letter('H', 0),
+        new Letter('e', 1),
+        new Letter('l', 2),
+        new Letter('l', 3),
+        new Letter('o', 4)
+    ));
   }
 
   @Test
   public void undo() {
-    Addition a1 = new Addition(null, null, null, "Hello");
-    a1.apply(letters);
-    Letter position = letters.get(4);
-    Addition a2 = new Addition(null, null, position, " World");
-    a2.apply(letters);
-    System.out.println(letters);
-    EditTest.lettersEqual("Hello World", letters);
-    a1.undo(letters);
-    EditTest.lettersEqual(" World", letters);
   }
-
 }

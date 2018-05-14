@@ -1,11 +1,11 @@
 package com.github.coldab.shared.rest;
 
 import com.github.coldab.shared.project.Project;
-import java.util.List;
+import java.util.Collection;
 
 public interface AccountServer {
 
-  List<Project> getProjects();
+  Collection<Project> getProjects(int accountId);
 
   /**
    * Save a new project in the database and generate id.

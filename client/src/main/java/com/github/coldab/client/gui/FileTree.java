@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-interface FileTree {
+abstract class FileTree {
 
   /**
    * Creates a file-tree from a list of files.
@@ -37,7 +37,7 @@ interface FileTree {
     return root;
   }
 
-  class DirectoryNode implements FileTree {
+  static class DirectoryNode extends FileTree {
 
     private final List<FileTree> children = new ArrayList<>();
 
@@ -57,7 +57,7 @@ interface FileTree {
     }
   }
 
-  class FileNode implements FileTree {
+  static class FileNode extends FileTree {
 
     private final File file;
 
