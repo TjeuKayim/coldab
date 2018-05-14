@@ -44,7 +44,7 @@ public abstract class Edit {
    *
    * @param start the start position, or null if adding at the start of the document
    */
-  public Edit(Account account, Letter start) {
+  public Edit(int index, Account account, Letter start) {
     this.creationDate = LocalDateTime.now(Clock.systemUTC());
     this.start = start;
     this.account = account;

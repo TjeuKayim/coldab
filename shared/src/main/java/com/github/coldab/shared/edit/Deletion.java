@@ -23,7 +23,15 @@ public class Deletion extends Edit {
    * @param end the end position (inclusive)
    */
   public Deletion(Account account, Letter start, Letter end) {
-    super(account, start);
+    super(0, account, start);
+    if (end == null) {
+      throw new IllegalArgumentException("End cannot be null");
+    }
+    this.end = end;
+  }
+
+  public Deletion(int index, Account account, Letter start, Letter end) {
+    super(index, account, start);
     if (end == null) {
       throw new IllegalArgumentException("End cannot be null");
     }

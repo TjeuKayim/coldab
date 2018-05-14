@@ -26,8 +26,17 @@ public class Addition extends Edit {
    * @param text the characters to insert
    */
   public Addition(Account account, Letter start, String text) {
-    super(account, start);
+    super(0, account, start);
     this.text = text;
+    createLetters();
+  }
+
+  public Addition(int index, Account account, Letter start, String text) {
+    super(index, account, start);
+    this.text = text;
+  }
+
+  private void createLetters() {
     insertedLetters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
