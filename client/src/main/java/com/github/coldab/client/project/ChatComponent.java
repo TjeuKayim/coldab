@@ -5,12 +5,12 @@ import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.ws.ChatClient;
 import com.github.coldab.shared.ws.ChatServer;
 
-public class ChatService implements ChatClient {
+public class ChatComponent implements ChatClient {
 
   private final Chat chat;
   private final ChatServer server;
 
-  public ChatService(Chat chat, ChatServer server) {
+  public ChatComponent(Chat chat, ChatServer server) {
     this.chat = chat;
     this.server = server;
   }

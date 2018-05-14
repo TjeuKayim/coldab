@@ -1,8 +1,8 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
-import com.github.coldab.client.project.ChatService;
-import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.project.ChatComponent;
+import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
@@ -17,7 +17,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -51,8 +50,8 @@ public class EditorController implements Initializable {
 
   private final Chat chat = new Chat();
   private Account account = new Account("Henkie", "henkie@gmail.com");
-  private ChatService chatService;
-  private ProjectService projectService;
+  private ChatComponent chatComponent;
+  private ProjectComponent projectComponent;
 
   public EditorController(Project project) {
     this.project = project;
@@ -60,13 +59,13 @@ public class EditorController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
+    //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
-      chatService = new ChatService(chat, serverEndpoint.chat());
-      projectService = new ProjectService(project, serverEndpoint.project(), account,
+      chatComponent = new ChatComponent(chat, serverEndpoint.chat());
+      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account,
           this);
       Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatService, projectService);
+      return new WebSocketEndpoint(chatComponent, projectComponent);
     });
   }
 
@@ -76,17 +75,22 @@ public class EditorController implements Initializable {
   }
 
   private void initChat() {
-    chat.addObserver(messages -> Platform.runLater(() -> chatUpdated(messages)));
+    chat.addObserver(this::receiveChatMessage);
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
+  }
+
+  private void receiveChatMessage(ChatMessage message) {
+    Platform.runLater(() ->
+        chatPane.getItems().add(message));
   }
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) return;
     ChatMessage message = new ChatMessage(messageText, account);
-    chatService.sendMessage(message);
+    chatComponent.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
@@ -95,13 +99,6 @@ public class EditorController implements Initializable {
       chatVBox.setMaxWidth(Double.MAX_VALUE);
     } else {
       chatVBox.setMaxWidth(0);
-    }
-  }
-
-  public void chatUpdated(List<ChatMessage> messages) {
-    chatPane.getItems().clear();
-    for (ChatMessage message : messages) {
-      chatPane.getItems().add(message);
     }
   }
 

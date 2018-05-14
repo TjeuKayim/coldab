@@ -10,26 +10,25 @@ import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-public class TextFileService implements TextFileObserver {
+public class TextFileComponent implements TextFileClient, TextFileController {
+
+  private static final Logger LOGGER = Logger.getLogger(TextFileComponent.class.getName());
 
   private final TextFile file;
   private final Account account;
-  private final TextFileObserver server;
+  private final TextFileServer server;
   private final EditorController editorController;
-  private final List<Edit> localStateEdits = new ArrayList<>();
-  private final List<Letter> localStateLetters = new ArrayList<>();
-  private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
+  private final TextFileState localState;
 
-  public TextFileService(TextFile file, Account account,
-      TextFileObserver server, EditorController editorController) {
+  public TextFileComponent(TextFile file, Account account,
+      TextFileServer server, EditorController editorController) {
     this.file = file;
     this.account = account;
     this.server = server;
     this.editorController = editorController;
+    localState = new TextFileState(file);
   }
 
   /**
@@ -37,12 +36,12 @@ public class TextFileService implements TextFileObserver {
    */
   @Override
   public void newEdit(Edit edit) {
-    file.getEditsByIndex().put(edit.getIndex(), edit);
+    localState.addRemoteEdit(edit);
   }
 
   @Override
   public void newAnnotation(Annotation annotation) {
-    file.getAnnotationsById().put(annotation.getId(), annotation);
+    file.getAnnotations().add(annotation);
     editorController.showAnnotation(annotation);
   }
 
@@ -51,25 +50,30 @@ public class TextFileService implements TextFileObserver {
     file.setPath(updatedFile.getPath());
   }
 
-  /**
-   * Create a new addition and send it to the server.
-   */
-  public void createAddition(int position, String text) {
-    Addition addition = new Addition(account, now(), letterAt(position), text);
-    createEdit(addition);
+  @Override
+  public void confirmEdit(Edit edit) {
+    LOGGER.info("Edit confirmed");
+    localState.confirmLocalEdit(edit);
   }
 
+  @Override
+  public void addObserver(TextFileState.Observer observer) {
+    localState.addObserver(observer);
+  }
+
+  @Override
   public void createAnnotation(int position, boolean todo, String text) {
     Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text);
     server.newAnnotation(annotation);
   }
 
-  public void confirmEdit(Edit edit) {
-    LOGGER.fine("confirmed edit");
-  }
-
-  private static LocalDateTime now() {
-    return LocalDateTime.now(Clock.systemUTC());
+  /**
+   * Create a new addition and send it to the server.
+   */
+  @Override
+  public void createAddition(int position, String text) {
+    Addition addition = new Addition(account, now(), letterAt(position), text);
+    createEdit(addition);
   }
 
   /**
@@ -78,6 +82,7 @@ public class TextFileService implements TextFileObserver {
    * @param position start (inclusive)
    * @param length amount of characters to remove
    */
+  @Override
   public void createDeletion(int position, int length) {
     Letter start = letterAt(position);
     Letter end = letterAt(position + length);
@@ -86,12 +91,15 @@ public class TextFileService implements TextFileObserver {
   }
 
   private void createEdit(Edit edit) {
-    localStateEdits.add(edit);
-    edit.apply(localStateLetters);
+    localState.addLocalEdit(edit);
     server.newEdit(edit);
   }
 
   private Letter letterAt(int index) {
-    return localStateLetters.get(index);
+    return localState.letterAt(index);
+  }
+
+  private static LocalDateTime now() {
+    return LocalDateTime.now(Clock.systemUTC());
   }
 }

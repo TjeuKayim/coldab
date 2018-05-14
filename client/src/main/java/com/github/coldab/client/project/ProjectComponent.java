@@ -17,15 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ProjectService implements ProjectClient {
+public class ProjectComponent implements ProjectClient {
 
   private final ProjectServer projectServer;
   private final Project project;
   private final Account account;
   private final EditorController editorController;
-  private HashMap<Integer, TextFileService> textFileServices = new HashMap<>();
+  private HashMap<Integer, TextFileClient> textFileServices = new HashMap<>();
 
-  public ProjectService(Project project, ProjectServer projectServer,
+  public ProjectComponent(Project project, ProjectServer projectServer,
       Account account, EditorController editorController) {
     this.project = project;
     this.projectServer = projectServer;
@@ -81,12 +81,12 @@ public class ProjectService implements ProjectClient {
 
   }
 
-  public TextFileService openFile(TextFile file) {
-    TextFileService textFileService = new TextFileService(file, account, new TextFileHandler(file),
+  public TextFileClient openFile(TextFile file) {
+    TextFileClient textFileClient = new TextFileComponent(file, account, new TextFileHandler(file),
         editorController);
     projectServer.subscribe(file.getId());
-    textFileServices.put(file.getId(), textFileService);
-    return textFileService;
+    textFileServices.put(file.getId(), textFileClient);
+    return textFileClient;
   }
 
   public void closeFile(TextFile file) {
@@ -94,9 +94,9 @@ public class ProjectService implements ProjectClient {
   }
 
   /**
-   * Passes messages from TextFileService to the server.
+   * Passes messages from TextFileComponent to the server.
    */
-  private class TextFileHandler implements TextFileObserver {
+  private class TextFileHandler implements TextFileServer {
 
     private final TextFile file;
 
