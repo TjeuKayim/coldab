@@ -71,4 +71,9 @@ public class Addition extends Edit {
   char getCharacter(int position) {
     return text.charAt(position);
   }
+
+  @Override
+  public String toString() {
+    return "Addition: " + text;
+  }
 }
