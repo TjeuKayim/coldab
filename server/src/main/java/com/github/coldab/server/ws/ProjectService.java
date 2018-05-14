@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 public class ProjectService {
   private final Project project;
   private final List<ClientEndpoint> clients = new ArrayList<>();
+  private final ProjectStore store;
 
-  ProjectService(Project project) {
+  ProjectService(Project project, ProjectStore store) {
     this.project = project;
+    this.store = store;
   }
 
   public ProjectServer addClient(ClientEndpoint clientEndpoint) {

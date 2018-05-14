@@ -65,7 +65,7 @@ public class SocketHandler extends TextWebSocketHandler {
     if (service == null) {
       // Load from database
       service = projectStore.findById(projectId)
-          .map(ProjectService::new).orElse(null);
+          .map(project -> new ProjectService(project, projectStore)).orElse(null);
       if (service != null) {
         projects.put(projectId, service);
       }
