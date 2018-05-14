@@ -3,26 +3,29 @@ package com.github.coldab.shared.edit;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
+/**
+ * In database saved as:
+ * - additionId
+ * - position
+ */
 @Embeddable
 public class Letter {
 
   private final Addition addition;
-  private char character;
-  private int position;
+  private final int position;
 
-  public Letter(Addition addition, char c, int position) {
+  public Letter(Addition addition, int position) {
     this.addition = addition;
-    this.character = c;
     this.position = position;
   }
 
   @Override
   public String toString() {
-    return String.format("%d:'%s'", position, character);
+    return String.format("%d:'%s'", position, getCharacter());
   }
 
   public char getCharacter() {
-    return character;
+    return addition.getCharacter(position);
   }
 
   public int getPosition() {
@@ -38,13 +41,12 @@ public class Letter {
       return false;
     }
     Letter letter = (Letter) o;
-    return character == letter.character
+    return getCharacter() == ((Letter) o).getCharacter()
         && position == letter.position;
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(character, position);
+    return Objects.hash(getCharacter(), position);
   }
 }

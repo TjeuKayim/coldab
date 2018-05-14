@@ -16,9 +16,10 @@ import javax.persistence.Transient;
 @Entity
 public class Addition extends Edit {
 
-  //FIXME: how are letters stored in the db?
   @Transient
   private List<Letter> insertedLetters;
+
+  private String text;
 
   /**
    * Create an addition.
@@ -28,10 +29,11 @@ public class Addition extends Edit {
    */
   public Addition(Account account, LocalDateTime creationDate, Letter start, String text) {
     super(account, creationDate, start);
+    this.text = text;
     insertedLetters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
-      insertedLetters.add(new Letter(this, charArray[i], i));
+      insertedLetters.add(new Letter(this, i));
     }
     // Lock modifications
     insertedLetters = Collections.unmodifiableList(insertedLetters);
@@ -58,5 +60,9 @@ public class Addition extends Edit {
   public void undo(List<Letter> letters) {
     super.undo(letters);
     letters.removeAll(insertedLetters);
+  }
+
+  char getCharacter(int position) {
+    return text.charAt(position);
   }
 }
