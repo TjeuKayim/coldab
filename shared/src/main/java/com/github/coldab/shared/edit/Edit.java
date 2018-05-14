@@ -38,9 +38,6 @@ public abstract class Edit {
   @ManyToOne
   private final Account account;
 
-  @Column(nullable = false)
-  private boolean applied = false;
-
   /**
    * Create an edit.
    *
@@ -61,16 +58,12 @@ public abstract class Edit {
    *
    * @param letters the letters to apply changes on
    */
-  public void apply(List<Letter> letters) {
-    applied = true;
-  }
+  public abstract void apply(List<Letter> letters);
 
   /**
    * Undo this edit.
    *
    * @param letters the letters to undo changes on
    */
-  public void undo(List<Letter> letters) {
-    applied = false;
-  }
+  public abstract void undo(List<Letter> letters);
 }

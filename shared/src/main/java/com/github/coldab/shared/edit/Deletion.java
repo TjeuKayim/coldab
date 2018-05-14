@@ -34,7 +34,6 @@ public class Deletion extends Edit {
 
   @Override
   public void apply(List<Letter> letters) {
-    super.apply(letters);
     // Find start
     int startPosition = 0;
     if (start != null) {
@@ -53,7 +52,6 @@ public class Deletion extends Edit {
 
   @Override
   public void undo(List<Letter> letters) {
-    super.undo(letters);
     int position = indexOf(letters, start);
     letters.addAll(position + 1, deletedLetters);
   }

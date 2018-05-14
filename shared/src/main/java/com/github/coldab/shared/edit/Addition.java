@@ -45,7 +45,6 @@ public class Addition extends Edit {
 
   @Override
   public void apply(List<Letter> letters) {
-    super.apply(letters);
     int index = -1;
     if (start != null) {
       index = letters.indexOf(start);
@@ -58,7 +57,6 @@ public class Addition extends Edit {
 
   @Override
   public void undo(List<Letter> letters) {
-    super.undo(letters);
     letters.removeAll(insertedLetters);
   }
 
