@@ -105,6 +105,10 @@ public class EditorController implements Initializable {
     }
   }
 
+  private void openFile(TextFile file) {
+
+  }
+
   private void updateFileTree() {
     // Create root
     TreeItem<FileTree> rootItem = new TreeItem<>();
@@ -128,7 +132,10 @@ public class EditorController implements Initializable {
     openBtn.setOnAction(e -> {
       FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
       if (selected instanceof FileNode) {
-        System.out.println(selected);
+        File file = ((FileNode) selected).getFile();
+        if (file instanceof TextFile) {
+          openFile(((TextFile) file));
+        }
       }
     });
     ContextMenu menu = new ContextMenu(openBtn);
