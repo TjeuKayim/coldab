@@ -34,7 +34,7 @@ public abstract class Edit {
 
   /** The start position where the edit is applied. */
   @Embedded
-  protected final Letter start;
+  protected final Position start;
 
   @ManyToOne
   private final Account account;
@@ -44,7 +44,7 @@ public abstract class Edit {
    *
    * @param start the start position, or null if adding at the start of the document
    */
-  public Edit(int index, Account account, Letter start) {
+  public Edit(int index, Account account, Position start) {
     this.index = index;
     this.creationDate = LocalDateTime.now(Clock.systemUTC());
     this.start = start;

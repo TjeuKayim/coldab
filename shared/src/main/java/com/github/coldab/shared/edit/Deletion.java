@@ -3,6 +3,7 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -12,7 +13,7 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
-  private final Letter end;
+  private final Position end;
 
   @Transient
   private final List<Letter> deletedLetters = new ArrayList<>();
@@ -22,7 +23,7 @@ public class Deletion extends Edit {
    *  @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
-  public Deletion(Account account, Letter start, Letter end) {
+  public Deletion(Account account, Position start, Position end) {
     super(0, account, start);
     if (end == null) {
       throw new IllegalArgumentException("End cannot be null");
@@ -30,7 +31,7 @@ public class Deletion extends Edit {
     this.end = end;
   }
 
-  public Deletion(int index, Account account, Letter start, Letter end) {
+  public Deletion(int index, Account account, Position start, Position end) {
     super(index, account, start);
     if (end == null) {
       throw new IllegalArgumentException("End cannot be null");
@@ -62,11 +63,9 @@ public class Deletion extends Edit {
     letters.addAll(position + 1, deletedLetters);
   }
 
-  private int indexOf(List<Letter> letters, Letter letter) {
-    int index = letters.indexOf(letter);
-    if (index == -1) {
-      throw new IllegalStateException();
-    }
-    return index;
+  private int indexOf(List<Letter> letters, Position position) {
+    return IntStream.range(0, letters.size())
+        .filter(i -> letters.get(i).getPosition().equals(position))
+        .findAny().orElseThrow(IllegalStateException::new);
   }
 }

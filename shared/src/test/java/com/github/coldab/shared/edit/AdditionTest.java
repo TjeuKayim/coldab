@@ -26,7 +26,7 @@ public class AdditionTest {
   public void undo() {
     Addition a1 = new Addition(null, null, "Hello");
     a1.apply(letters);
-    Letter position = letters.get(4);
+    Position position = letters.get(4).getPosition();
     Addition a2 = new Addition(null, position, " World");
     a2.apply(letters);
     System.out.println(letters);

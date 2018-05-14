@@ -17,14 +17,18 @@ public class DeletionTest {
 
   @Test
   public void apply() {
-    Deletion deletion = new Deletion(null, letters.get(5), letters.get(18));
+    Deletion deletion = new Deletion(null,
+        letters.get(5).getPosition(),
+        letters.get(18).getPosition());
     deletion.apply(letters);
     EditTest.lettersEqual("Hello World", letters);
   }
 
   @Test
   public void undo() {
-    Deletion deletion = new Deletion(null, letters.get(5), letters.get(18));
+    Deletion deletion = new Deletion(null,
+        letters.get(5).getPosition(),
+        letters.get(18).getPosition());
     deletion.apply(letters);
     EditTest.lettersEqual("Hello World", letters);
     deletion.undo(letters);

@@ -5,7 +5,7 @@ import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.edit.Letter;
+import com.github.coldab.shared.edit.Position;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
@@ -63,7 +63,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
 
   @Override
   public void createAnnotation(int position, boolean todo, String text) {
-    Annotation annotation = new Annotation(account, now(), letterAt(position), todo, text);
+    Annotation annotation = new Annotation(account, now(), getPosition(position), todo, text);
     server.newAnnotation(annotation);
   }
 
@@ -72,20 +72,20 @@ public class TextFileComponent implements TextFileClient, TextFileController {
    */
   @Override
   public void createAddition(int position, String text) {
-    Addition addition = new Addition(account, letterAt(position), text);
+    Addition addition = new Addition(account, getPosition(position), text);
     createEdit(addition);
   }
 
   /**
    * Create a new deletion and send it to the server.
    *
-   * @param position start (inclusive)
+   * @param index start (inclusive)
    * @param length amount of characters to remove
    */
   @Override
-  public void createDeletion(int position, int length) {
-    Letter start = letterAt(position);
-    Letter end = letterAt(position + length);
+  public void createDeletion(int index, int length) {
+    Position start = getPosition(index);
+    Position end = getPosition(index + length);
     Deletion deletion = new Deletion(account, start, end);
     createEdit(deletion);
   }
@@ -95,8 +95,8 @@ public class TextFileComponent implements TextFileClient, TextFileController {
     server.newEdit(edit);
   }
 
-  private Letter letterAt(int index) {
-    return localState.letterAt(index);
+  private Position getPosition(int index) {
+    return localState.letterAt(index).getPosition();
   }
 
   private static LocalDateTime now() {

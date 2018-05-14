@@ -4,6 +4,7 @@ import com.github.coldab.shared.account.Account;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -25,13 +26,13 @@ public class Addition extends Edit {
    *  @param start the start position, or null if adding at the start of the document
    * @param text the characters to insert
    */
-  public Addition(Account account, Letter start, String text) {
+  public Addition(Account account, Position start, String text) {
     super(0, account, start);
     this.text = text;
     createLetters();
   }
 
-  public Addition(int index, Account account, Letter start, String text) {
+  public Addition(int index, Account account, Position start, String text) {
     super(index, account, start);
     this.text = text;
     createLetters();
@@ -41,7 +42,7 @@ public class Addition extends Edit {
     insertedLetters = new ArrayList<>();
     char[] charArray = text.toCharArray();
     for (int i = 0; i < charArray.length; i++) {
-      insertedLetters.add(new Letter(this, i));
+      insertedLetters.add(new Letter(getIndex(), i, charArray[i]));
     }
     // Lock modifications
     insertedLetters = Collections.unmodifiableList(insertedLetters);
@@ -55,10 +56,9 @@ public class Addition extends Edit {
   public void apply(List<Letter> letters) {
     int index = -1;
     if (start != null) {
-      index = letters.indexOf(start);
-      if (index == -1) {
-        throw new IllegalStateException();
-      }
+      index = IntStream.range(0, letters.size())
+          .filter(i -> letters.get(i).getPosition().equals(start))
+          .findAny().orElseThrow(IllegalStateException::new);
     }
     letters.addAll(index + 1, insertedLetters);
   }

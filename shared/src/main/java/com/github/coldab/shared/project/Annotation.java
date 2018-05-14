@@ -1,7 +1,7 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.edit.Letter;
+import com.github.coldab.shared.edit.Position;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +30,10 @@ public class Annotation {
   @Column(nullable = false)
   private LocalDateTime creationDate;
 
-  private Letter start;
+  private Position start;
 
   public Annotation(Account account, LocalDateTime creationDate,
-      Letter start, boolean todo, String text) {
+      Position start, boolean todo, String text) {
     this.account = account;
     this.creationDate = creationDate;
     this.start = start;
@@ -65,7 +65,7 @@ public class Annotation {
     return creationDate;
   }
 
-  public Letter getStart() {
+  public Position getStart() {
     return start;
   }
 }
