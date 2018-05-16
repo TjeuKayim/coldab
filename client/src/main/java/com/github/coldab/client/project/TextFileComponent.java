@@ -1,6 +1,5 @@
 package com.github.coldab.client.project;
 
-import com.github.coldab.client.gui.EditorController;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
@@ -10,6 +9,8 @@ import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class TextFileComponent implements TextFileClient, TextFileController {
@@ -19,17 +20,16 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   private final TextFile file;
   private final Account account;
   private final TextFileServer server;
-  private final EditorController editorController;
   private final TextFileState localState;
+  private final List<TextFileObserver> observers = new ArrayList<>();
   private int editCounter;
 
   public TextFileComponent(TextFile file, Account account,
-      TextFileServer server, EditorController editorController) {
+      TextFileServer server) {
     this.file = file;
     this.account = account;
     this.server = server;
-    this.editorController = editorController;
-    localState = new TextFileState(file);
+    localState = new TextFileState(file, observers);
   }
 
   /**
@@ -43,7 +43,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   @Override
   public void newAnnotation(Annotation annotation) {
     file.getAnnotations().add(annotation);
-    editorController.showAnnotation(annotation);
+    observers.forEach(TextFileObserver::updateAnnotations);
   }
 
   @Override
@@ -58,8 +58,8 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   }
 
   @Override
-  public void addObserver(TextFileState.Observer observer) {
-    localState.addObserver(observer);
+  public void addObserver(TextFileObserver observer) {
+    observers.add(observer);
   }
 
   @Override

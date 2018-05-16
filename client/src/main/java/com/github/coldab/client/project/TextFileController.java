@@ -2,7 +2,7 @@ package com.github.coldab.client.project;
 
 public interface TextFileController {
 
-  void addObserver(TextFileState.Observer observer);
+  void addObserver(TextFileObserver observer);
 
   void createAnnotation(int position, boolean todo, String text);
 

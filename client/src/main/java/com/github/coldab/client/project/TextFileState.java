@@ -12,10 +12,12 @@ public class TextFileState {
   private final Queue<Edit> unconfirmedEdits = new ArrayDeque<>();
   private final List<Letter> letters = new ArrayList<>();
   private final TextFile file;
-  private final List<Observer> observers = new ArrayList<>();
+  private final List<TextFileObserver> observers;
 
-  public TextFileState(TextFile file) {
+  public TextFileState(TextFile file,
+      List<TextFileObserver> observers) {
     this.file = file;
+    this.observers = observers;
   }
 
   public void addRemoteEdit(Edit edit) {
@@ -53,16 +55,8 @@ public class TextFileState {
         .map(l -> "" + l.getCharacter())
         .reduce((a, b) -> a + b)
         .orElse("");
-    for (Observer observer : observers) {
+    for (TextFileObserver observer : observers) {
       observer.updateText(text);
     }
-  }
-
-  public void addObserver(Observer observer) {
-    observers.add(observer);
-  }
-
-  public interface Observer {
-    void updateText(String text);
   }
 }
