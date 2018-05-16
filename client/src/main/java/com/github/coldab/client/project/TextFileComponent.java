@@ -72,21 +72,23 @@ public class TextFileComponent implements TextFileClient, TextFileController {
    */
   @Override
   public void createAddition(int position, String text) {
-    Addition addition = new Addition(account, getPosition(position), text);
+    int index = -1; //todo: get index
+    Addition addition = new Addition(index, account, getPosition(position), text);
     createEdit(addition);
   }
 
   /**
    * Create a new deletion and send it to the server.
    *
-   * @param index start (inclusive)
+   * @param position start (inclusive)
    * @param length amount of characters to remove
    */
   @Override
-  public void createDeletion(int index, int length) {
-    Position start = getPosition(index);
-    Position end = getPosition(index + length);
-    Deletion deletion = new Deletion(account, start, end);
+  public void createDeletion(int position, int length) {
+    Position start = getPosition(position);
+    Position end = getPosition(position + length);
+    int index = -1; //todo: get index
+    Deletion deletion = new Deletion(index, account, start, end);
     createEdit(deletion);
   }
 

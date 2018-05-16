@@ -39,6 +39,7 @@ public class TextFileState {
   }
 
   public void confirmLocalEdit(Edit edit) {
+    //TODO: letters should be updated to use the new index
     unconfirmedEdits.remove();
     file.addEdit(edit);
   }
