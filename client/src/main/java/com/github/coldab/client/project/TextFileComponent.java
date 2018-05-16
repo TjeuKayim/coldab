@@ -68,6 +68,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
 
   /**
    * Create a new addition and send it to the server.
+   * @param position index of the character to insert text after, or -1 if at the start of file
    */
   @Override
   public void createAddition(int position, String text) {
@@ -102,6 +103,9 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   }
 
   private Position getPosition(int index) {
+    if (index == -1) {
+      return null;
+    }
     return localState.letterAt(index).getPosition();
   }
 
