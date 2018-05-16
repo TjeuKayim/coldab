@@ -3,14 +3,13 @@ package com.github.coldab.client.project;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import com.github.coldab.client.project.TextFileState.Observer;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.project.TextFile;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TextFileStateTest implements Observer {
+public class TextFileStateTest implements TextFileObserver {
 
   private TextFile file;
   private TextFileState state;
@@ -19,8 +18,7 @@ public class TextFileStateTest implements Observer {
   @Before
   public void setUp() throws Exception {
     file = new TextFile("/test.txt");
-    state = new TextFileState(file);
-    state.addObserver(this);
+    state = new TextFileState(file, Collections.singletonList(this));
   }
 
   @Test
@@ -77,5 +75,15 @@ public class TextFileStateTest implements Observer {
   public void updateText(String text) {
     assertNotEquals("New text should be differnt", text, this.text);
     this.text = text;
+  }
+
+  @Override
+  public void updateAnnotations() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void updateTextFile() {
+    throw new UnsupportedOperationException();
   }
 }
