@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Position;
+import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import java.util.Arrays;
 import org.junit.Before;
@@ -33,13 +34,20 @@ public class TextFileComponentTest {
   @Test
   public void remoteEdits() {
     Addition alpha = new Addition(0, account, null, "Hello");
-    Addition beta = new Addition(1, account, new Position(0, 4), " World");
+    Position betaPosition = new Position(0, 4);
+    Addition beta = new Addition(1, account, betaPosition, " World");
+    assertEquals("", observerMock.getText());
     client.newEdit(alpha);
+    assertEquals("Hello", observerMock.getText());
     client.newEdit(beta);
+    assertEquals("Hello World", observerMock.getText());
     assertEquals(file.getEdits(), Arrays.asList(alpha, beta));
   }
 
   @Test
   public void remoteAnnotation() {
+    Annotation annotation = new Annotation(account, null, true, "FIXME");
+    client.newAnnotation(annotation);
+    assertEquals(1, observerMock.getUpdateAnnotationsCounter());
   }
 }

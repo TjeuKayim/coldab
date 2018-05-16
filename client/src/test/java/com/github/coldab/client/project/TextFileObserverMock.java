@@ -1,7 +1,7 @@
 package com.github.coldab.client.project;
 
 public class TextFileObserverMock implements TextFileObserver {
-  private String text;
+  private String text = "";
   private int updateAnnotationsCounter;
   private int updateTextFileCounter;
 
