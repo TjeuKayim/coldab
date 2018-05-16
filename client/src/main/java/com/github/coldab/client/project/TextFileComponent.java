@@ -21,6 +21,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   private final TextFileServer server;
   private final EditorController editorController;
   private final TextFileState localState;
+  private int editCounter;
 
   public TextFileComponent(TextFile file, Account account,
       TextFileServer server, EditorController editorController) {
@@ -72,7 +73,7 @@ public class TextFileComponent implements TextFileClient, TextFileController {
    */
   @Override
   public void createAddition(int position, String text) {
-    int index = -1; //todo: get index
+    int index = getIndex();
     Addition addition = new Addition(index, account, getPosition(position), text);
     createEdit(addition);
   }
@@ -87,9 +88,14 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   public void createDeletion(int position, int length) {
     Position start = getPosition(position);
     Position end = getPosition(position + length);
-    int index = -1; //todo: get index
+    int index = getIndex();
     Deletion deletion = new Deletion(index, account, start, end);
     createEdit(deletion);
+  }
+
+  private int getIndex() {
+    editCounter++;
+    return -editCounter;
   }
 
   private void createEdit(Edit edit) {
