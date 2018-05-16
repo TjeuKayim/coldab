@@ -4,6 +4,7 @@ import com.github.coldab.shared.account.Account;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -32,7 +33,9 @@ public abstract class Edit {
   @Column(nullable = false)
   private final LocalDateTime creationDate;
 
-  /** The start position where the edit is applied. */
+  /**
+   * The start position where the edit is applied.
+   */
   @Embedded
   protected final Position start;
 
@@ -68,4 +71,25 @@ public abstract class Edit {
    * @param letters the letters to undo changes on
    */
   public abstract void undo(List<Letter> letters);
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Edit)) {
+      return false;
+    }
+    Edit edit = (Edit) o;
+    return id == edit.id &&
+        index == edit.index &&
+        Objects.equals(creationDate, edit.creationDate) &&
+        Objects.equals(start, edit.start) &&
+        Objects.equals(account, edit.account);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, index, creationDate, start, account);
+  }
 }

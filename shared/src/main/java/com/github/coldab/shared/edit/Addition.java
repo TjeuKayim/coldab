@@ -4,6 +4,7 @@ import com.github.coldab.shared.account.Account;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -75,5 +76,26 @@ public class Addition extends Edit {
   @Override
   public String toString() {
     return "Addition: " + text;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Addition)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    Addition addition = (Addition) o;
+    return Objects.equals(insertedLetters, addition.insertedLetters) &&
+        Objects.equals(text, addition.text);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), insertedLetters, text);
   }
 }

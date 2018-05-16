@@ -1,5 +1,6 @@
 package com.github.coldab.shared.account;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,5 +42,24 @@ public class Account {
 
   public String getEmail() {
     return email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Account)) {
+      return false;
+    }
+    Account account = (Account) o;
+    return id == account.id &&
+        Objects.equals(nickName, account.nickName) &&
+        Objects.equals(email, account.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, nickName, email);
   }
 }

@@ -3,6 +3,7 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -67,5 +68,26 @@ public class Deletion extends Edit {
     return IntStream.range(0, letters.size())
         .filter(i -> letters.get(i).getPosition().equals(position))
         .findAny().orElseThrow(IllegalStateException::new);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Deletion)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    Deletion deletion = (Deletion) o;
+    return Objects.equals(end, deletion.end) &&
+        Objects.equals(deletedLetters, deletion.deletedLetters);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), end, deletedLetters);
   }
 }
