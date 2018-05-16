@@ -1,6 +1,5 @@
 package com.github.coldab.client.project;
 
-import com.github.coldab.client.gui.EditorController;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
@@ -22,15 +21,12 @@ public class ProjectComponent implements ProjectClient {
   private final ProjectServer projectServer;
   private final Project project;
   private final Account account;
-  private final EditorController editorController;
   private HashMap<Integer, TextFileClient> textFileServices = new HashMap<>();
 
-  public ProjectComponent(Project project, ProjectServer projectServer,
-      Account account, EditorController editorController) {
+  public ProjectComponent(Project project, ProjectServer projectServer, Account account) {
     this.project = project;
     this.projectServer = projectServer;
     this.account = account;
-    this.editorController = editorController;
   }
 
   @Override
@@ -82,8 +78,8 @@ public class ProjectComponent implements ProjectClient {
   }
 
   public TextFileController openFile(TextFile file) {
-    TextFileComponent textFileClient = new TextFileComponent(file, account, new TextFileHandler(file),
-        editorController);
+    TextFileComponent textFileClient =
+        new TextFileComponent(file, account, new TextFileHandler(file));
     projectServer.subscribe(file.getId());
     textFileServices.put(file.getId(), textFileClient);
     return textFileClient;

@@ -67,8 +67,7 @@ public class EditorController implements Initializable {
     //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
       chatComponent = new ChatComponent(chat, serverEndpoint.chat());
-      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account,
-          this);
+      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account);
       Platform.runLater(this::afterConnectionEstablished);
       return new WebSocketEndpoint(chatComponent, projectComponent);
     });
