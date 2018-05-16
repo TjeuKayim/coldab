@@ -2,6 +2,7 @@ package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Position;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,10 +33,10 @@ public class Annotation {
 
   private Position start;
 
-  public Annotation(Account account, LocalDateTime creationDate,
+  public Annotation(Account account,
       Position start, boolean todo, String text) {
     this.account = account;
-    this.creationDate = creationDate;
+    this.creationDate = LocalDateTime.now(Clock.systemUTC());
     this.start = start;
     this.todo = todo;
     this.text = text;
