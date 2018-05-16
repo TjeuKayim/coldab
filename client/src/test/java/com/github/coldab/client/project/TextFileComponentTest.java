@@ -19,12 +19,14 @@ public class TextFileComponentTest {
   private TextFileController controller;
   private TextFileClient client;
   private TextFileObserverMock observerMock;
+  private TextFileServerMock serverMock;
 
   @Before
   public void setUp() throws Exception {
     file = new TextFile("/test.txt");
     account = new Account("PietHein", "piet@hein.email");
-    TextFileComponent component = new TextFileComponent(file, account, null);
+    serverMock = new TextFileServerMock();
+    TextFileComponent component = new TextFileComponent(file, account, serverMock);
     controller = component;
     client = component;
     observerMock = new TextFileObserverMock();
@@ -34,11 +36,12 @@ public class TextFileComponentTest {
   @Test
   public void remoteEdits() {
     Addition alpha = new Addition(0, account, null, "Hello");
-    Position betaPosition = new Position(0, 4);
-    Addition beta = new Addition(1, account, betaPosition, " World");
     assertEquals("", observerMock.getText());
     client.newEdit(alpha);
     assertEquals("Hello", observerMock.getText());
+    // Add another edit
+    Position betaPosition = new Position(0, 4);
+    Addition beta = new Addition(1, account, betaPosition, " World");
     client.newEdit(beta);
     assertEquals("Hello World", observerMock.getText());
     assertEquals(file.getEdits(), Arrays.asList(alpha, beta));
@@ -49,5 +52,17 @@ public class TextFileComponentTest {
     Annotation annotation = new Annotation(account, null, true, "FIXME");
     client.newAnnotation(annotation);
     assertEquals(1, observerMock.getUpdateAnnotationsCounter());
+  }
+
+  @Test
+  public void localAdditions() {
+    controller.createAddition(-1, "Hello");
+    Addition alpha = new Addition(0, account, null, "Hello");
+    assertEquals(alpha, serverMock.getEdit());
+    // Second addition
+    controller.createAddition(4, "World");
+    Position betaPosition = new Position(10, 4);
+    Addition beta = new Addition(1, account, betaPosition, " World");
+    assertEquals(beta,  serverMock.getEdit());
   }
 }
