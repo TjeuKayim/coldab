@@ -1,6 +1,6 @@
 package com.github.coldab.shared.project;
 
-import java.time.Clock;
+import com.github.coldab.shared.TimeProvider;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,7 +27,7 @@ public abstract class File {
   private String path;
 
   @Column(nullable = false)
-  private final LocalDateTime creationDate = LocalDateTime.now(Clock.systemUTC());
+  private final LocalDateTime creationDate = TimeProvider.getInstance().now();
 
   public File(String path) {
     this.path = path;

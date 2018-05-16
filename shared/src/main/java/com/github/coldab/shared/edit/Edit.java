@@ -1,7 +1,7 @@
 package com.github.coldab.shared.edit;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public abstract class Edit {
    */
   public Edit(int index, Account account, Position start) {
     this.index = index;
-    this.creationDate = LocalDateTime.now(Clock.systemUTC());
+    this.creationDate = TimeProvider.getInstance().now();
     this.start = start;
     this.account = account;
   }
