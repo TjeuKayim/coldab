@@ -2,6 +2,7 @@ package com.github.coldab.client.project;
 
 import static org.junit.Assert.assertEquals;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Position;
@@ -23,6 +24,7 @@ public class TextFileComponentTest {
 
   @Before
   public void setUp() throws Exception {
+    TimeProvider.useMock();
     file = new TextFile("/test.txt");
     account = new Account("PietHein", "piet@hein.email");
     serverMock = new TextFileServerMock();
@@ -57,12 +59,12 @@ public class TextFileComponentTest {
   @Test
   public void localAdditions() {
     controller.createAddition(-1, "Hello");
-    Addition alpha = new Addition(0, account, null, "Hello");
+    Addition alpha = new Addition(-1, account, null, "Hello");
     assertEquals(alpha, serverMock.getEdit());
     // Second addition
-    controller.createAddition(4, "World");
-    Position betaPosition = new Position(10, 4);
-    Addition beta = new Addition(1, account, betaPosition, " World");
-    assertEquals(beta,  serverMock.getEdit());
+    controller.createAddition(4, " World");
+    Position betaPosition = new Position(alpha.getIndex(), 4);
+    Addition beta = new Addition(-2, account, betaPosition, " World");
+    assertEquals(beta, serverMock.getEdit());
   }
 }
