@@ -82,12 +82,11 @@ public class Deletion extends Edit {
       return false;
     }
     Deletion deletion = (Deletion) o;
-    return Objects.equals(end, deletion.end) &&
-        Objects.equals(deletedLetters, deletion.deletedLetters);
+    return Objects.equals(end, deletion.end);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), end, deletedLetters);
+    return Objects.hash(super.hashCode(), end);
   }
 }
