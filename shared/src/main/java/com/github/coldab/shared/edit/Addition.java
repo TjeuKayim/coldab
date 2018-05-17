@@ -90,12 +90,11 @@ public class Addition extends Edit {
       return false;
     }
     Addition addition = (Addition) o;
-    return Objects.equals(insertedLetters, addition.insertedLetters) &&
-        Objects.equals(text, addition.text);
+    return Objects.equals(text, addition.text);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), insertedLetters, text);
+    return Objects.hash(super.hashCode(), text);
   }
 }
