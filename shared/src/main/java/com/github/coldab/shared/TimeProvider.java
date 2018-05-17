@@ -4,6 +4,9 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 
 public abstract class TimeProvider {
+
+  public abstract LocalDateTime now();
+
   private static TimeProvider instance = new TimeProvider() {
     @Override
     public LocalDateTime now() {
@@ -15,9 +18,14 @@ public abstract class TimeProvider {
     return instance;
   }
 
-  public static void setInstance(TimeProvider timeProvider) {
-    TimeProvider.instance = timeProvider;
-  }
+  private static final LocalDateTime FIXED_TIME = instance.now();
 
-  public abstract LocalDateTime now();
+  public static void useMock() {
+    instance = new TimeProvider() {
+      @Override
+      public LocalDateTime now() {
+        return FIXED_TIME;
+      }
+    };
+  }
 }
