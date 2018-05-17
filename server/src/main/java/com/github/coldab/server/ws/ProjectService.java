@@ -3,7 +3,6 @@ package com.github.coldab.server.ws;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
-import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.File;
@@ -13,12 +12,10 @@ import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.ProjectServer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProjectService {
@@ -54,12 +51,6 @@ public class ProjectService {
       this.clientEndpoint = clientEndpoint;
     }
 
-    private Collection<ClientEndpoint> getOtherClients() {
-      return clients.stream()
-          .filter(ce -> ce != clientEndpoint)
-          .collect(Collectors.toList());
-    }
-
     @Override
     public void subscribe(int fileId) {
 
@@ -92,27 +83,12 @@ public class ProjectService {
 
     @Override
     public void addition(int fileId, Addition addition) {
-      processEdit(fileId, addition);
+      textFileServices.get(fileId).processEdit(addition);
     }
 
     @Override
     public void deletion(int fileId, Deletion deletion) {
-      processEdit(fileId, deletion);
-    }
-
-    private void processEdit(int fileId, Edit edit) {
-      List<Deletion> deletions = Collections.emptyList();
-      List<Addition> additions = Collections.emptyList();
-      if (edit instanceof Addition) {
-        additions = Collections.singletonList((Addition) edit);
-        clientEndpoint.project().confirmAddition(fileId, (Addition) edit);
-      } else if (edit instanceof Deletion) {
-        deletions = Collections.singletonList((Deletion) edit);
-        clientEndpoint.project().confirmDeletion(fileId, (Deletion) edit);
-      }
-      for (ClientEndpoint client : getOtherClients()) {
-        client.project().edits(fileId, additions, deletions);
-      }
+      textFileServices.get(fileId).processEdit(deletion);
     }
 
     @Override
@@ -144,7 +120,7 @@ public class ProjectService {
           TextFile textFile = (TextFile) file;
           textFiles.add(textFile);
           textFileServices.computeIfAbsent(file.getId(),
-              id -> new TextFileService(textFile));
+              id -> new TextFileService(textFile, clientEndpoint, clients));
         } else if (file instanceof BinaryFile) {
           binaryFiles.add(((BinaryFile) file));
         }
