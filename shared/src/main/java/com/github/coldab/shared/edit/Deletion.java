@@ -3,6 +3,7 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.account.Account;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
-  private final Position end;
+  private Position end;
 
   @Transient
   private final List<Letter> deletedLetters = new ArrayList<>();
@@ -83,6 +84,15 @@ public class Deletion extends Edit {
     }
     Deletion deletion = (Deletion) o;
     return Objects.equals(end, deletion.end);
+  }
+
+  @Override
+  public void confirmIndex(int index, Map<Integer, Integer> localIndices) {
+    super.confirmIndex(index, localIndices);
+    if (end.getAdditionIndex() < 0) {
+      int endIndex = localIndices.get(end.getAdditionIndex());
+      this.end = new Position(endIndex, end.getPosition());
+    }
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -37,7 +38,7 @@ public abstract class Edit {
    * The start position where the edit is applied.
    */
   @Embedded
-  protected final Position start;
+  protected Position start;
 
   @ManyToOne
   private final Account account;
@@ -91,5 +92,20 @@ public abstract class Edit {
   @Override
   public int hashCode() {
     return Objects.hash(id, index, creationDate, start, account);
+  }
+
+  public LocalDateTime getCreationDate() {
+    return creationDate;
+  }
+
+  public void confirmIndex(int index, Map<Integer, Integer> localIndices) {
+    if (index >= 0) {
+      throw new IllegalStateException("Index should be unconfirmed");
+    }
+    this.index = index;
+    if (start.getAdditionIndex() < 0) {
+      int startIndex = localIndices.get(start.getAdditionIndex());
+      this.start = new Position(startIndex, start.getPosition());
+    }
   }
 }

@@ -17,6 +17,7 @@ public class TextFileService {
   private final TextFile file;
   private final ClientEndpoint clientEndpoint;
   private final List<ClientEndpoint> clients;
+  /** Maps local indices to global indices. */
   private final Map<Integer, Integer> localIndices = new HashMap<>();
 
   public TextFileService(TextFile file, ClientEndpoint clientEndpoint,
@@ -29,12 +30,18 @@ public class TextFileService {
   public void processEdit(Edit edit) {
     List<Deletion> deletions = Collections.emptyList();
     List<Addition> additions = Collections.emptyList();
+    int localIndex = edit.getIndex();
+    int index = getNextIndex();
+    localIndices.put(localIndex, index);
+    edit.confirmIndex(index, localIndices);
     if (edit instanceof Addition) {
-      additions = Collections.singletonList((Addition) edit);
-      clientEndpoint.project().confirmAddition(file.getId(), (Addition) edit);
+      Addition addition = (Addition) edit;
+      additions = Collections.singletonList(addition);
+      clientEndpoint.project().confirmAddition(file.getId(), addition);
     } else if (edit instanceof Deletion) {
-      deletions = Collections.singletonList((Deletion) edit);
-      clientEndpoint.project().confirmDeletion(file.getId(), (Deletion) edit);
+      Deletion deletion = (Deletion) edit;
+      deletions = Collections.singletonList(deletion);
+      clientEndpoint.project().confirmDeletion(file.getId(), deletion);
     }
     for (ClientEndpoint client : getOtherClients()) {
       client.project().edits(file.getId(), additions, deletions);
@@ -45,5 +52,9 @@ public class TextFileService {
     return clients.stream()
         .filter(ce -> ce != clientEndpoint)
         .collect(Collectors.toList());
+  }
+
+  private int getNextIndex() {
+    return file.getEdits().size();
   }
 }

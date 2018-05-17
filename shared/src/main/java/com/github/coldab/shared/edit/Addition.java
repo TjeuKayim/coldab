@@ -78,6 +78,10 @@ public class Addition extends Edit {
     return "Addition: " + text;
   }
 
+  public String getText() {
+    return text;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
