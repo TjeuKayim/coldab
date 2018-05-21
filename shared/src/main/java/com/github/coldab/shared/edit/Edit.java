@@ -55,6 +55,10 @@ public abstract class Edit {
     this.account = account;
   }
 
+  public Account getAccount() {
+    return account;
+  }
+
   public int getIndex() {
     return index;
   }
