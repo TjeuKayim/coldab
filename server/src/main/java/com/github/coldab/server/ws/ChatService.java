@@ -39,7 +39,7 @@ public class ChatService implements Service<ChatServer, ChatClient> {
     @Override
     public void message(ChatMessage message) {
       // Check if author is correct
-      if (message.getAuthor() != account) {
+      if (!account.equals(message.getAuthor())) {
         LOGGER.severe("Message received with invalid author");
         return;
       }
