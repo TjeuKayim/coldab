@@ -35,11 +35,12 @@ public class Project {
   @Column(nullable = false)
   private LocalDateTime creationDate = TimeProvider.getInstance().now();
 
+  // todo: JSON serialize
   @Transient
   private final Map<Integer, File> filesById = new HashMap<>();
 
   @Transient
-  private Chat chat;
+  private transient Chat chat;
 
   public Project() {
   }

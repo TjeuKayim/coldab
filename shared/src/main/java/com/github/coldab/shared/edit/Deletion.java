@@ -18,7 +18,7 @@ public class Deletion extends Edit {
   private Position end;
 
   @Transient
-  private final List<Letter> deletedLetters = new ArrayList<>();
+  private final transient List<Letter> deletedLetters = new ArrayList<>();
 
   /**
    * Create an deletion.
