@@ -20,6 +20,10 @@ public class ChatServerTest {
   @Test
   public void encodeChatMessage() {
     ChatMessage expected = new ChatMessage("Hello World", author);
-    assertEquals(expected, MessageEncoderTest.encodeDecode(expected));
+    ChatMessage actual = MessageEncoderTest.encodeDecode(expected);
+    assertEquals(expected.getPostDate(), actual.getPostDate());
+    assertEquals(expected.getAuthor(), actual.getAuthor());
+    assertEquals(expected.getIndex(), actual.getIndex());
+    assertEquals(expected.getText(), actual.getText());
   }
 }
