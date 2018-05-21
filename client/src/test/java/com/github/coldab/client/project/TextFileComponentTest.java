@@ -26,7 +26,7 @@ public class TextFileComponentTest {
   @Before
   public void setUp() throws Exception {
     TimeProvider.useMock();
-    file = new TextFile("/test.txt");
+    file = new TextFile(0, "/test.txt");
     account = new Account("PietHein", "piet@hein.email");
     serverMock = new TextFileServerMock();
     TextFileComponent component = new TextFileComponent(file, account, serverMock);

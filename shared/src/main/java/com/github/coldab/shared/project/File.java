@@ -21,7 +21,7 @@ public abstract class File {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
-  private int id;
+  private final int id;
 
   @Column(unique = true, nullable = false)
   private String path;
@@ -29,7 +29,8 @@ public abstract class File {
   @Column(nullable = false)
   private final LocalDateTime creationDate = TimeProvider.getInstance().now();
 
-  public File(String path) {
+  public File(int id, String path) {
+    this.id = id;
     this.path = path;
   }
 

@@ -120,9 +120,9 @@ public class EditorController implements Initializable {
 
     // Test files
     Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt"),
-        new TextFile("path/to/another-file.txt"),
-        new TextFile("website/index.html")
+        new TextFile(0, "path/to/file.txt"),
+        new TextFile(0, "path/to/another-file.txt"),
+        new TextFile(0, "website/index.html")
     );
 
     DirectoryNode fileTree = FileTree.createFrom(files);

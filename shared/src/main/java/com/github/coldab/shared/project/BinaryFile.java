@@ -8,8 +8,12 @@ public class BinaryFile extends File {
   @Column(nullable = false)
   private final String hash;
 
-  public BinaryFile(String path, String hash) {
-    super(path);
+  public BinaryFile(int id, String path, String hash) {
+    super(id, path);
     this.hash = hash;
+  }
+
+  public String getHash() {
+    return hash;
   }
 }

@@ -13,22 +13,28 @@ import javax.persistence.OneToMany;
 public class TextFile extends File {
 
   @OneToMany
-  private List<Edit> edits = new ArrayList<>();
+  private transient List<Edit> edits = new ArrayList<>();
 
   @OneToMany
-  private List<Annotation> annotations = new ArrayList<>();
+  private transient List<Annotation> annotations = new ArrayList<>();
 
-  public TextFile(String path) {
-    super(path);
+  public TextFile(int id, String path) {
+    super(id, path);
   }
 
   @Column
   public Collection<Edit> getEdits() {
+    if (edits == null) {
+      edits = new ArrayList<>();
+    }
     return Collections.unmodifiableList(edits);
   }
 
   @Column
   public List<Annotation> getAnnotations() {
+    if (annotations == null) {
+      annotations = new ArrayList<>();
+    }
     return annotations;
   }
 

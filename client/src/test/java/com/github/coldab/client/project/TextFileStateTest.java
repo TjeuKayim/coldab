@@ -17,7 +17,7 @@ public class TextFileStateTest implements TextFileObserver {
 
   @Before
   public void setUp() throws Exception {
-    file = new TextFile("/test.txt");
+    file = new TextFile(0, "/test.txt");
     state = new TextFileState(file, Collections.singletonList(this));
   }
 

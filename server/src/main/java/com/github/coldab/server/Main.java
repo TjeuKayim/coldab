@@ -23,7 +23,7 @@ public class Main {
   public CommandLineRunner demo(ProjectStore projectStore) {
     return args -> {
       Project project = new Project("TestProject");
-      TextFile textFile = new TextFile("/index.html");
+      TextFile textFile = new TextFile(0, "/index.html");
       Account piet = new Account("Piet Hein", "piet@hein.email");
       textFile.addEdit(new Addition(0, piet, null, "Hello World"));
       project.getFilesById().put(0, textFile);
