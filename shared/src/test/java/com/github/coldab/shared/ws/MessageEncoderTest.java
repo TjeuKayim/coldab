@@ -57,6 +57,7 @@ public class MessageEncoderTest {
   static <T> T encodeDecode(T message) {
     Gson gson = MessageEncoder.getGson();
     String json = gson.toJson(message);
+    System.out.println(json);
     return (T) gson.fromJson(json, message.getClass());
   }
 }
