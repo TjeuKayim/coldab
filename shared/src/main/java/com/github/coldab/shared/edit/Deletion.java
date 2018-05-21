@@ -91,7 +91,7 @@ public class Deletion extends Edit {
     super.confirmIndex(index, localIndices);
     if (end.getAdditionIndex() < 0) {
       int endIndex = localIndices.get(end.getAdditionIndex());
-      this.end = new Position(endIndex, end.getIndex());
+      this.end = new Position(endIndex, end.getPosition());
     }
   }
 

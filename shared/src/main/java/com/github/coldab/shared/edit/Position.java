@@ -8,15 +8,15 @@ public class Position {
 
   private final int additionIndex;
 
-  private final int index;
+  private final int position;
 
-  public Position(int additionIndex, int index) {
+  public Position(int additionIndex, int position) {
     this.additionIndex = additionIndex;
-    this.index = index;
+    this.position = position;
   }
 
-  public int getIndex() {
-    return index;
+  public int getPosition() {
+    return position;
   }
 
   public int getAdditionIndex() {
@@ -33,11 +33,11 @@ public class Position {
     }
     Position position1 = (Position) o;
     return additionIndex == position1.additionIndex &&
-        index == position1.index;
+        position == position1.position;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(additionIndex, index);
+    return Objects.hash(additionIndex, position);
   }
 }
