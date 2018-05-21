@@ -146,8 +146,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         }
       }
       // Notify clients
-      for (ProjectClient client : clients) {
-        client.files(textFiles, binaryFiles);
+      for (ProjectClient projectClient : clients) {
+        projectClient.files(textFiles, binaryFiles);
       }
     }
 
