@@ -8,6 +8,7 @@ import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Position;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
+import com.github.coldab.shared.ws.TextFileClient;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;

@@ -11,6 +11,8 @@ import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
+import com.github.coldab.shared.ws.TextFileClient;
+import com.github.coldab.shared.ws.TextFileServer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

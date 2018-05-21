@@ -1,4 +1,4 @@
-package com.github.coldab.client.project;
+package com.github.coldab.shared.ws;
 
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;

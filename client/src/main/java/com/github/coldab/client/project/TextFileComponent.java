@@ -7,6 +7,8 @@ import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Position;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
+import com.github.coldab.shared.ws.TextFileClient;
+import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

@@ -3,6 +3,7 @@ package com.github.coldab.client.project;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
+import com.github.coldab.shared.ws.TextFileServer;
 
 public class TextFileServerMock implements TextFileServer {
 
