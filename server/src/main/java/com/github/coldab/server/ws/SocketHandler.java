@@ -37,6 +37,7 @@ public class SocketHandler extends TextWebSocketHandler {
     int projectId = (int) session.getAttributes().get("projectId");
     Project project = connectionManager.getProject(projectId);
     if (project == null) {
+      LOGGER.info("ProjectId not found");
       session.close(new CloseStatus(1000, "ProjectId not found"));
       return;
     }
@@ -64,7 +65,9 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     SocketSession socketSession = sessions.remove(session);
-    connectionManager.disconnect(socketSession.clientEndpoint);
+    if (socketSession != null) {
+      connectionManager.disconnect(socketSession.clientEndpoint);
+    }
   }
 
   private class SocketSession {
