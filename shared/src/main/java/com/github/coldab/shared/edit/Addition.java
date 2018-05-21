@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 public class Addition extends Edit {
 
   @Transient
-  private List<Letter> insertedLetters;
+  private transient List<Letter> insertedLetters;
 
   private String text;
 
@@ -30,13 +30,11 @@ public class Addition extends Edit {
   public Addition(Account account, Position start, String text) {
     super(0, account, start);
     this.text = text;
-    createLetters();
   }
 
   public Addition(int index, Account account, Position start, String text) {
     super(index, account, start);
     this.text = text;
-    createLetters();
   }
 
   private void createLetters() {
@@ -50,6 +48,9 @@ public class Addition extends Edit {
   }
 
   public List<Letter> getLetters() {
+    if (insertedLetters == null) {
+      createLetters();
+    }
     return insertedLetters;
   }
 
@@ -61,12 +62,12 @@ public class Addition extends Edit {
           .filter(i -> letters.get(i).getPosition().equals(start))
           .findAny().orElseThrow(IllegalStateException::new);
     }
-    letters.addAll(index + 1, insertedLetters);
+    letters.addAll(index + 1, getLetters());
   }
 
   @Override
   public void undo(List<Letter> letters) {
-    letters.removeAll(insertedLetters);
+    letters.removeAll(getLetters());
   }
 
   char getCharacter(int position) {
