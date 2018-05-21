@@ -15,10 +15,6 @@ public class Chat {
     notifyObservers(message);
   }
 
-  public List<ChatMessage> getMessages() {
-    return Collections.unmodifiableList(messages);
-  }
-
   private void notifyObservers(ChatMessage message) {
     for (ChatObserver chatObserver : chatObservers) {
       chatObserver.receiveChatMessage(message);
