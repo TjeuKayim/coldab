@@ -11,7 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * TextFileForwarder converts TextFileClient messages into ProjectClient.
+ * <p>
  * Converts messages and forward them to TextFileService.
+ * </p>
  * <p>
  * I doubt whether its a good practice to have nested nested classes.
  * </p>
