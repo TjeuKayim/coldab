@@ -5,14 +5,19 @@ import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.stream.JsonWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 /**
@@ -45,9 +50,9 @@ public class MessageEncoder {
   private static final Gson gson = createGson();
 
   private static Gson createGson() {
-    return new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
-        (JsonDeserializer<LocalDateTime>) (json, type, context) ->
-            LocalDateTime.parse(json.getAsString())).create();
+    return new GsonBuilder()
+        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+        .create();
   }
 
   public static Gson getGson() {
@@ -92,5 +97,22 @@ public class MessageEncoder {
       }
       return arguments;
     });
+  }
+
+  private static class LocalDateTimeAdapter implements
+      JsonSerializer<LocalDateTime>,
+      JsonDeserializer<LocalDateTime> {
+
+    @Override
+    public LocalDateTime deserialize(JsonElement json, Type typeOfT,
+        JsonDeserializationContext context) {
+      return LocalDateTime.parse(json.getAsString());
+    }
+
+    @Override
+    public JsonElement serialize(LocalDateTime src, Type typeOfSrc,
+        JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString());
+    }
   }
 }
