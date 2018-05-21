@@ -45,7 +45,7 @@ public class SocketHandlerTest {
 
   @Before
   public void setUp() throws Exception {
-    String url = String.format("ws://localhost:%d/ws/0", port);
+    String url = String.format("ws://localhost:%d/ws/1", port);
     connectionManager = new WebSocketConnectionManager(new StandardWebSocketClient(), client, url);
     connectionManager.start();
   }
@@ -58,7 +58,8 @@ public class SocketHandlerTest {
   @Test
   public void connect() throws InterruptedException {
     ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
-    assertEquals(client.chatMessage, message);
+    ChatMessage result = client.chatMessage;
+    assertEquals(message.getText(), result.getText());
   }
 
   private static class Client extends TextWebSocketHandler implements ClientEndpoint {
@@ -68,7 +69,7 @@ public class SocketHandlerTest {
     private WebSocketSession session;
     private final ChatClientMock chatMock = new ChatClientMock();
     private ChatMessage chatMessage =
-        new ChatMessage("Hello World", new Account("PietHein", "piet@hein.email"));
+        new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org"));
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
