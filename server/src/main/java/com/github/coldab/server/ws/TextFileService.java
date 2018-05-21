@@ -1,60 +1,90 @@
 package com.github.coldab.server.ws;
 
-import com.github.coldab.shared.edit.Addition;
-import com.github.coldab.shared.edit.Deletion;
+import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Edit;
+import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
-import com.github.coldab.shared.ws.ClientEndpoint;
-import java.util.Collection;
-import java.util.Collections;
+import com.github.coldab.shared.ws.TextFileClient;
+import com.github.coldab.shared.ws.TextFileServer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
 
-public class TextFileService {
+/**
+ * Every text-file is managed by a TextFileService.
+ */
+public class TextFileService implements Service<TextFileServer, TextFileClient> {
 
   private final TextFile file;
-  private final ClientEndpoint clientEndpoint;
-  private final List<ClientEndpoint> clients;
-  /** Maps local indices to global indices. */
-  private final Map<Integer, Integer> localIndices = new HashMap<>();
+  private final List<TextFileClient> clients = new ArrayList<>();
+  private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
 
-  public TextFileService(TextFile file, ClientEndpoint clientEndpoint,
-      List<ClientEndpoint> clients) {
+  public TextFileService(TextFile file) {
     this.file = file;
-    this.clientEndpoint = clientEndpoint;
-    this.clients = clients;
   }
 
-  public void processEdit(Edit edit) {
-    List<Deletion> deletions = Collections.emptyList();
-    List<Addition> additions = Collections.emptyList();
-    int localIndex = edit.getIndex();
-    int index = getNextIndex();
-    localIndices.put(localIndex, index);
-    edit.confirmIndex(index, localIndices);
-    if (edit instanceof Addition) {
-      Addition addition = (Addition) edit;
-      additions = Collections.singletonList(addition);
-      clientEndpoint.project().confirmAddition(file.getId(), addition);
-    } else if (edit instanceof Deletion) {
-      Deletion deletion = (Deletion) edit;
-      deletions = Collections.singletonList(deletion);
-      clientEndpoint.project().confirmDeletion(file.getId(), deletion);
+  @Override
+  public TextFileServer connect(TextFileClient client, Account account) {
+    clients.add(client);
+    return new MessageHandler(client, account);
+  }
+
+  @Override
+  public void disconnect(TextFileClient client) {
+    clients.remove(client);
+  }
+
+  private class MessageHandler implements TextFileServer {
+    private final TextFileClient client;
+    private final Account account;
+
+    /**
+     * Maps local indices to global indices.
+     */
+    private final Map<Integer, Integer> localIndices = new HashMap<>();
+
+    private MessageHandler(TextFileClient client, Account account) {
+      this.client = client;
+      this.account = account;
     }
-    for (ClientEndpoint client : getOtherClients()) {
-      client.project().edits(file.getId(), additions, deletions);
+
+    @Override
+    public void newEdit(Edit edit) {
+      // Check author
+      if (edit.getAccount() != account) {
+        LOGGER.severe("Edit has invalid author");
+        return;
+      }
+      int localIndex = edit.getIndex();
+      int index = getNextIndex();
+      localIndices.put(localIndex, index);
+      edit.confirmIndex(index, localIndices);
+      client.confirmEdit(edit);
+      notifyOthers(c -> c.newEdit(edit));
+      // todo: Save edit in database
     }
-  }
 
-  private Collection<ClientEndpoint> getOtherClients() {
-    return clients.stream()
-        .filter(ce -> ce != clientEndpoint)
-        .collect(Collectors.toList());
-  }
+    @Override
+    public void newAnnotation(Annotation annotation) {
 
-  private int getNextIndex() {
-    return file.getEdits().size();
+    }
+
+    @Override
+    public void updateTextFile(TextFile updatedFile) {
+
+    }
+
+    private void notifyOthers(Consumer<TextFileClient> message) {
+      clients.stream()
+          .filter(ce -> ce != client)
+          .forEach(message);
+    }
+
+    private int getNextIndex() {
+      return file.getEdits().size();
+    }
   }
 }
