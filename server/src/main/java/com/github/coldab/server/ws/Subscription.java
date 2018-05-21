@@ -7,7 +7,7 @@ class Subscription {
   final TextFileServer textFileServer;
   final TextFileClient textFileClient;
 
-  private Subscription(TextFileServer textFileServer, TextFileClient textFileClient) {
+  public Subscription(TextFileServer textFileServer, TextFileClient textFileClient) {
     this.textFileServer = textFileServer;
     this.textFileClient = textFileClient;
   }
