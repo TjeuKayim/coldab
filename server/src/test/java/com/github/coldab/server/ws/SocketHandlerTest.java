@@ -20,9 +20,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -33,17 +34,18 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * Integration test for WebSocket-connection.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = Main.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "dev")
-@WebAppConfiguration
 public class SocketHandlerTest {
+  @LocalServerPort
+  private int port;
 
   private Client client = new Client();
   private WebSocketConnectionManager connectionManager;
 
   @Before
   public void setUp() throws Exception {
-    String url = "ws://localhost:8080/ws/0";
+    String url = String.format("ws://localhost:%d/ws/0", port);
     connectionManager = new WebSocketConnectionManager(new StandardWebSocketClient(), client, url);
     connectionManager.start();
   }
@@ -55,7 +57,7 @@ public class SocketHandlerTest {
 
   @Test
   public void connect() throws InterruptedException {
-    ChatMessage message = client.chatMock.messages.poll(10, TimeUnit.SECONDS);
+    ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
     assertEquals(client.chatMessage, message);
   }
 
