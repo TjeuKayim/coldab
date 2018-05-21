@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
+import com.google.gson.Gson;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,5 +52,11 @@ public class MessageEncoderTest {
         this.a2 = a2;
       };
     }
+  }
+
+  static <T> T encodeDecode(T message) {
+    Gson gson = MessageEncoder.getGson();
+    String json = gson.toJson(message);
+    return (T) gson.fromJson(json, message.getClass());
   }
 }
