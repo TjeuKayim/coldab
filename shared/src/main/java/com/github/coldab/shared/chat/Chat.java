@@ -6,13 +6,8 @@ import java.util.List;
 
 
 public class Chat {
-  private List<ChatMessage> messages;
-  private List<ChatObserver> chatObservers;
-
-  public Chat() {
-    this.messages = new LinkedList<>();
-    this.chatObservers = new LinkedList<>();
-  }
+  private final List<ChatMessage> messages = new LinkedList<>();
+  private final List<ChatObserver> chatObservers = new LinkedList<>();
 
   public void addMessage(ChatMessage message) {
     messages.add(message);
@@ -21,7 +16,6 @@ public class Chat {
   }
 
   public List<ChatMessage> getMessages() {
-    if (messages == null) return null;
     return Collections.unmodifiableList(messages);
   }
 
