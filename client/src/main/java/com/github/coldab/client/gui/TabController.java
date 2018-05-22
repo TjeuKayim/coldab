@@ -5,14 +5,15 @@ import com.github.coldab.shared.project.TextFile;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.reactfx.Subscription;
 
 public class TabController {
 
@@ -31,10 +32,14 @@ public class TabController {
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
 
-    Subscription subscription = codeArea
+    codeArea
         .multiPlainChanges()
         .successionEnds(Duration.ofMillis(500))
         .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
+
+    codeArea.multiPlainChanges()
+        .subscribe(this::textChanged);
+
     codeArea.getStylesheets().add("css/manual-highlighting.css");
   }
 
@@ -59,7 +64,7 @@ public class TabController {
       lastKwEnd = matcher.end();
     }
 
-    System.out.println(text);
+    //System.out.println(text);
     return spansBuilder.create();
   }
 
@@ -83,4 +88,23 @@ public class TabController {
           + "|(?<KEYWORD2>" + KEYWORD_PATTERN2 + ")");
 
 
+  private void textChanged(List<PlainTextChange> changes) {
+    for (PlainTextChange change : changes) {
+      String inserted = change.getInserted();
+      String removed = change.getRemoved();
+      if (!inserted.equals("")){
+        int position = change.getPosition();
+        textFileController.createAddition(position-1, inserted);
+      }
+      if (!removed.equals("")){
+
+        int position = change.getPosition();
+        int length = change.getNetLength();
+        textFileController.createDeletion(position, -length);
+      }
+      System.out.println(changes);
+      int position = change.getPosition();
+      textFileController.createAddition(position, inserted);
+    }
+  }
 }
