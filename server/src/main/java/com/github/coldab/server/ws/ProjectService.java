@@ -60,6 +60,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     public MessageReceiver(ProjectClient client, Account account) {
       this.client = client;
       this.account = account;
+      filesUpdated(project.getFiles().stream().toArray(File[]::new));
     }
 
     @Override
