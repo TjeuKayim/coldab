@@ -61,6 +61,7 @@ public class SocketHandlerTest {
     ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
     ChatMessage result = client.chatMessage;
     assertEquals(message.getText(), result.getText());
+    Mockito.verify(client.projectMock).files(Mockito.any(), Mockito.any());
   }
 
   private static class Client extends TextWebSocketHandler implements ClientEndpoint {
@@ -69,6 +70,7 @@ public class SocketHandlerTest {
     private SocketReceiver socketReceiver;
     private WebSocketSession session;
     private final ChatClientMock chatMock = new ChatClientMock();
+    private ProjectClient projectMock = Mockito.mock(ProjectClient.class);
     private ChatMessage chatMessage =
         new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org"));
 
@@ -100,7 +102,7 @@ public class SocketHandlerTest {
 
     @Override
     public ProjectClient project() {
-      return Mockito.mock(ProjectClient.class);
+      return projectMock;
     }
 
   }
