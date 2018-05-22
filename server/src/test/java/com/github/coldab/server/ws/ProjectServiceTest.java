@@ -3,6 +3,7 @@ package com.github.coldab.server.ws;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
@@ -43,7 +44,7 @@ public class ProjectServiceTest {
     project.getFilesById().put(2, binaryFile);
     // After connecting, the files should be send
     ProjectClient projectClient = Mockito.mock(ProjectClient.class);
-    ProjectServer projectServer = service.connect(projectClient, account);
+    service.connect(projectClient, account);
     Mockito.verify(projectClient)
         .files(Collections.singletonList(textFile), Collections.singletonList(binaryFile));
   }
@@ -62,7 +63,16 @@ public class ProjectServiceTest {
   }
 
   @Test
-  public void removeFile() {
-
+  public void subscribe() {
+    // When subscribing, the client should receive all edits
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    Addition addition = new Addition(0, account, null, "Hello World");
+    textFile.addEdit(addition);
+    project.getFilesById().put(1, textFile);
+    ProjectClient projectClient = Mockito.mock(ProjectClient.class);
+    ProjectServer projectServer = service.connect(projectClient, account);
+    projectServer.subscribe(1);
+    Mockito.verify(projectClient)
+        .edits(1, Collections.singletonList(addition), Collections.emptyList());
   }
 }
