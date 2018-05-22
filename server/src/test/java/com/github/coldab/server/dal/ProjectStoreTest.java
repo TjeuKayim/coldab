@@ -2,6 +2,7 @@ package com.github.coldab.server.dal;
 
 import static org.junit.Assert.assertEquals;
 
+import com.github.coldab.server.Main;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.project.Project;
@@ -10,12 +11,15 @@ import java.util.Collections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@SpringBootTest(classes = Main.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(profiles = "dev")
 public class ProjectStoreTest {
 
   @Autowired
