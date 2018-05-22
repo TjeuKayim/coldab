@@ -33,7 +33,7 @@ public class Project {
   private LocalDateTime creationDate = TimeProvider.getInstance().now();
 
   @OneToMany(cascade = CascadeType.ALL)
-  private final List<File> files = new ArrayList<>();
+  private transient final List<File> files = new ArrayList<>();
 
   @Transient
   private transient Chat chat;
