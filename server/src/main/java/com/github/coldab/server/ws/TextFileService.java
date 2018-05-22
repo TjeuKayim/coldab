@@ -49,6 +49,14 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
     private MessageHandler(TextFileClient client, Account account) {
       this.client = client;
       this.account = account;
+      sendAllEdits();
+    }
+
+    private void sendAllEdits() {
+      // todo: Send edits all at once
+      for (Edit edit : file.getEdits()) {
+        client.newEdit(edit);
+      }
     }
 
     @Override
