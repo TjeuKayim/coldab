@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -24,7 +23,6 @@ public class TextFile extends File {
     super(id, path);
   }
 
-  @Column
   public Collection<Edit> getEdits() {
     if (edits == null) {
       edits = new ArrayList<>();
@@ -32,7 +30,6 @@ public class TextFile extends File {
     return Collections.unmodifiableList(edits);
   }
 
-  @Column
   public List<Annotation> getAnnotations() {
     if (annotations == null) {
       annotations = new ArrayList<>();
