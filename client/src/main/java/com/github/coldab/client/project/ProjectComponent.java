@@ -46,13 +46,13 @@ public class ProjectComponent implements ProjectClient {
   @Override
   public void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles) {
     Stream.concat(textFiles.stream(), binaryFiles.stream())
-        .forEach(file -> project.getFilesById().put(file.getId(), file));
+        .forEach(file -> project.getFiles().add(file));
     projectObserver.updateFiles();
   }
 
   @Override
   public void removeFile(int fileId) {
-    project.getFilesById().remove(fileId);
+    project.getFiles().removeIf(f -> f.getId() == fileId);
   }
 
   @Override

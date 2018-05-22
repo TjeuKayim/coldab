@@ -40,8 +40,8 @@ public class ProjectServiceTest {
   public void connect() {
     TextFile textFile = new TextFile(1, "path/to/hello.world");
     BinaryFile binaryFile = new BinaryFile(2, "path/to/binary", "MyHash");
-    project.getFilesById().put(1, textFile);
-    project.getFilesById().put(2, binaryFile);
+    project.getFiles().add(textFile);
+    project.getFiles().add(binaryFile);
     // After connecting, the files should be send
     ProjectClient projectClient = Mockito.mock(ProjectClient.class);
     service.connect(projectClient, account);
@@ -68,7 +68,7 @@ public class ProjectServiceTest {
     TextFile textFile = new TextFile(1, "path/to/hello.world");
     Addition addition = new Addition(0, account, null, "Hello World");
     textFile.addEdit(addition);
-    project.getFilesById().put(1, textFile);
+    project.getFiles().add(textFile);
     ProjectClient projectClient = Mockito.mock(ProjectClient.class);
     ProjectServer projectServer = service.connect(projectClient, account);
     projectServer.subscribe(1);
