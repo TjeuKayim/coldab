@@ -4,19 +4,16 @@ import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.gui.FileTree.FileNode;
 import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
+import com.github.coldab.client.project.ProjectObserver;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.ChatMessage;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
-import com.google.gson.Gson;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,7 +32,7 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorController implements Initializable {
+public class EditorController implements Initializable, ProjectObserver {
 
   private final Project project;
   @FXML
@@ -67,14 +64,14 @@ public class EditorController implements Initializable {
     //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
       chatComponent = new ChatComponent(chat, serverEndpoint.chat());
-      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account);
+      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account, this);
       Platform.runLater(this::afterConnectionEstablished);
       return new WebSocketEndpoint(chatComponent, projectComponent);
     });
   }
 
   private void afterConnectionEstablished() {
-    updateFileTree();
+    updateFiles();
     initChat();
   }
 
@@ -114,18 +111,13 @@ public class EditorController implements Initializable {
     TabController tabController = new TabController(file, tab, projectComponent.openFile(file));
   }
 
-  private void updateFileTree() {
+  @Override
+  public void updateFiles() {
     // Create root
     TreeItem<FileTree> rootItem = new TreeItem<>();
 
     // Test files
-    Collection<File> files = Arrays.asList(
-        new TextFile(0, "path/to/file.txt"),
-        new TextFile(0, "path/to/another-file.txt"),
-        new TextFile(0, "website/index.html")
-    );
-
-    DirectoryNode fileTree = FileTree.createFrom(files);
+    DirectoryNode fileTree = FileTree.createFrom(project.getFiles());
 
     // Add files
     addNodesToFileTree(rootItem, fileTree);
@@ -167,8 +159,8 @@ public class EditorController implements Initializable {
     }
   }
 
-  public void showAnnotation(Annotation annotation) {
-    // FIXME: 7-5-2018 Update GUI
-    System.out.println("Annotation: " + new Gson().toJson(annotation));
+  @Override
+  public void updateCollaborators() {
+
   }
 }
