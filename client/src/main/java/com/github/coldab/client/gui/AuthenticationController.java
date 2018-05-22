@@ -24,7 +24,5 @@ public class AuthenticationController implements Initializable {
     googleWebview.prefWidth(600);
 
     browser.load(url);
-
-
   }
 }
