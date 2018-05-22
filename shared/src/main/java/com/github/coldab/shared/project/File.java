@@ -3,10 +3,12 @@ package com.github.coldab.shared.project;
 import com.github.coldab.shared.TimeProvider;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 /**
  * A binary-file or text-file.
@@ -16,7 +18,8 @@ import javax.persistence.MappedSuperclass;
  *   Example: "path/to/file.txt"
  * </p>
  */
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class File {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

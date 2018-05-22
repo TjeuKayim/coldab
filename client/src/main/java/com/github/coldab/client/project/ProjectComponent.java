@@ -23,28 +23,36 @@ public class ProjectComponent implements ProjectClient {
   private final ProjectServer projectServer;
   private final Project project;
   private final Account account;
+  private final ProjectObserver projectObserver;
   private HashMap<Integer, TextFileClient> textFileServices = new HashMap<>();
 
-  public ProjectComponent(Project project, ProjectServer projectServer, Account account) {
+  public ProjectComponent(Project project, ProjectServer projectServer, Account account,
+      ProjectObserver projectObserver) {
     this.project = project;
     this.projectServer = projectServer;
     this.account = account;
+    this.projectObserver = projectObserver;
   }
 
   @Override
   public void collaborators(List<Account> admins, List<Account> collaborators) {
-
+    project.getAdmins().clear();
+    project.getAdmins().addAll(admins);
+    project.getCollaborators().clear();
+    project.getCollaborators().addAll(collaborators);
+    projectObserver.updateCollaborators();
   }
 
   @Override
   public void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles) {
     Stream.concat(textFiles.stream(), binaryFiles.stream())
-        .forEach(file -> project.getFilesById().put(file.getId(), file));
+        .forEach(file -> project.getFiles().add(file));
+    projectObserver.updateFiles();
   }
 
   @Override
   public void removeFile(int fileId) {
-    project.getFilesById().remove(fileId);
+    project.getFiles().removeIf(f -> f.getId() == fileId);
   }
 
   @Override

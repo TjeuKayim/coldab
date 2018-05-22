@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -13,7 +14,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class TextFile extends File {
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   private transient List<Edit> edits = new ArrayList<>();
 
   @OneToMany
