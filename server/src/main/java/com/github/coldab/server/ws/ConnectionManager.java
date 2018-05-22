@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
@@ -18,9 +19,12 @@ public class ConnectionManager {
   private final ProjectStore projectStore;
   private final Map<Integer, ProjectSession> projects = new HashMap<>();
   private final Map<ClientEndpoint, ProjectSession> clients = new HashMap<>();
+  private final FileStore fileStore;
 
-  public ConnectionManager(ProjectStore projectStore) {
+  public ConnectionManager(ProjectStore projectStore,
+      FileStore fileStore) {
     this.projectStore = projectStore;
+    this.fileStore = fileStore;
   }
 
   /**
@@ -54,7 +58,7 @@ public class ConnectionManager {
       if (optionalProject.isPresent()) {
         Project project = optionalProject.get();
         projectSession = new ProjectSession(project,
-            new ProjectService(project, projectStore),
+            new ProjectService(project, projectStore, fileStore),
             new ChatService()
         );
         projects.put(projectId, projectSession);

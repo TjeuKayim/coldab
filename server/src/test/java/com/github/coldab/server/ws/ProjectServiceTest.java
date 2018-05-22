@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.BinaryFile;
@@ -22,6 +23,8 @@ public class ProjectServiceTest {
 
   @Autowired
   private ProjectStore projectStore;
+  @Autowired
+  private FileStore fileStore;
   private Project project;
   private ProjectService service;
   private Account account = new Account("PietHein", "piet@hein.email");
@@ -29,7 +32,7 @@ public class ProjectServiceTest {
   @Before
   public void setUp() throws Exception {
     project = new Project("MyProject");
-    service = new ProjectService(project, projectStore);
+    service = new ProjectService(project, projectStore, fileStore);
   }
 
   @Test
@@ -43,5 +46,23 @@ public class ProjectServiceTest {
     ProjectServer projectServer = service.connect(projectClient, account);
     Mockito.verify(projectClient)
         .files(Collections.singletonList(textFile), Collections.singletonList(binaryFile));
+  }
+
+  @Test
+  public void newFile() {
+    // When a new file is added, the change should be confirmed
+    // The file should be given an id
+    TextFile textFile = new TextFile(0, "path/to/hello.world");
+    TextFile result = new TextFile(1, "path/to/hello.world");
+    ProjectClient projectClient = Mockito.mock(ProjectClient.class);
+    ProjectServer projectServer = service.connect(projectClient, account);
+    projectServer.files(Collections.singletonList(textFile), Collections.emptyList());
+    Mockito.verify(projectClient, Mockito.atMost(1))
+        .files(Collections.singletonList(result), Collections.emptyList());
+  }
+
+  @Test
+  public void removeFile() {
+
   }
 }
