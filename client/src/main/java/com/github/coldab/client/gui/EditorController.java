@@ -51,7 +51,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private MenuItem menuOpenChat;
 
   private final Chat chat = new Chat();
-  private Account account = new Account("Henkie", "henkie@gmail.com");
+  private Account account = new Account("HenkJan", "henk@jan.org");
   private ChatComponent chatComponent;
   private ProjectComponent projectComponent;
 
