@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
@@ -29,11 +30,14 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
   private final Project project;
   private final List<ProjectClient> clients = new ArrayList<>();
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
-  private final ProjectStore store;
+  private final ProjectStore projectStore;
+  private final FileStore fileStore;
 
-  ProjectService(Project project, ProjectStore store) {
+  ProjectService(Project project, ProjectStore projectStore,
+      FileStore fileStore) {
     this.project = project;
-    this.store = store;
+    this.projectStore = projectStore;
+    this.fileStore = fileStore;
   }
 
   @Override
@@ -60,6 +64,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     public MessageReceiver(ProjectClient client, Account account) {
       this.client = client;
       this.account = account;
+      filesUpdated(project.getFiles().stream().toArray(File[]::new));
     }
 
     @Override
@@ -118,18 +123,11 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     private void file(File file) {
-      if (file.getId() == 0) {
-        // Create new
-        project.getFiles().add(file);
-      } else {
-        // Update
-        project.getFilesById().replace(file.getId(), file);
-      }
-      // Save to db and apply changes
-      project.setFiles(store.save(project).getFiles());
-      File updated = project.getFilesById().get(file.getId());
+      // Update
+      file = fileStore.save(file);
+      project.getFilesById().put(file.getId(), file);
       // Notify all clients about it
-      filesUpdated(updated);
+      filesUpdated(file);
     }
 
     private void filesUpdated(File... files) {
