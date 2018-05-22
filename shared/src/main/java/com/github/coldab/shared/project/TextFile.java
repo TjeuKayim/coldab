@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -43,5 +44,9 @@ public class TextFile extends File {
       throw new IllegalStateException("Invalid index");
     }
     edits.add(edit);
+  }
+
+  public void confirmEdit(Edit edit, Map<Integer, Integer> localIndices) {
+    edit.confirmIndex(edits.size(), localIndices);
   }
 }

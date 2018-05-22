@@ -59,9 +59,8 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
         return;
       }
       int localIndex = edit.getIndex();
-      int index = getNextIndex();
-      localIndices.put(localIndex, index);
-      edit.confirmIndex(index, localIndices);
+      file.confirmEdit(edit, localIndices);
+      localIndices.put(localIndex, edit.getIndex());
       client.confirmEdit(edit);
       notifyOthers(c -> c.newEdit(edit));
       // todo: Save edit in database
@@ -81,10 +80,6 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
       clients.stream()
           .filter(ce -> ce != client)
           .forEach(message);
-    }
-
-    private int getNextIndex() {
-      return file.getEdits().size();
     }
   }
 }
