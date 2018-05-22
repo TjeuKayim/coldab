@@ -6,6 +6,8 @@ import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,12 +24,13 @@ public class MessageEncoderTest {
 
   @Test
   public void encodeDecode() throws IOException {
-    SocketMessage message = new SocketMessage("e", "m", "a1", 2);
+    SocketMessage message =
+        new SocketMessage("e", "m", Arrays.asList("hello", "world"), 2);
     byte[] bytes = MessageEncoder.encodeMessage(message);
     String debug = new String(bytes);
     System.out.println(debug);
     MessageEncoder.decodeMessage(bytes, socketReceiver);
-    assertEquals("a1", receiver.a1);
+    assertEquals(Arrays.asList("hello", "world"), receiver.a1);
     assertEquals(2, receiver.a2);
   }
 
@@ -36,13 +39,13 @@ public class MessageEncoderTest {
   }
 
   interface E {
-    void m(String a1, int a2);
+    void m(Collection<String> a1, int a2);
   }
 
   class Receiver implements Protocol {
 
 
-    private String a1;
+    private Collection<String> a1;
     private int a2;
 
     @Override
