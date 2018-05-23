@@ -1,6 +1,7 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.ws.MessageEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +77,7 @@ public class Addition extends Edit {
 
   @Override
   public String toString() {
-    return "Addition: " + text;
+    return MessageEncoder.getGson().toJson(this);
   }
 
   public String getText() {

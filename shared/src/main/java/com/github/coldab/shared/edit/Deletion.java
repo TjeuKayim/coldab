@@ -1,6 +1,7 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.ws.MessageEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,5 +99,10 @@ public class Deletion extends Edit {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), end);
+  }
+
+  @Override
+  public String toString() {
+    return MessageEncoder.getGson().toJson(this);
   }
 }
