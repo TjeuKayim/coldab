@@ -103,11 +103,11 @@ public abstract class Edit {
   }
 
   public void confirmIndex(int index, Map<Integer, Integer> localIndices) {
-    if (index >= 0) {
+    if (this.index >= 0) {
       throw new IllegalStateException("Index should be unconfirmed");
     }
     this.index = index;
-    if (start.getAdditionIndex() < 0) {
+    if (start != null && start.getAdditionIndex() < 0) {
       int startIndex = localIndices.get(start.getAdditionIndex());
       this.start = new Position(startIndex, start.getPosition());
     }
