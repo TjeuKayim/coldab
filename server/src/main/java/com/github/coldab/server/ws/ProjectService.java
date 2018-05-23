@@ -13,7 +13,6 @@ import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
-import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,12 +102,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     @Override
     public void addition(int fileId, Addition addition) {
-      textFileClient(fileId).newEdit(addition);
+      textFileServer(fileId).newEdit(addition);
     }
 
     @Override
     public void deletion(int fileId, Deletion deletion) {
-      textFileClient(fileId).newEdit(deletion);
+      textFileServer(fileId).newEdit(deletion);
     }
 
     @Override
@@ -125,8 +124,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
     }
 
-    private TextFileClient textFileClient(int fileId) {
-      return subscriptions.get(fileId).textFileClient;
+    private TextFileServer textFileServer(int fileId) {
+      return subscriptions.get(fileId).textFileServer;
     }
 
     private void file(File file) {
