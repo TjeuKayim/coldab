@@ -3,7 +3,9 @@ package com.github.coldab.server.ws;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.project.Project;
+import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ChatServer;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.ProjectServer;
@@ -57,6 +59,12 @@ public class ConnectionManager {
       Optional<Project> optionalProject = projectStore.findById(projectId);
       if (optionalProject.isPresent()) {
         Project project = optionalProject.get();
+        // todo: Save textFiles in database
+        TextFile textFile = new TextFile(0, "index.html");
+        Account piet = new Account("Piet Hein", "piet@hein.email");
+        textFile.addEdit(new Addition(0, piet, null, "Hello World"));
+        project.getFiles().add(textFile);
+
         projectSession = new ProjectSession(project,
             new ProjectService(project, projectStore, fileStore),
             new ChatService()
