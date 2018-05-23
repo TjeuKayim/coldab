@@ -38,7 +38,7 @@ class TextFileForwarder implements TextFileClient {
     } else if (edit instanceof Deletion) {
       deletions = Collections.singletonList((Deletion) edit);
     }
-    client.edits(fileId, additions, deletions);
+    client.edits(fileId, additions.toArray(new Addition[0]), deletions.toArray(new Deletion[0]));
   }
 
   @Override

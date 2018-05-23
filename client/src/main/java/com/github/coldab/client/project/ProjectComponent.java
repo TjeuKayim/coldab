@@ -63,12 +63,16 @@ public class ProjectComponent implements ProjectClient {
   }
 
   @Override
-  public void edits(int fileId, List<Addition> additions, List<Deletion> deletions) {
-    for (Addition addition : additions) {
-      textFileServices.get(fileId).newEdit(addition);
+  public void edits(int fileId, Addition[] additions, Deletion[] deletions) {
+    if (additions != null) {
+      for (Addition addition : additions) {
+        textFileServices.get(fileId).newEdit(addition);
+      }
     }
-    for (Deletion deletion : deletions) {
-      textFileServices.get(fileId).newEdit(deletion);
+    if (deletions != null) {
+      for (Deletion deletion : deletions) {
+        textFileServices.get(fileId).newEdit(deletion);
+      }
     }
   }
 

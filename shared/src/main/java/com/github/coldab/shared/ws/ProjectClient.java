@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProjectClient extends UpdateSender {
 
-  void edits(int fileId, List<Addition> additions, List<Deletion> deletions);
+  void edits(int fileId, Addition[] additions, Deletion[] deletions);
 
   /**
    * An edit gets send back to the author as confirmation.

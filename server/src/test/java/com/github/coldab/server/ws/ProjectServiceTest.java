@@ -9,7 +9,6 @@ import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,6 +72,6 @@ public class ProjectServiceTest {
     ProjectServer projectServer = service.connect(projectClient, account);
     projectServer.subscribe(1);
     Mockito.verify(projectClient)
-        .edits(1, Collections.singletonList(addition), Collections.emptyList());
+        .edits(1, new Addition[]{addition}, null);
   }
 }
