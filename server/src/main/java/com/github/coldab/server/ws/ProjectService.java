@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Each project is managed by a ProjectService.
@@ -30,6 +31,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
   private final FileStore fileStore;
+  private static final Logger LOGGER = Logger.getLogger(ProjectService.class.getName());
 
   ProjectService(Project project, ProjectStore projectStore,
       FileStore fileStore) {
@@ -125,7 +127,13 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     private TextFileServer textFileServer(int fileId) {
-      return subscriptions.get(fileId).textFileServer;
+      Subscription subscription = subscriptions.get(fileId);
+      if (subscription != null) {
+        return subscription.textFileServer;
+      } else {
+        LOGGER.severe("Edit send before subscribing");
+        throw new IllegalStateException("Edit send before subscribing");
+      }
     }
 
     private void file(File file) {
@@ -148,6 +156,9 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         } else if (file instanceof BinaryFile) {
           binaryFiles.add(((BinaryFile) file));
         }
+      }
+      if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
+        return;
       }
       // Notify clients
       for (ProjectClient projectClient : clients) {
