@@ -113,30 +113,32 @@ public class EditorController implements Initializable, ProjectObserver {
 
   @Override
   public void updateFiles() {
-    // Create root
-    TreeItem<FileTree> rootItem = new TreeItem<>();
+    Platform.runLater(() -> {
+      // Create root
+      TreeItem<FileTree> rootItem = new TreeItem<>();
 
-    // Test files
-    DirectoryNode fileTree = FileTree.createFrom(project.getFiles());
+      // Test files
+      DirectoryNode fileTree = FileTree.createFrom(project.getFiles());
 
-    // Add files
-    addNodesToFileTree(rootItem, fileTree);
+      // Add files
+      addNodesToFileTree(rootItem, fileTree);
 
-    fileTreeView.setShowRoot(false);
-    fileTreeView.setRoot(rootItem);
+      fileTreeView.setShowRoot(false);
+      fileTreeView.setRoot(rootItem);
 
-    MenuItem openBtn = new MenuItem("Open in editor");
-    openBtn.setOnAction(e -> {
-      FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
-      if (selected instanceof FileNode) {
-        File file = ((FileNode) selected).getFile();
-        if (file instanceof TextFile) {
-          openFile(((TextFile) file));
+      MenuItem openBtn = new MenuItem("Open in editor");
+      openBtn.setOnAction(e -> {
+        FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+        if (selected instanceof FileNode) {
+          File file = ((FileNode) selected).getFile();
+          if (file instanceof TextFile) {
+            openFile(((TextFile) file));
+          }
         }
-      }
+      });
+      ContextMenu menu = new ContextMenu(openBtn);
+      fileTreeView.setContextMenu(menu);
     });
-    ContextMenu menu = new ContextMenu(openBtn);
-    fileTreeView.setContextMenu(menu);
   }
 
   private void addNodesToFileTree(TreeItem<FileTree> treeItem, DirectoryNode fileTree) {
