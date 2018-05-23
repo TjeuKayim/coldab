@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +25,17 @@ public class MessageEncoderTest {
 
   @Test
   public void encodeDecode() throws IOException {
+    // todo: Fix bug in socket-interface
+    // https://stackoverflow.com/a/14506181/5537074
+
+    List<MyObject> myObjects = Arrays.asList(new MyObject("hello"), new MyObject("world"));
     SocketMessage message =
-        new SocketMessage("e", "m", Arrays.asList("hello", "world"), 2);
+        new SocketMessage("e", "m", myObjects, 2);
     byte[] bytes = MessageEncoder.encodeMessage(message);
     String debug = new String(bytes);
     System.out.println(debug);
     MessageEncoder.decodeMessage(bytes, socketReceiver);
-    assertEquals(Arrays.asList("hello", "world"), receiver.a1);
+    assertEquals(myObjects, receiver.a1);
     assertEquals(2, receiver.a2);
   }
 
@@ -39,13 +44,13 @@ public class MessageEncoderTest {
   }
 
   interface E {
-    void m(Collection<String> a1, int a2);
+    void m(Collection<MyObject> a1, int a2);
   }
 
-  class Receiver implements Protocol {
+  static class Receiver implements Protocol {
 
 
-    private Collection<String> a1;
+    private Collection<MyObject> a1;
     private int a2;
 
     @Override
@@ -54,6 +59,14 @@ public class MessageEncoderTest {
         this.a1 = a1;
         this.a2 = a2;
       };
+    }
+  }
+
+  static class MyObject {
+    final String text;
+
+    MyObject(String text) {
+      this.text = text;
     }
   }
 
