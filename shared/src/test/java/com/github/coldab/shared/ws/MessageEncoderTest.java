@@ -1,14 +1,13 @@
 package com.github.coldab.shared.ws;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,14 +27,14 @@ public class MessageEncoderTest {
     // todo: Fix bug in socket-interface
     // https://stackoverflow.com/a/14506181/5537074
 
-    List<MyObject> myObjects = Arrays.asList(new MyObject("hello"), new MyObject("world"));
+    MyObject[] myObjects = new MyObject[] {new MyObject("hello"), new MyObject("world")};
     SocketMessage message =
         new SocketMessage("e", "m", myObjects, 2);
     byte[] bytes = MessageEncoder.encodeMessage(message);
     String debug = new String(bytes);
     System.out.println(debug);
     MessageEncoder.decodeMessage(bytes, socketReceiver);
-    assertEquals(myObjects, receiver.a1);
+    assertArrayEquals(myObjects, receiver.a1);
     assertEquals(2, receiver.a2);
   }
 
@@ -44,13 +43,13 @@ public class MessageEncoderTest {
   }
 
   interface E {
-    void m(Collection<MyObject> a1, int a2);
+    void m(MyObject[] a1, int a2);
   }
 
   static class Receiver implements Protocol {
 
 
-    private Collection<MyObject> a1;
+    private MyObject[] a1;
     private int a2;
 
     @Override
@@ -67,6 +66,18 @@ public class MessageEncoderTest {
 
     MyObject(String text) {
       this.text = text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (!(o instanceof MyObject)) {
+        return false;
+      }
+      MyObject myObject = (MyObject) o;
+      return Objects.equals(text, myObject.text);
     }
   }
 
