@@ -38,7 +38,7 @@ public class TextFile extends File {
   }
 
   public void addEdit(Edit edit) {
-    if (edits.size() != edit.getIndex()) {
+    if (getEdits().size() != edit.getIndex()) {
       throw new IllegalStateException("Invalid index");
     }
     edits.add(edit);
