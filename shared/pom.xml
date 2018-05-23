@@ -15,7 +15,7 @@
     <dependency>
       <groupId>com.github.TjeuKayim</groupId>
       <artifactId>socket-interface</artifactId>
-      <version>v0.3.4</version>
+      <version>v0.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
