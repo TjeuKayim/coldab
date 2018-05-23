@@ -16,7 +16,6 @@ import com.github.coldab.shared.ws.TextFileServer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ProjectComponent implements ProjectClient {
 
@@ -44,9 +43,17 @@ public class ProjectComponent implements ProjectClient {
   }
 
   @Override
-  public void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles) {
-    Stream.concat(textFiles.stream(), binaryFiles.stream())
-        .forEach(file -> project.getFiles().add(file));
+  public void files(TextFile[] textFiles, BinaryFile[] binaryFiles) {
+    if (textFiles != null) {
+      for (TextFile textFile : textFiles) {
+        project.getFiles().add(textFile);
+      }
+    }
+    if (binaryFiles != null) {
+      for (BinaryFile binaryFile : binaryFiles) {
+        project.getFiles().add(binaryFile);
+      }
+    }
     projectObserver.updateFiles();
   }
 
@@ -126,7 +133,7 @@ public class ProjectComponent implements ProjectClient {
 
     @Override
     public void updateTextFile(TextFile updatedFile) {
-      projectServer.files(Collections.singletonList(updatedFile), Collections.emptyList());
+      projectServer.files(new TextFile[]{updatedFile}, null);
     }
   }
 

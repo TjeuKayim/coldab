@@ -11,7 +11,7 @@ public interface UpdateSender {
   /**
    * New or updated files.
    */
-  void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles);
+  void files(TextFile[] textFiles, BinaryFile[] binaryFiles);
 
   void removeFile(int fileId);
 

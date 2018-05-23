@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * Each project is managed by a ProjectService.
@@ -113,9 +112,17 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     @Override
-    public void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles) {
-      Stream.concat(textFiles.stream(), binaryFiles.stream())
-          .forEach(this::file);
+    public void files(TextFile[] textFiles, BinaryFile[] binaryFiles) {
+      if (textFiles != null) {
+        for (TextFile textFile : textFiles) {
+          file(textFile);
+        }
+      }
+      if (binaryFiles != null) {
+        for (BinaryFile binaryFile : binaryFiles) {
+          file(binaryFile);
+        }
+      }
     }
 
     private TextFileClient textFileClient(int fileId) {
@@ -145,7 +152,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
       // Notify clients
       for (ProjectClient projectClient : clients) {
-        projectClient.files(textFiles, binaryFiles);
+        projectClient.files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
       }
     }
 

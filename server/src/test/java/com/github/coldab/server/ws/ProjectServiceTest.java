@@ -46,7 +46,7 @@ public class ProjectServiceTest {
     ProjectClient projectClient = Mockito.mock(ProjectClient.class);
     service.connect(projectClient, account);
     Mockito.verify(projectClient)
-        .files(Collections.singletonList(textFile), Collections.singletonList(binaryFile));
+        .files(new TextFile[]{textFile}, new BinaryFile[]{binaryFile});
   }
 
   @Test
@@ -57,9 +57,9 @@ public class ProjectServiceTest {
     TextFile result = new TextFile(1, "path/to/hello.world");
     ProjectClient projectClient = Mockito.mock(ProjectClient.class);
     ProjectServer projectServer = service.connect(projectClient, account);
-    projectServer.files(Collections.singletonList(textFile), Collections.emptyList());
+    projectServer.files(new TextFile[]{textFile}, null);
     Mockito.verify(projectClient, Mockito.atMost(1))
-        .files(Collections.singletonList(result), Collections.emptyList());
+        .files(new TextFile[]{textFile}, null);
   }
 
   @Test
