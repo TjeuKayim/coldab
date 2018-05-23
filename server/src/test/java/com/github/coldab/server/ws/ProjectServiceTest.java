@@ -4,6 +4,7 @@ import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
+import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
@@ -72,6 +73,6 @@ public class ProjectServiceTest {
     ProjectServer projectServer = service.connect(projectClient, account);
     projectServer.subscribe(1);
     Mockito.verify(projectClient)
-        .edits(1, new Addition[]{addition}, null);
+        .edits(1, new Addition[]{addition}, new Deletion[0]);
   }
 }
