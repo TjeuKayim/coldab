@@ -62,7 +62,7 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
     @Override
     public void newEdit(Edit edit) {
       // Check author
-      if (edit.getAccount() != account) {
+      if (!account.equals(edit.getAccount())) {
         LOGGER.severe("Edit has invalid author");
         return;
       }
