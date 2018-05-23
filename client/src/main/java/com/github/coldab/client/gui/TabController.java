@@ -2,7 +2,6 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.shared.project.TextFile;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,10 +31,10 @@ public class TabController {
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
 
-    codeArea
-        .multiPlainChanges()
-        .successionEnds(Duration.ofMillis(500))
-        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
+//    codeArea
+//        .multiPlainChanges()
+//        .successionEnds(Duration.ofMillis(500))
+//        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
 
     codeArea.multiPlainChanges()
         .subscribe(this::textChanged);
@@ -92,11 +91,11 @@ public class TabController {
     for (PlainTextChange change : changes) {
       String inserted = change.getInserted();
       String removed = change.getRemoved();
-      if (!inserted.equals("")){
+      if (!inserted.equals("")) {
         int position = change.getPosition();
-        textFileController.createAddition(position-1, inserted);
+        textFileController.createAddition(position - 1, inserted);
       }
-      if (!removed.equals("")){
+      if (!removed.equals("")) {
 
         int position = change.getPosition();
         int length = change.getNetLength();
