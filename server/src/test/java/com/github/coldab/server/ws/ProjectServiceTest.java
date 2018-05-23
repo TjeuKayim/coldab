@@ -1,5 +1,12 @@
 package com.github.coldab.server.ws;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
@@ -13,7 +20,6 @@ import com.github.coldab.shared.ws.ProjectServer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -43,9 +49,9 @@ public class ProjectServiceTest {
     project.getFiles().add(textFile);
     project.getFiles().add(binaryFile);
     // After connecting, the files should be send
-    ProjectClient projectClient = Mockito.mock(ProjectClient.class);
+    ProjectClient projectClient = mock(ProjectClient.class);
     service.connect(projectClient, account);
-    Mockito.verify(projectClient)
+    verify(projectClient)
         .files(new TextFile[]{textFile}, new BinaryFile[]{binaryFile});
   }
 
@@ -55,11 +61,12 @@ public class ProjectServiceTest {
     // The file should be given an id
     TextFile textFile = new TextFile(0, "path/to/hello.world");
     TextFile result = new TextFile(1, "path/to/hello.world");
-    ProjectClient projectClient = Mockito.mock(ProjectClient.class);
+    ProjectClient projectClient = mock(ProjectClient.class);
     ProjectServer projectServer = service.connect(projectClient, account);
     projectServer.files(new TextFile[]{textFile}, null);
-    Mockito.verify(projectClient, Mockito.atMost(1))
-        .files(new TextFile[]{textFile}, null);
+    verify(projectClient)
+        .files(new TextFile[]{textFile}, new BinaryFile[0]);
+    verifyZeroInteractions(projectClient);
   }
 
   @Test
@@ -69,10 +76,67 @@ public class ProjectServiceTest {
     Addition addition = new Addition(0, account, null, "Hello World");
     textFile.addEdit(addition);
     project.getFiles().add(textFile);
-    ProjectClient projectClient = Mockito.mock(ProjectClient.class);
+    ProjectClient projectClient = mock(ProjectClient.class);
     ProjectServer projectServer = service.connect(projectClient, account);
     projectServer.subscribe(1);
-    Mockito.verify(projectClient)
+    verify(projectClient)
         .edits(1, new Addition[]{addition}, new Deletion[0]);
+  }
+
+  @Test
+  public void confirmAddition() {
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    project.getFiles().add(textFile);
+    ProjectClient client = mock(ProjectClient.class);
+    ProjectServer server = service.connect(client, account);
+    server.subscribe(1);
+    server.addition(1, new Addition(-1, account, null, "Hello World"));
+    verify(client).confirmAddition(1, new Addition(0, account, null, "Hello World"));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void sendEditBeforeSubscribing() {
+    // Client should be subscribed before sending edits
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    project.getFiles().add(textFile);
+    ProjectClient client = mock(ProjectClient.class);
+    ProjectServer server = service.connect(client, account);
+    server.addition(1, new Addition(-1, account, null, "Hello World"));
+  }
+
+  @Test
+  public void receiveRemoteEdit() {
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    project.getFiles().add(textFile);
+    // Two clients that are subscribed to file 1
+    ProjectClient clientA = mock(ProjectClient.class);
+    ProjectServer serverA = service.connect(clientA, account);
+    serverA.subscribe(1);
+    ProjectClient clientB = mock(ProjectClient.class);
+    ProjectServer serverB = service.connect(clientB, account);
+    serverB.subscribe(1);
+    // clientA sends an edit
+    serverA.addition(1, new Addition(-1, account, null, "Hello World"));
+    // client B should receive that
+    verify(clientB).edits(1,
+        new Addition[]{new Addition(0, account, null, "Hello World")},
+        new Deletion[0]);
+  }
+
+  @Test
+  public void unsubscribe() {
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    project.getFiles().add(textFile);
+    // Two clients that are subscribed to file 1
+    ProjectClient clientA = mock(ProjectClient.class);
+    ProjectServer serverA = service.connect(clientA, account);
+    serverA.subscribe(1);
+    ProjectClient clientB = mock(ProjectClient.class);
+    ProjectServer serverB = service.connect(clientB, account);
+    serverB.subscribe(1);
+    serverB.unsubscribe(1);
+    // clientA sends an edit, but client B shouldn't receive that
+    serverA.addition(1, new Addition(-1, account, null, "Hello World"));
+    verify(clientB, never()).edits(anyInt(), any(), any());
   }
 }
