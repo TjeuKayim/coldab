@@ -49,5 +49,6 @@ public class TextFile extends File {
 
   public void confirmEdit(Edit edit, Map<Integer, Integer> localIndices) {
     edit.confirmIndex(edits.size(), localIndices);
+    addEdit(edit);
   }
 }
