@@ -1,12 +1,16 @@
 package com.github.coldab.client.project;
 
+import com.github.coldab.shared.edit.Addition;
+import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Letter;
+import com.github.coldab.shared.edit.Position;
 import com.github.coldab.shared.project.TextFile;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.IntStream;
 
 public class TextFileState {
   private final Queue<Edit> unconfirmedEdits = new ArrayDeque<>();
@@ -29,7 +33,7 @@ public class TextFileState {
     for (Edit unconfirmedEdit : unconfirmedEdits) {
       unconfirmedEdit.apply(letters);
     }
-    notifyObservers();
+    notifyObservers(edit);
   }
 
   /**
@@ -50,13 +54,36 @@ public class TextFileState {
     return letters.get(index);
   }
 
-  private void notifyObservers() {
+  private void notifyObservers(Edit edit) {
     String text = letters.stream()
         .map(l -> "" + l.getCharacter())
         .reduce((a, b) -> a + b)
         .orElse("");
     for (TextFileObserver observer : observers) {
       observer.updateText(text);
+      if (edit instanceof Addition) {
+        Addition addition = (Addition) edit;
+        Letter firstLetter = addition.getLetters().get(0);
+        int start;
+        if (firstLetter == null) {
+          start = -1;
+        } else {
+          start = letters.indexOf(firstLetter);
+        }
+        observer.remoteAddition(start, addition.getText());
+      } else if (edit instanceof Deletion) {
+        Deletion deletion = (Deletion) edit;
+        Position startPosition = deletion.getStart();
+        int start = startPosition == null ? -1 : indexOf(startPosition);
+        int length = indexOf(deletion.getEnd()) - start;
+        observer.remoteDeletion(start, length);
+      }
     }
+  }
+
+  private int indexOf(Position startPosition) {
+    return IntStream.range(0, letters.size())
+        .filter(i -> startPosition.equals(letters.get(i).getPosition()))
+        .findAny().orElseThrow(IllegalStateException::new);
   }
 }
