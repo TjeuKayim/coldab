@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 /**
  * Encode and decodes SocketMessages to JSON.
@@ -43,6 +44,8 @@ import java.time.LocalDateTime;
  */
 public class MessageEncoder {
 
+  private static final Logger LOGGER = Logger.getLogger(MessageEncoder.class.getName());
+
   private MessageEncoder() {
     throw new IllegalStateException("Utility class");
   }
@@ -64,8 +67,7 @@ public class MessageEncoder {
    */
   public static byte[] encodeMessage(SocketMessage socketMessage) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    JsonWriter writer = null;
-    writer = new JsonWriter(new OutputStreamWriter(outputStream))
+    JsonWriter writer = new JsonWriter(new OutputStreamWriter(outputStream))
         .beginArray()
         .value(socketMessage.getEndpoint())
         .value(socketMessage.getMethod());
@@ -73,13 +75,16 @@ public class MessageEncoder {
       writer.jsonValue(gson.toJson(argument));
     }
     writer.endArray().close();
-    return outputStream.toByteArray();
+    byte[] bytes = outputStream.toByteArray();
+    LOGGER.finer(() -> "Sending message: " + new String(bytes));
+    return bytes;
   }
 
   /**
    * Decodes bytes from JSON to a SocketMessage.
    */
   public static void decodeMessage(byte[] bytes, SocketReceiver receiver) {
+    LOGGER.finer(() -> "Sending message: " + new String(bytes));
     // Read bytes
     ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
     JsonElement json = gson.fromJson(new InputStreamReader(inputStream), JsonElement.class);
