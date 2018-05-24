@@ -108,7 +108,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    TabController tabController = new TabController(file, tab, projectComponent.openFile(file));
+    TabController tabController = new TabController(file, tab, projectComponent);
   }
 
   @Override

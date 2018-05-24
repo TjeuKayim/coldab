@@ -1,5 +1,6 @@
 package com.github.coldab.client.gui;
 
+import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.client.project.TextFileObserver;
 import com.github.coldab.shared.project.TextFile;
@@ -24,21 +25,22 @@ public class TabController implements TextFileObserver {
   private final TextFileController textFileController;
   private final CodeArea codeArea = new CodeArea();
 
-  public TabController(TextFile file, Tab tab, TextFileController textFileController) {
+  public TabController(TextFile file, Tab tab, ProjectComponent projectComponent) {
     this.file = file;
     this.tab = tab;
-    this.textFileController = textFileController;
-    textFileController.addObserver(this);
+    this.textFileController = projectComponent.openFile(file, this);
 
     tab.setText(file.getName());
 
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
 
-//    codeArea
-//        .multiPlainChanges()
-//        .successionEnds(Duration.ofMillis(500))
-//        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
+    /*
+    codeArea
+        .multiPlainChanges()
+        .successionEnds(Duration.ofMillis(500))
+        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
+    */
 
     codeArea.multiPlainChanges()
         .subscribe(this::textChanged);

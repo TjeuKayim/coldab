@@ -98,9 +98,10 @@ public class ProjectComponent implements ProjectClient {
 
   }
 
-  public TextFileController openFile(TextFile file) {
+  public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
     TextFileComponent textFileClient =
         new TextFileComponent(file, account, new TextFileHandler(file));
+    textFileClient.addObserver(textFileObserver);
     projectServer.subscribe(file.getId());
     textFileServices.put(file.getId(), textFileClient);
     return textFileClient;
