@@ -52,10 +52,6 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     clients.remove(projectClient);
   }
 
-  public List<ProjectClient> getClients() {
-    return Collections.unmodifiableList(clients);
-  }
-
   private class MessageReceiver implements ProjectServer {
 
     private final ProjectClient client;
