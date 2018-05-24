@@ -69,7 +69,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     public void unsubscribeAll() {
-      subscriptions.keySet().forEach(this::unsubscribe);
+      subscriptions.forEach((fileId, subscription) ->
+          textFileServices.get(fileId).disconnect(subscription.textFileClient));
     }
 
     @Override
