@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -102,6 +103,11 @@ public class MessageEncoder {
       }
       return arguments;
     });
+  }
+
+  public static void enableDebugging() {
+    LOGGER.setLevel(Level.FINER);
+    LOGGER.fine("WebSocket Debugging enabled");
   }
 
   private static class LocalDateTimeAdapter implements
