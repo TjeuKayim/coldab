@@ -87,8 +87,7 @@ public abstract class Edit {
       return false;
     }
     Edit edit = (Edit) o;
-    return id == edit.id &&
-        index == edit.index &&
+    return index == edit.index &&
         Objects.equals(creationDate, edit.creationDate) &&
         Objects.equals(start, edit.start) &&
         Objects.equals(account, edit.account);
@@ -96,7 +95,7 @@ public abstract class Edit {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, index, creationDate, start, account);
+    return Objects.hash(index, creationDate, start, account);
   }
 
   public LocalDateTime getCreationDate() {
