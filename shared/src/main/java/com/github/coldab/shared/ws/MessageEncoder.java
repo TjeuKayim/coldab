@@ -85,7 +85,7 @@ public class MessageEncoder {
    * Decodes bytes from JSON to a SocketMessage.
    */
   public static void decodeMessage(byte[] bytes, SocketReceiver receiver) {
-    LOGGER.finer(() -> "Sending message: " + new String(bytes));
+    LOGGER.finer(() -> "Received message: " + new String(bytes));
     // Read bytes
     ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
     JsonElement json = gson.fromJson(new InputStreamReader(inputStream), JsonElement.class);
