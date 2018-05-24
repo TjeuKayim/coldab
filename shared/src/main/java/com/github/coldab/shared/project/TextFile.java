@@ -47,6 +47,10 @@ public class TextFile extends File {
     edits.add(edit);
   }
 
+  /**
+   * Confirms an edit and saves it.
+   * @param localIndices Maps local-indices to remote-indices
+   */
   public void confirmEdit(Edit edit, Map<Integer, Integer> localIndices) {
     edit.confirmIndex(edits.size(), localIndices);
     addEdit(edit);

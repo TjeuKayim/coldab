@@ -102,6 +102,11 @@ public abstract class Edit {
     return creationDate;
   }
 
+  /**
+   * Confirms this edit by changing the index of this edit and start-position.
+   * @param index the new index
+   * @param localIndices Maps local-indices to remote-indices
+   */
   public void confirmIndex(int index, Map<Integer, Integer> localIndices) {
     if (this.index >= 0) {
       throw new IllegalStateException("Index should be unconfirmed");
