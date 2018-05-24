@@ -19,7 +19,7 @@ public class Deletion extends Edit {
   private Position end;
 
   @Transient
-  private final transient List<Letter> deletedLetters = new ArrayList<>();
+  private transient List<Letter> deletedLetters = new ArrayList<>();
 
   /**
    * Create an deletion.
@@ -42,6 +42,13 @@ public class Deletion extends Edit {
     this.end = end;
   }
 
+  private List<Letter> getDeletedLetters() {
+    if (deletedLetters == null) {
+      deletedLetters = new ArrayList<>();
+    }
+    return deletedLetters;
+  }
+
   @Override
   public void apply(List<Letter> letters) {
     // Find start
@@ -53,9 +60,9 @@ public class Deletion extends Edit {
     // Find end
     int endPosition = indexOf(letters, end);
     // Delete letters, but save deletedLetters
-    deletedLetters.clear();
+    getDeletedLetters().clear();
     for (int index = startPosition; index <= endPosition; index++) {
-      deletedLetters.add(letters.get(startPosition));
+      getDeletedLetters().add(letters.get(startPosition));
       letters.remove(startPosition);
     }
   }
@@ -63,7 +70,7 @@ public class Deletion extends Edit {
   @Override
   public void undo(List<Letter> letters) {
     int position = indexOf(letters, start);
-    letters.addAll(position + 1, deletedLetters);
+    letters.addAll(position + 1, getDeletedLetters());
   }
 
   public Position getEnd() {
