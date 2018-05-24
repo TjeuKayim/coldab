@@ -2,6 +2,7 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.project.TextFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
 /**
- * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
+ * An Edit is a change in a {@link TextFile}.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -111,5 +112,9 @@ public abstract class Edit {
       int startIndex = localIndices.get(start.getAdditionIndex());
       this.start = new Position(startIndex, start.getPosition());
     }
+  }
+
+  public Position getStart() {
+    return start;
   }
 }

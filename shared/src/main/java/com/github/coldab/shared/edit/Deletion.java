@@ -66,6 +66,10 @@ public class Deletion extends Edit {
     letters.addAll(position + 1, deletedLetters);
   }
 
+  public Position getEnd() {
+    return end;
+  }
+
   private int indexOf(List<Letter> letters, Position position) {
     return IntStream.range(0, letters.size())
         .filter(i -> letters.get(i).getPosition().equals(position))
