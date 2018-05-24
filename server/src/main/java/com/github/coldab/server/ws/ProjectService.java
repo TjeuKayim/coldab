@@ -15,6 +15,7 @@ import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,9 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     public MessageReceiver(ProjectClient client, Account account) {
       this.client = client;
       this.account = account;
-      filesUpdated(project.getFiles().stream().toArray(File[]::new));
+      filesUpdated(
+          Collections.singletonList(client),
+          project.getFiles().toArray(new File[0]));
     }
 
     @Override
@@ -141,10 +144,10 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       file = fileStore.save(file);
       project.getFiles().add(file);
       // Notify all clients about it
-      filesUpdated(file);
+      filesUpdated(clients, file);
     }
 
-    private void filesUpdated(File... files) {
+    private void filesUpdated(Collection<ProjectClient> clients, File... files) {
       List<TextFile> textFiles = new ArrayList<>();
       List<BinaryFile> binaryFiles = new ArrayList<>();
       for (File file : files) {
@@ -162,7 +165,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
       // Notify clients
       for (ProjectClient projectClient : clients) {
-        projectClient.files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
+        projectClient
+            .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
       }
     }
 
