@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Position {
 
-  private final int additionIndex;
+  private int additionIndex;
 
   private final int position;
 
@@ -39,5 +39,9 @@ public class Position {
   @Override
   public int hashCode() {
     return Objects.hash(additionIndex, position);
+  }
+
+  public void confirmAddition(int additionIndex) {
+    this.additionIndex = additionIndex;
   }
 }

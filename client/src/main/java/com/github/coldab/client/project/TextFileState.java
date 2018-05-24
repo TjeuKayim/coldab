@@ -45,9 +45,12 @@ public class TextFileState {
   }
 
   public void confirmLocalEdit(Edit edit) {
-    //TODO: letters should be updated to use the new index
-    unconfirmedEdits.remove();
+    int unconfirmed = unconfirmedEdits.remove().getIndex();
     file.addEdit(edit);
+    letters.stream()
+        .map(Letter::getPosition)
+        .filter(p -> p.getAdditionIndex() == unconfirmed)
+        .forEach(p -> p.confirmAddition(edit.getIndex()));
   }
 
   public Letter letterAt(int index) {
