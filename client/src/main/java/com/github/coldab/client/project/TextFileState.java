@@ -61,23 +61,27 @@ public class TextFileState {
         .orElse("");
     for (TextFileObserver observer : observers) {
       observer.updateText(text);
-      if (edit instanceof Addition) {
-        Addition addition = (Addition) edit;
-        Letter firstLetter = addition.getLetters().get(0);
-        int start;
-        if (firstLetter == null) {
-          start = -1;
-        } else {
-          start = letters.indexOf(firstLetter);
-        }
-        observer.remoteAddition(start, addition.getText());
-      } else if (edit instanceof Deletion) {
-        Deletion deletion = (Deletion) edit;
-        Position startPosition = deletion.getStart();
-        int start = startPosition == null ? -1 : indexOf(startPosition);
-        int length = indexOf(deletion.getEnd()) - start;
-        observer.remoteDeletion(start, length);
+      //parseEdits(edit, observer);
+    }
+  }
+
+  private void parseEdits(Edit edit, TextFileObserver observer) {
+    if (edit instanceof Addition) {
+      Addition addition = (Addition) edit;
+      Letter firstLetter = addition.getLetters().get(0);
+      int start;
+      if (firstLetter == null) {
+        start = -1;
+      } else {
+        start = letters.indexOf(firstLetter);
       }
+      observer.remoteAddition(start, addition.getText());
+    } else if (edit instanceof Deletion) {
+      Deletion deletion = (Deletion) edit;
+      Position startPosition = deletion.getStart();
+      int start = startPosition == null ? -1 : indexOf(startPosition);
+      int length = indexOf(deletion.getEnd()) - start;
+      observer.remoteDeletion(start, length);
     }
   }
 
