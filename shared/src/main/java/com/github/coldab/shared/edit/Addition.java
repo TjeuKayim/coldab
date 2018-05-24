@@ -60,7 +60,7 @@ public class Addition extends Edit {
     int index = -1;
     if (start != null) {
       index = IntStream.range(0, letters.size())
-          .filter(i -> letters.get(i).getPosition().equals(start))
+          .filter(i -> start.equals(letters.get(i).getPosition()))
           .findAny().orElseThrow(IllegalStateException::new);
     }
     letters.addAll(index + 1, getLetters());
