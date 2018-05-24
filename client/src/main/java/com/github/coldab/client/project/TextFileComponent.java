@@ -68,10 +68,6 @@ public class TextFileComponent implements TextFileClient, TextFileController {
     server.newAnnotation(annotation);
   }
 
-  /**
-   * Create a new addition and send it to the server.
-   * @param position index of the character to insert text after, or -1 if at the start of file
-   */
   @Override
   public void createAddition(int position, String text) {
     int index = getIndex();
@@ -79,12 +75,6 @@ public class TextFileComponent implements TextFileClient, TextFileController {
     createEdit(addition);
   }
 
-  /**
-   * Create a new deletion and send it to the server.
-   *
-   * @param position start (inclusive)
-   * @param length amount of characters to remove
-   */
   @Override
   public void createDeletion(int position, int length) {
     Position start = getPosition(position);
