@@ -16,6 +16,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.reactfx.SuspendableEventStream;
 
 public class TabController implements TextFileObserver {
 
@@ -24,12 +25,16 @@ public class TabController implements TextFileObserver {
   private final Tab tab;
   private final TextFileController textFileController;
   private final CodeArea codeArea = new CodeArea();
+  private SuspendableEventStream<List<PlainTextChange>> eventStream;
 
   public TabController(TextFile file, Tab tab, ProjectComponent projectComponent) {
     this.file = file;
     this.tab = tab;
+    initializeGUI();
     this.textFileController = projectComponent.openFile(file, this);
+  }
 
+  private void initializeGUI() {
     tab.setText(file.getName());
 
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
@@ -42,8 +47,8 @@ public class TabController implements TextFileObserver {
         .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
     */
 
-    codeArea.multiPlainChanges()
-        .subscribe(this::textChanged);
+    eventStream = codeArea.multiPlainChanges().suppressible();
+    eventStream.subscribe(this::textChanged);
 
     codeArea.getStylesheets().add("css/manual-highlighting.css");
   }
@@ -102,22 +107,16 @@ public class TabController implements TextFileObserver {
         textFileController.createAddition(position - 1, inserted);
       }
       if (!removed.equals("")) {
-
         int position = change.getPosition();
         int length = change.getNetLength();
-        textFileController.createDeletion(position, -length);
+        textFileController.createDeletion(position - 1, -length);
       }
-      System.out.println(changes);
-      int position = change.getPosition();
-      textFileController.createAddition(position, inserted);
     }
   }
 
   @Override
   public void updateText(String text) {
-    Platform.runLater(() -> {
-      codeArea.replaceText(text);
-    });
+    Platform.runLater(() -> eventStream.suspendWhile(() -> codeArea.replaceText(text)));
   }
 
   @Override
