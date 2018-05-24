@@ -42,7 +42,7 @@ public class ConnectionManager {
   }
 
   public void disconnect(ClientEndpoint clientEndpoint) {
-    ProjectSession projectSession = clients.get(clientEndpoint);
+    ProjectSession projectSession = clients.remove(clientEndpoint);
     projectSession.chatService.disconnect(clientEndpoint.chat());
     projectSession.projectService.disconnect(clientEndpoint.project());
   }

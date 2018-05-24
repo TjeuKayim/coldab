@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
   private final Project project;
-  private final List<ProjectClient> clients = new ArrayList<>();
+  private final Map<ProjectClient, MessageReceiver> clients = new HashMap<>();
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
   private final FileStore fileStore;
@@ -43,13 +43,15 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
   @Override
   public ProjectServer connect(ProjectClient projectClient, Account account) {
-    clients.add(projectClient);
-    return new MessageReceiver(projectClient, account);
+    MessageReceiver messageReceiver = new MessageReceiver(projectClient, account);
+    clients.put(projectClient, messageReceiver);
+    return messageReceiver;
   }
 
   @Override
   public void disconnect(ProjectClient projectClient) {
-    clients.remove(projectClient);
+    clients.remove(projectClient)
+        .unsubscribeAll();
   }
 
   private class MessageReceiver implements ProjectServer {
@@ -64,6 +66,10 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       filesUpdated(
           Collections.singletonList(client),
           project.getFiles().toArray(new File[0]));
+    }
+
+    public void unsubscribeAll() {
+      subscriptions.keySet().forEach(this::unsubscribe);
     }
 
     @Override
@@ -140,7 +146,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       file = fileStore.save(file);
       project.getFiles().add(file);
       // Notify all clients about it
-      filesUpdated(clients, file);
+      filesUpdated(clients.keySet(), file);
     }
 
     private void filesUpdated(Collection<ProjectClient> clients, File... files) {
