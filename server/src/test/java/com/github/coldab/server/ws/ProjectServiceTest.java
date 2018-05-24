@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
@@ -38,6 +39,7 @@ public class ProjectServiceTest {
 
   @Before
   public void setUp() throws Exception {
+    TimeProvider.useMock();
     project = new Project("MyProject");
     service = new ProjectService(project, projectStore, fileStore);
   }
@@ -138,5 +140,18 @@ public class ProjectServiceTest {
     // clientA sends an edit, but client B shouldn't receive that
     serverA.addition(1, new Addition(-1, account, null, "Hello World"));
     verify(clientB, never()).edits(anyInt(), any(), any());
+  }
+
+  @Test
+  public void editCounter() {
+    TextFile textFile = new TextFile(1, "path/to/hello.world");
+    project.getFiles().add(textFile);
+    ProjectClient client = mock(ProjectClient.class);
+    ProjectServer server = service.connect(client, account);
+    server.subscribe(1);
+    server.addition(1, new Addition(-1, account, null, "Hello World"));
+    verify(client).confirmAddition(1, new Addition(0, account, null, "Hello World"));
+    server.addition(1, new Addition(-2, account, null, "Hello World"));
+    verify(client).confirmAddition(1, new Addition(1, account, null, "Hello World"));
   }
 }
