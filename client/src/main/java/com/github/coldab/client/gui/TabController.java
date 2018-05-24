@@ -1,12 +1,14 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.project.TextFileController;
+import com.github.coldab.client.project.TextFileObserver;
 import com.github.coldab.shared.project.TextFile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -14,19 +16,21 @@ import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
-public class TabController {
+public class TabController implements TextFileObserver {
 
 
   private final TextFile file;
   private final Tab tab;
   private final TextFileController textFileController;
+  private final CodeArea codeArea = new CodeArea();
 
   public TabController(TextFile file, Tab tab, TextFileController textFileController) {
     this.file = file;
     this.tab = tab;
     this.textFileController = textFileController;
+    textFileController.addObserver(this);
+
     tab.setText(file.getName());
-    CodeArea codeArea = new CodeArea();
 
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
@@ -105,5 +109,22 @@ public class TabController {
       int position = change.getPosition();
       textFileController.createAddition(position, inserted);
     }
+  }
+
+  @Override
+  public void updateText(String text) {
+    Platform.runLater(() -> {
+      codeArea.replaceText(text);
+    });
+  }
+
+  @Override
+  public void updateAnnotations() {
+
+  }
+
+  @Override
+  public void updateTextFile() {
+
   }
 }
