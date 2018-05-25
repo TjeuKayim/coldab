@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -51,14 +50,18 @@ public class Deletion extends Edit {
 
   @Override
   public void apply(List<Letter> letters) {
-    // Find start
-    int startPosition = 0;
-    if (start != null) {
+    int startPosition;
+    int endPosition;
+    try {
+      // Find start
       // add 1 because it's exclusive
-      startPosition = indexOf(letters, start) + 1;
+      startPosition = start == null ? 0 : indexOf(letters, start) + 1;
+      // Find end
+      endPosition = indexOf(letters, end);
+    } catch (Exception e) {
+      LOGGER.info("Resolve conflict by not applying this addition");
+      return;
     }
-    // Find end
-    int endPosition = indexOf(letters, end);
     // Delete letters, but save deletedLetters
     getDeletedLetters().clear();
     for (int index = startPosition; index <= endPosition; index++) {
@@ -75,12 +78,6 @@ public class Deletion extends Edit {
 
   public Position getEnd() {
     return end;
-  }
-
-  private int indexOf(List<Letter> letters, Position position) {
-    return IntStream.range(0, letters.size())
-        .filter(i -> letters.get(i).getPosition().equals(position))
-        .findAny().orElseThrow(IllegalStateException::new);
   }
 
   @Override

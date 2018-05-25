@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -57,13 +56,12 @@ public class Addition extends Edit {
 
   @Override
   public void apply(List<Letter> letters) {
-    int index = -1;
-    if (start != null) {
-      index = IntStream.range(0, letters.size())
-          .filter(i -> start.equals(letters.get(i).getPosition()))
-          .findAny().orElseThrow(IllegalStateException::new);
+    try {
+      int index = start == null ? -1 : indexOf(letters, start);
+      letters.addAll(index + 1, getLetters());
+    } catch (IllegalStateException e) {
+      LOGGER.info("Resolve conflict by not applying this addition");
     }
-    letters.addAll(index + 1, getLetters());
   }
 
   @Override

@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
+import java.util.stream.IntStream;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -44,6 +46,8 @@ public abstract class Edit {
   @ManyToOne
   private final Account account;
 
+  static final Logger LOGGER = Logger.getLogger(Edit.class.getName());
+
   /**
    * Create an edit.
    *
@@ -77,6 +81,12 @@ public abstract class Edit {
    * @param letters the letters to undo changes on
    */
   public abstract void undo(List<Letter> letters);
+
+  protected int indexOf(List<Letter> letters, Position position) {
+    return IntStream.range(0, letters.size())
+        .filter(i -> letters.get(i).getPosition().equals(position))
+        .findAny().orElseThrow(IllegalStateException::new);
+  }
 
   @Override
   public boolean equals(Object o) {
