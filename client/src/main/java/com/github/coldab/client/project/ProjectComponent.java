@@ -13,9 +13,12 @@ import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ProjectComponent implements ProjectClient {
 
@@ -64,16 +67,9 @@ public class ProjectComponent implements ProjectClient {
 
   @Override
   public void edits(int fileId, Addition[] additions, Deletion[] deletions) {
-    if (additions != null) {
-      for (Addition addition : additions) {
-        textFileServices.get(fileId).newEdit(addition);
-      }
-    }
-    if (deletions != null) {
-      for (Deletion deletion : deletions) {
-        textFileServices.get(fileId).newEdit(deletion);
-      }
-    }
+    Stream.concat(Arrays.stream(additions), Arrays.stream(deletions))
+        .sorted(Comparator.comparingInt(Edit::getIndex))
+        .forEach(e -> textFileServices.get(fileId).newEdit(e));
   }
 
   @Override
