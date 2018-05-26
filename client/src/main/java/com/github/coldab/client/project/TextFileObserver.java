@@ -1,5 +1,7 @@
 package com.github.coldab.client.project;
 
+import java.util.Collection;
+
 public interface TextFileObserver {
 
   void updateText(String text);
@@ -9,22 +11,64 @@ public interface TextFileObserver {
   void updateTextFile();
 
   /**
-   * An remote addition has been created.
-   *
-   * @param start index of the character to insert text after, or -1 if at the start of file
+   * After resolving conflicts, the edits are flattened to RemoteDeletions and RemoteAdditions.
+   */
+  default void remoteEdits(Collection<RemoteDeletion> deletions, Collection<RemoteAddition> additions) {
+  }
+
+  /**
+   * An remote addition, after resolving conflicts.
    * <p>
    * To insert an "," after "Hello" in "Hello World" to get "Hello, World", start = 4; text = ","
    * </p>
    */
-  default void remoteAddition(int start, String text) {
+  class RemoteAddition {
+
+    /**
+     * start index of the character to insert text after, or -1 if at the start of file.
+     */
+    private final int start;
+    private final String text;
+
+    public RemoteAddition(int start, String text) {
+      this.start = start;
+      this.text = text;
+    }
+
+    public int getStart() {
+      return start;
+    }
+
+    public String getText() {
+      return text;
+    }
   }
 
   /**
-   * An remote deletion has been created.
-   *
-   * @param start the first character to delete, inclusive
-   * @param length the number of characters to delete
+   * An remote deletion, after resolving conflicts.
    */
-  default void remoteDeletion(int start, int length) {
+  class RemoteDeletion {
+
+    /**
+     * The first character to delete, inclusive.
+     */
+    private final int start;
+    /**
+     * The number of characters to delete.
+     */
+    private final int length;
+
+    public RemoteDeletion(int start, int length) {
+      this.start = start;
+      this.length = length;
+    }
+
+    public int getStart() {
+      return start;
+    }
+
+    public int getLength() {
+      return length;
+    }
   }
 }
