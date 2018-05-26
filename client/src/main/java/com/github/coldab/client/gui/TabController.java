@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.MultiChangeBuilder;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
@@ -116,7 +117,7 @@ public class TabController implements TextFileObserver {
 
   @Override
   public void updateText(String text) {
-    Platform.runLater(() -> eventStream.suspendWhile(() -> codeArea.replaceText(text)));
+    //Platform.runLater(() -> eventStream.suspendWhile(() -> codeArea.replaceText(text)));
   }
 
   @Override
@@ -127,5 +128,19 @@ public class TabController implements TextFileObserver {
   @Override
   public void updateTextFile() {
 
+  }
+
+  @Override
+  public void remoteEdits(Collection<RemoteDeletion> deletions,
+      Collection<RemoteAddition> additions) {
+    Platform.runLater(() -> eventStream.suspendWhile(() -> {
+      MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
+          .createMultiChange();
+      deletions.forEach(d -> builder
+          .deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1));
+      additions.forEach(a -> builder
+          .insertTextAbsolutely(a.getStart() + 1, a.getText()));
+      builder.commit();
+    }));
   }
 }
