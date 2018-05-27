@@ -1,6 +1,6 @@
 package com.github.coldab.client.gui;
 
-import com.github.coldab.client.project.ProjectComponent;
+import com.github.coldab.client.project.ProjectController;
 import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.client.project.TextFileObserver;
 import com.github.coldab.shared.project.TextFile;
@@ -27,16 +27,16 @@ public class TabController implements TextFileObserver {
   private final Tab tab;
   private final TextFileController textFileController;
   private final CodeArea codeArea = new CodeArea();
-  private final ProjectComponent projectComponent;
+  private final ProjectController projectController;
   private SuspendableEventStream<List<PlainTextChange>> eventStream;
   private static final Logger LOGGER = Logger.getLogger(TabController.class.getName());
 
-  public TabController(TextFile file, Tab tab, ProjectComponent projectComponent) {
+  public TabController(TextFile file, Tab tab, ProjectController projectController) {
     this.file = file;
     this.tab = tab;
     initializeGui();
-    this.projectComponent = projectComponent;
-    this.textFileController = projectComponent.openFile(file, this);
+    this.projectController = projectController;
+    this.textFileController = projectController.openFile(file, this);
   }
 
   private void initializeGui() {
@@ -63,7 +63,7 @@ public class TabController implements TextFileObserver {
   }
 
   private void closeTab() {
-    projectComponent.closeFile(file);
+    projectController.closeFile(file);
   }
 
 

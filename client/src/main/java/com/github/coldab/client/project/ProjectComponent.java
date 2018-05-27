@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import javafx.application.Platform;
 
-public class ProjectComponent implements ProjectClient {
+public class ProjectComponent implements ProjectClient, ProjectController {
 
   private final ProjectServer projectServer;
   private final Project project;
@@ -98,6 +98,7 @@ public class ProjectComponent implements ProjectClient {
 
   }
 
+  @Override
   public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
     TextFileComponent textFileClient =
         new TextFileComponent(file, account, new TextFileHandler(file));
@@ -107,6 +108,7 @@ public class ProjectComponent implements ProjectClient {
     return textFileClient;
   }
 
+  @Override
   public void closeFile(TextFile file) {
     projectServer.unsubscribe(file.getId());
   }

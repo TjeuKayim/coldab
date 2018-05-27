@@ -4,6 +4,7 @@ import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.gui.FileTree.FileNode;
 import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
+import com.github.coldab.client.project.ProjectController;
 import com.github.coldab.client.project.ProjectObserver;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
@@ -53,7 +54,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private final Chat chat = new Chat();
   private Account account = new Account("HenkJan", "henk@jan.org");
   private ChatComponent chatComponent;
-  private ProjectComponent projectComponent;
+  private ProjectController projectController;
 
   public EditorController(Project project) {
     this.project = project;
@@ -64,7 +65,9 @@ public class EditorController implements Initializable, ProjectObserver {
     //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
       chatComponent = new ChatComponent(chat, serverEndpoint.chat());
-      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account, this);
+      ProjectComponent projectComponent = new ProjectComponent(project, serverEndpoint.project(),
+          account, this);
+      projectController = projectComponent;
       Platform.runLater(this::afterConnectionEstablished);
       return new WebSocketEndpoint(chatComponent, projectComponent);
     });
@@ -108,7 +111,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    TabController tabController = new TabController(file, tab, projectComponent);
+    new TabController(file, tab, projectController);
   }
 
   @Override
@@ -163,6 +166,10 @@ public class EditorController implements Initializable, ProjectObserver {
 
   @Override
   public void updateCollaborators() {
+
+  }
+
+  public void newFile(ActionEvent actionEvent) {
 
   }
 }
