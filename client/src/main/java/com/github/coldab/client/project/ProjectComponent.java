@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
+import javafx.application.Platform;
 
 public class ProjectComponent implements ProjectClient {
 
@@ -67,19 +68,22 @@ public class ProjectComponent implements ProjectClient {
 
   @Override
   public void edits(int fileId, Addition[] additions, Deletion[] deletions) {
-    Stream.concat(Arrays.stream(additions), Arrays.stream(deletions))
-        .sorted(Comparator.comparingInt(Edit::getIndex))
-        .forEach(e -> textFileServices.get(fileId).newEdit(e));
+    Platform.runLater(() ->
+        Stream.concat(Arrays.stream(additions), Arrays.stream(deletions))
+            .sorted(Comparator.comparingInt(Edit::getIndex))
+            .forEach(e -> textFileServices.get(fileId).newEdit(e)));
   }
 
   @Override
   public void confirmAddition(int fileId, Addition addition) {
-    textFileServices.get(fileId).confirmEdit(addition);
+    Platform.runLater(() ->
+        textFileServices.get(fileId).confirmEdit(addition));
   }
 
   @Override
   public void confirmDeletion(int fileId, Deletion deletion) {
-    textFileServices.get(fileId).confirmEdit(deletion);
+    Platform.runLater(() ->
+        textFileServices.get(fileId).confirmEdit(deletion));
   }
 
   @Override

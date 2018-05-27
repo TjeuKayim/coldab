@@ -7,9 +7,9 @@ import com.github.coldab.shared.project.TextFile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -27,6 +27,7 @@ public class TabController implements TextFileObserver {
   private final TextFileController textFileController;
   private final CodeArea codeArea = new CodeArea();
   private SuspendableEventStream<List<PlainTextChange>> eventStream;
+  private static final Logger LOGGER = Logger.getLogger(TabController.class.getName());
 
   public TabController(TextFile file, Tab tab, ProjectComponent projectComponent) {
     this.file = file;
@@ -133,7 +134,7 @@ public class TabController implements TextFileObserver {
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {
-    Platform.runLater(() -> eventStream.suspendWhile(() -> {
+    eventStream.suspendWhile(() -> {
       MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
           .createMultiChange();
       deletions.forEach(d -> builder
@@ -141,6 +142,6 @@ public class TabController implements TextFileObserver {
       additions.forEach(a -> builder
           .insertTextAbsolutely(a.getStart() + 1, a.getText()));
       builder.commit();
-    }));
+    });
   }
 }
