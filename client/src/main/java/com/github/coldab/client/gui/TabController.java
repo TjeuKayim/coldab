@@ -4,6 +4,7 @@ import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.client.project.TextFileObserver;
 import com.github.coldab.shared.project.TextFile;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,22 +33,25 @@ public class TabController implements TextFileObserver {
   public TabController(TextFile file, Tab tab, ProjectComponent projectComponent) {
     this.file = file;
     this.tab = tab;
-    initializeGUI();
+    initializeGui();
     this.textFileController = projectComponent.openFile(file, this);
   }
 
-  private void initializeGUI() {
+  private void initializeGui() {
     tab.setText(file.getName());
 
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
 
-    /*
     codeArea
         .multiPlainChanges()
         .successionEnds(Duration.ofMillis(500))
-        .subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
-    */
+        .subscribe(ignore -> {
+          StyleSpans<Collection<String>> styleSpans = computeHighlighting(codeArea.getText());
+          if (styleSpans != null) {
+            codeArea.setStyleSpans(0, styleSpans);
+          }
+        });
 
     eventStream = codeArea.multiPlainChanges().suppressible();
     eventStream.subscribe(this::textChanged);
@@ -60,23 +64,20 @@ public class TabController implements TextFileObserver {
 
     Matcher matcher = PATTERN.matcher(text);
     int lastKwEnd = 0;
-    StyleSpansBuilder<Collection<String>> spansBuilder
-        = new StyleSpansBuilder<>();
+    StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+    if (!matcher.find()) {
+      return null;
+    }
     while (matcher.find()) {
       String styleClass =
           matcher.group("KEYWORD") != null ? "keyword" :
               matcher.group("KEYWORD2") != null ? "paren" :
-
-                  matcher.group("BRACE") != null ? "brace" :
-
-                      null;
+                  matcher.group("BRACE") != null ? "brace" : null;
       assert styleClass != null;
       spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
       spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
       lastKwEnd = matcher.end();
     }
-
-    //System.out.println(text);
     return spansBuilder.create();
   }
 
