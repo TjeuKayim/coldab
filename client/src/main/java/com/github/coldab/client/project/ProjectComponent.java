@@ -6,6 +6,7 @@ import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.BinaryFile;
+import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.session.Caret;
@@ -111,6 +112,15 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   @Override
   public void closeFile(TextFile file) {
     projectServer.unsubscribe(file.getId());
+  }
+
+  @Override
+  public void createFile(File file) {
+    if (file instanceof TextFile) {
+      projectServer.files(new TextFile[]{(TextFile) file}, new BinaryFile[0]);
+    } else if (file instanceof BinaryFile) {
+      projectServer.files(new TextFile[0], new BinaryFile[]{((BinaryFile) file)});
+    }
   }
 
   /**
