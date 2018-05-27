@@ -118,7 +118,12 @@ public class TabController implements TextFileObserver {
 
   @Override
   public void updateText(String text) {
-    //Platform.runLater(() -> eventStream.suspendWhile(() -> codeArea.replaceText(text)));
+    if (!codeArea.getText().equals(text)) {
+      LOGGER.severe("Unresolvable conflict!!!");
+      LOGGER.info("Expected: " + text);
+      LOGGER.info("Actual: " + codeArea.getText());
+      throw new IllegalStateException("Unresolvable conflict");
+    }
   }
 
   @Override
