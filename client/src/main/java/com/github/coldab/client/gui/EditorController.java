@@ -15,6 +15,7 @@ import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -27,6 +28,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
@@ -170,6 +172,16 @@ public class EditorController implements Initializable, ProjectObserver {
   }
 
   public void newFile(ActionEvent actionEvent) {
-
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New file");
+    dialog.setHeaderText("New file");
+    dialog.setContentText("Filename:");
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(fileName -> {
+      if (fileName.isEmpty()) {
+        return;
+      }
+      projectController.createFile(new TextFile(0, fileName));
+    });
   }
 }
