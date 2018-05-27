@@ -27,6 +27,7 @@ public class TabController implements TextFileObserver {
   private final Tab tab;
   private final TextFileController textFileController;
   private final CodeArea codeArea = new CodeArea();
+  private final ProjectComponent projectComponent;
   private SuspendableEventStream<List<PlainTextChange>> eventStream;
   private static final Logger LOGGER = Logger.getLogger(TabController.class.getName());
 
@@ -34,11 +35,13 @@ public class TabController implements TextFileObserver {
     this.file = file;
     this.tab = tab;
     initializeGui();
+    this.projectComponent = projectComponent;
     this.textFileController = projectComponent.openFile(file, this);
   }
 
   private void initializeGui() {
     tab.setText(file.getName());
+    tab.setOnClosed(e -> closeTab());
 
     codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
     tab.setContent(codeArea);
@@ -57,6 +60,10 @@ public class TabController implements TextFileObserver {
     eventStream.subscribe(this::textChanged);
 
     codeArea.getStylesheets().add("css/manual-highlighting.css");
+  }
+
+  private void closeTab() {
+    projectComponent.closeFile(file);
   }
 
 
