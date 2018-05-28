@@ -5,8 +5,12 @@ import javax.persistence.Entity;
 
 @Entity
 public class BinaryFile extends File {
+
   @Column(nullable = false)
-  private final String hash;
+  private String hash;
+
+  public BinaryFile() {
+  }
 
   public BinaryFile(int id, String path, String hash) {
     super(id, path);

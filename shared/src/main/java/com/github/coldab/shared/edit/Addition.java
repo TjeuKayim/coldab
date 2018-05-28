@@ -22,9 +22,13 @@ public class Addition extends Edit {
 
   private String text;
 
+  public Addition() {
+  }
+
   /**
    * Create an addition.
-   *  @param start the start position, or null if adding at the start of the document
+   *
+   * @param start the start position, or null if adding at the start of the document
    * @param text the characters to insert
    */
   public Addition(Account account, Position start, String text) {

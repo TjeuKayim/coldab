@@ -35,7 +35,7 @@ public abstract class Edit {
   private int index;
 
   @Column(nullable = false)
-  private final LocalDateTime creationDate;
+  private LocalDateTime creationDate;
 
   /**
    * The start position where the edit is applied.
@@ -44,9 +44,12 @@ public abstract class Edit {
   protected Position start;
 
   @ManyToOne
-  private final Account account;
+  private Account account;
 
   static final Logger LOGGER = Logger.getLogger(Edit.class.getName());
+
+  public Edit() {
+  }
 
   /**
    * Create an edit.
@@ -114,6 +117,7 @@ public abstract class Edit {
 
   /**
    * Confirms this edit by changing the index of this edit and start-position.
+   *
    * @param index the new index
    * @param localIndices Maps local-indices to remote-indices
    */

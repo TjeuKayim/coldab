@@ -8,7 +8,10 @@ public class Position {
 
   private int additionIndex;
 
-  private final int position;
+  private int position;
+
+  public Position() {
+  }
 
   public Position(int additionIndex, int position) {
     this.additionIndex = additionIndex;

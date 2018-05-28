@@ -20,9 +20,13 @@ public class Deletion extends Edit {
   @Transient
   private transient List<Letter> deletedLetters = new ArrayList<>();
 
+  public Deletion() {
+  }
+
   /**
    * Create an deletion.
-   *  @param start the start position (exclusive), or null if adding at the start of the document
+   *
+   * @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
   public Deletion(Account account, Position start, Position end) {

@@ -19,6 +19,9 @@ public class TextFile extends File {
   @OneToMany
   private transient List<Annotation> annotations = new ArrayList<>();
 
+  public TextFile() {
+  }
+
   public TextFile(int id, String path) {
     super(id, path);
   }
@@ -49,6 +52,7 @@ public class TextFile extends File {
 
   /**
    * Confirms an edit and saves it.
+   *
    * @param localIndices Maps local-indices to remote-indices
    */
   public void confirmEdit(Edit edit, Map<Integer, Integer> localIndices) {

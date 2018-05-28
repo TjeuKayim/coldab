@@ -14,23 +14,26 @@ import javax.persistence.InheritanceType;
  * A binary-file or text-file.
  *
  * <p>
- *   Path is the relative path without leading slash.
- *   Example: "path/to/file.txt"
+ * Path is the relative path without leading slash. Example: "path/to/file.txt"
  * </p>
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class File {
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
-  private final int id;
+  private int id;
 
   @Column(unique = true, nullable = false)
   private String path;
 
   @Column(nullable = false)
   private final LocalDateTime creationDate = TimeProvider.getInstance().now();
+
+  public File() {
+  }
 
   public File(int id, String path) {
     this.id = id;
