@@ -33,7 +33,7 @@ public class Main {
       }
       String host = commandLine.getOptionValue("h");
       if (host != null) {
-        webSocketEndpoint = "ws://" + host + "/ws/";
+        webSocketEndpoint = "ws://" + host + ":8080/ws/";
         restEndpoint = "http://" + host + ":8080";
       }
     } catch (Exception exception) {
