@@ -14,8 +14,8 @@ public class AuthenticationController {
     return principal;
   }
 
-  @RequestMapping(value = "succes")
-  public boolean succes() {
-    return false;
-  }
+//  @RequestMapping(value = "succes")
+//  public boolean succes() {
+//    return false;
+//  }
 }

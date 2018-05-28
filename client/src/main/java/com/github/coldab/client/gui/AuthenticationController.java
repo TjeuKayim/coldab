@@ -15,6 +15,10 @@ public class AuthenticationController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    com.sun.javafx.webkit.WebConsoleListener.setDefaultListener(
+        (webView, message, lineNumber, sourceId) ->
+            System.out.println("Console: [" + sourceId + ":" + lineNumber + "] " + message)
+    );
 
     String url = getClass().getResource("/html/index.html").toExternalForm();
 
