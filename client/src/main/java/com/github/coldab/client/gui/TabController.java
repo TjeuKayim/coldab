@@ -72,9 +72,7 @@ public class TabController implements TextFileObserver {
     Matcher matcher = PATTERN.matcher(text);
     int lastKwEnd = 0;
     StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-    if (!matcher.find()) {
-      return null;
-    }
+    int counter = 0;
     while (matcher.find()) {
       String styleClass =
           matcher.group("KEYWORD") != null ? "keyword" :
@@ -84,6 +82,10 @@ public class TabController implements TextFileObserver {
       spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
       spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
       lastKwEnd = matcher.end();
+      counter++;
+    }
+    if (counter == 0) {
+      return null;
     }
     return spansBuilder.create();
   }
