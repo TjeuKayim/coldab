@@ -37,7 +37,7 @@ public class Project {
   private transient final List<File> files = new ArrayList<>();
 
   @Transient
-  private transient Chat chat;
+  private final transient Chat chat = new Chat();
 
   public Project() {
   }
@@ -80,9 +80,5 @@ public class Project {
 
   public Chat getChat() {
     return chat;
-  }
-
-  public void setChat(Chat chat) {
-    this.chat = chat;
   }
 }
