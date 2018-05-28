@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Sign-In</title>
+</head>
+<body>
+<div class="g-signin2" data-width="300" data-height="200" data-longtitle="true"></div>
+<script src="https://apis.google.com/js/api:client.js"></script>
+<script>
+  gapi.load('auth2', function () {
+    auth2 = gapi.auth2.init({
+      client_id: '707823518966-pp8umvmq0eq83198nvck3bqdobpn8e2u.apps.googleusercontent.com',
+      fetch_basic_profile: true,
+      scope: 'profile'
+    });
+
+    auth2.signIn().then(function () {
+      console.log("Signed in!");
+      var token = auth2.currentUser.get().getAuthResponse().id_token;
+      console.log("Token: " + token);
+    });
+  })
+</script>
+</body>
+</html>
