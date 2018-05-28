@@ -1,5 +1,6 @@
 package com.github.coldab.client.ws;
 
+import com.github.coldab.client.Main;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
@@ -21,7 +22,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 public class WebSocketConnection extends TextWebSocketHandler {
 
-  public static final String WS_ENDPOINT = "ws://localhost:8080/ws/";
   private WebSocketSession session;
   private SocketReceiver socketReceiver;
   private ServerEndpoint serverEndpoint;
@@ -32,7 +32,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
       Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
     this.endpointFactory = endpointFactory;
     WebSocketClient client = new StandardWebSocketClient();
-    String url = WS_ENDPOINT + project.getId();
+    String url = Main.getWebSocketEndpoint() + project.getId();
     WebSocketConnectionManager manager = new WebSocketConnectionManager(client, this, url);
     manager.start();
     LOGGER.info("Connecting to WebSocket");
