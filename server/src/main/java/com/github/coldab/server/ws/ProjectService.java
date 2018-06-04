@@ -58,6 +58,29 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         .unsubscribeAll();
   }
 
+  private void notifyFiles(Collection<ProjectClient> clients, File... files) {
+    List<TextFile> textFiles = new ArrayList<>();
+    List<BinaryFile> binaryFiles = new ArrayList<>();
+    for (File file : files) {
+      if (file instanceof TextFile) {
+        TextFile textFile = (TextFile) file;
+        textFiles.add(textFile);
+        textFileServices.computeIfAbsent(file.getId(),
+            id -> new TextFileService(textFile, fileStore));
+      } else if (file instanceof BinaryFile) {
+        binaryFiles.add(((BinaryFile) file));
+      }
+    }
+    if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
+      return;
+    }
+    // Notify clients
+    for (ProjectClient projectClient : clients) {
+      projectClient
+          .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
+    }
+  }
+
   private class MessageReceiver implements ProjectServer {
 
     private final ProjectClient client;
@@ -67,7 +90,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     public MessageReceiver(ProjectClient client, Account account) {
       this.client = client;
       this.account = account;
-      filesUpdated(
+      notifyFiles(
           Collections.singletonList(client),
           project.getFiles().toArray(new File[0]));
     }
@@ -201,39 +224,24 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Update
       file = fileStore.save(file);
       project.getFiles().add(file);
+      projectStore.save(project);
       // Notify all clients about it
-      filesUpdated(clients.keySet(), file);
-    }
-
-    private void filesUpdated(Collection<ProjectClient> clients, File... files) {
-      List<TextFile> textFiles = new ArrayList<>();
-      List<BinaryFile> binaryFiles = new ArrayList<>();
-      for (File file : files) {
-        if (file instanceof TextFile) {
-          TextFile textFile = (TextFile) file;
-          textFiles.add(textFile);
-          textFileServices.computeIfAbsent(file.getId(),
-              id -> new TextFileService(textFile, fileStore));
-        } else if (file instanceof BinaryFile) {
-          binaryFiles.add(((BinaryFile) file));
-        }
-      }
-      if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
-        return;
-      }
-      // Notify clients
-      for (ProjectClient projectClient : clients) {
-        projectClient
-            .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
-      }
+      notifyFiles(clients.keySet(), file);
     }
 
     @Override
     public void removeFile(int fileId) {
       clients.forEach((c, receiver) -> {
-        receiver.unsubscribe(fileId);
+        Subscription subscription = receiver.subscriptions.remove(fileId);
+        if (subscription != null) {
+          textFileServices.get(fileId).disconnect(subscription.textFileClient);
+        }
+        c.removeFile(fileId);
       });
       textFileServices.remove(fileId);
+      project.getFiles().removeIf(f -> f.getId() == fileId);
+      projectStore.save(project);
+      fileStore.deleteById(fileId);
     }
 
     @Override

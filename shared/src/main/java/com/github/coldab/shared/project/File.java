@@ -29,7 +29,7 @@ public abstract class File {
   @Expose
   private int id;
 
-  @Column(unique = true, nullable = false)
+  @Column(nullable = false)
   @Expose
   private String path;
 
