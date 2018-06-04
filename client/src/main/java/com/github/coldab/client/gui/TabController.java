@@ -77,8 +77,8 @@ public class TabController implements TextFileObserver {
       String styleClass =
           matcher.group("KEYWORD") != null ? "keyword" :
               matcher.group("KEYWORD2") != null ? "paren" :
-                matcher.group("BRACE") != null ? "brace" :
-                  matcher.group("COMMENT") != null ? "comment" : null;
+                matcher.group("COMMENT") != null ? "comment" :
+                  matcher.group("BRACE") != null ? "brace" : "default";
       assert styleClass != null;
       spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
       spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
@@ -86,6 +86,7 @@ public class TabController implements TextFileObserver {
       counter++;
     }
     if (counter == 0) {
+
       return null;
     }
     return spansBuilder.create();
@@ -103,10 +104,8 @@ public class TabController implements TextFileObserver {
   };
   private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
   private static final String KEYWORD_PATTERN2 = "\\b(" + String.join("|", KEYWORDS2) + ")\\b";
-
   private static final String BRACE_PATTERN = "\\<|\\>";
-  private static final String COMMENT_PATTERN = "<!--(?<=\\<!--)(.*?)(?=\\-->)-->";
-
+  private static final String COMMENT_PATTERN = "<!--[\\s\\S]*?-->";
   private static final Pattern PATTERN = Pattern.compile(
       "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
           + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
