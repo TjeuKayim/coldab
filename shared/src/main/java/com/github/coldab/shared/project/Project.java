@@ -1,5 +1,6 @@
 package com.github.coldab.shared.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
@@ -37,6 +38,7 @@ public class Project {
   private transient final List<File> files = new ArrayList<>();
 
   @Transient
+  @JsonIgnore
   private final transient Chat chat = new Chat();
 
   public Project() {
