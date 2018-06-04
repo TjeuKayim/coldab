@@ -5,12 +5,18 @@ import java.util.List;
 
 public interface AccountServer {
 
+  /**
+   *Get a list of projects
+   *
+   * @return  A list with projects, if there are no projects it returns an empty list.
+   */
+
   List<Project> getProjects();
 
   /**
    * Save a new project in the database and generate id.
    *
-   * @return true is successful
+   * @return true if successful
    */
   boolean createProject(Project project);
 }

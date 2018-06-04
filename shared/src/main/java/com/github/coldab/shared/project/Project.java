@@ -1,18 +1,17 @@
 package com.github.coldab.shared.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,13 +32,14 @@ public class Project {
   @OneToMany
   private final List<Account> collaborators = new ArrayList<>();
   @Column(nullable = false)
-  private LocalDateTime creationDate = LocalDateTime.now(Clock.systemUTC());
+  private LocalDateTime creationDate = TimeProvider.getInstance().now();
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private transient final List<File> files = new ArrayList<>();
 
   @Transient
-  private final Map<Integer, File> filesById = new HashMap<>();
-
-  @Transient
-  private Chat chat;
+  @JsonIgnore
+  private final transient Chat chat = new Chat();
 
   public Project() {
   }
@@ -48,21 +48,9 @@ public class Project {
     this.name = name;
   }
 
-  @OneToMany
-  @Column
   public Collection<File> getFiles() {
-    return filesById.values();
+    return files;
   }
-
-  public void setFiles(Collection<File> edits) {
-    Map<Integer, File> fileMap = edits.stream()
-        .collect(Collectors.toMap(
-            File::getId, Function.identity()
-        ));
-    filesById.clear();
-    filesById.putAll(fileMap);
-  }
-
 
   public List<Account> getAdmins() {
     return admins;
@@ -80,8 +68,11 @@ public class Project {
     return creationDate;
   }
 
-  public Map<Integer, File> getFilesById() {
-    return filesById;
+  public File getFileById(int id) {
+    return files.stream()
+        .filter(f -> f.getId() == id)
+        .findAny()
+        .orElseThrow(IllegalArgumentException::new);
   }
 
 
@@ -93,7 +84,11 @@ public class Project {
     return chat;
   }
 
-  public void setChat(Chat chat) {
-    this.chat = chat;
+  public void updateFile(File file) {
+    files.stream()
+        .filter(f -> f.getId() == file.getId())
+        .findAny()
+        .ifPresent(files::remove);
+    files.add(file);
   }
 }

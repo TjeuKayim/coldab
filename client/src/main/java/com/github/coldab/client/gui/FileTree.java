@@ -21,7 +21,8 @@ interface FileTree {
       for (int i = 0; i < path.length - 1; i++) {
         String dir = path[i];
         Optional<DirectoryNode> child = parent.children.stream()
-            .map(f -> (DirectoryNode) f)
+            .filter(DirectoryNode.class::isInstance)
+            .map(DirectoryNode.class::cast)
             .filter(f -> f.name.equals(dir))
             .findAny();
         if (!child.isPresent()) {
@@ -63,6 +64,10 @@ interface FileTree {
 
     FileNode(File file) {
       this.file = file;
+    }
+
+    public File getFile() {
+      return file;
     }
 
     @Override

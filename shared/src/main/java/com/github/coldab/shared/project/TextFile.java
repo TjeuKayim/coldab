@@ -1,61 +1,62 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.edit.Edit;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 @Entity
 public class TextFile extends File {
 
-  @Transient
-  private Map<Integer, Edit> editsByIndex = new HashMap<>();
-
-  @Transient
-  private Map<Integer, Annotation> annotationsById = new HashMap<>();
-
-  public TextFile(String path, LocalDateTime creationDate) {
-    super(path, creationDate);
-  }
+  @OneToMany(cascade = CascadeType.ALL)
+  private transient List<Edit> edits = new ArrayList<>();
 
   @OneToMany
-  @Column
+  private transient List<Annotation> annotations = new ArrayList<>();
+
+  public TextFile() {
+  }
+
+  public TextFile(int id, String path) {
+    super(id, path);
+  }
+
   public Collection<Edit> getEdits() {
-    return editsByIndex.values();
+    if (edits == null) {
+      edits = new ArrayList<>();
+    }
+    return Collections.unmodifiableList(edits);
   }
 
-  public void setEdits(Collection<Edit> edits) {
-    this.editsByIndex = edits.stream()
-        .collect(Collectors.toMap(
-            Edit::getIndex, Function.identity()
-        ));
+  public List<Annotation> getAnnotations() {
+    if (annotations == null) {
+      annotations = new ArrayList<>();
+    }
+    return annotations;
   }
 
-  @OneToMany
-  @Column
-  public Collection<Annotation> getAnnotations() {
-    return annotationsById.values();
+  public void addEdit(Edit edit) {
+    int expectedIndex = getEdits().size();
+    int actualIndex = edit.getIndex();
+    if (expectedIndex != actualIndex) {
+      throw new IllegalStateException(
+          String.format("Invalid index (expected %d, got %d", expectedIndex, actualIndex));
+    }
+    edits.add(edit);
   }
 
-  public void setAnnotations(Collection<Annotation> edits) {
-    this.annotationsById = edits.stream()
-        .collect(Collectors.toMap(
-            Annotation::getId, Function.identity()
-        ));
-  }
-
-  public Map<Integer, Edit> getEditsByIndex() {
-    return editsByIndex;
-  }
-
-  public Map<Integer, Annotation> getAnnotationsById() {
-    return annotationsById;
+  /**
+   * Confirms an edit and saves it.
+   *
+   * @param localIndices Maps local-indices to remote-indices
+   */
+  public void confirmEdit(Edit edit, Map<Integer, Integer> localIndices) {
+    edit.confirmIndex(edits.size(), localIndices);
+    addEdit(edit);
   }
 }

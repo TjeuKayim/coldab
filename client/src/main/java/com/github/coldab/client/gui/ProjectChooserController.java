@@ -1,6 +1,5 @@
 package com.github.coldab.client.gui;
 
-import com.github.coldab.client.rest.RestClient;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import java.net.URL;
@@ -28,9 +27,11 @@ public class ProjectChooserController implements Initializable {
 
   private final ObservableList<Project> projects = FXCollections.observableArrayList();
 
-  private final AccountServer accountServer = new RestClient();
+  private final AccountServer accountServer;
 
-  public ProjectChooserController(Consumer<Project> resultCallback) {
+  public ProjectChooserController(AccountServer accountServer,
+      Consumer<Project> resultCallback) {
+    this.accountServer = accountServer;
     this.resultCallback = resultCallback;
   }
 
