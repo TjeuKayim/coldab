@@ -11,17 +11,32 @@ import javafx.stage.Stage;
 public class ColdabApplication extends Application {
 
   private Stage projectChooserStage;
+  private Stage authenticationStage;
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    this.projectChooserStage = primaryStage;
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
-    loader.setControllerFactory(c -> new ProjectChooserController(this::startEditor));
+    this.authenticationStage = primaryStage;
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
+    loader.setControllerFactory(c -> new AuthenticationController());
     Parent root = loader.load();
-    projectChooserStage.setTitle("Coldab text");
+    authenticationStage.setTitle("Coldab Login");
     Scene scene = new Scene(root);
-    projectChooserStage.setScene(scene);
-    projectChooserStage.show();
+    authenticationStage.setScene(scene);
+    authenticationStage.show();
+
+
+//    this.projectChooserStage = primaryStage;
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
+//    loader.setControllerFactory(c -> new ProjectChooserController(this::startEditor));
+//    Parent root = loader.load();
+//    projectChooserStage.setTitle("Coldab text");
+//    Scene scene = new Scene(root);
+//    projectChooserStage.setScene(scene);
+//    projectChooserStage.show();
+  }
+
+  private void startProjectChooser(){
+
   }
 
   private void startEditor(Project project) {
