@@ -1,21 +1,22 @@
 package com.github.coldab.shared.chat;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ChatMessage implements Comparable<ChatMessage> {
-  private Date postDate;
+  private LocalDateTime postDate;
   private int index;
   private String text;
   private Account author;
 
   public ChatMessage(String text, Account author) {
-    this.postDate = new Date();
+    this.postDate = TimeProvider.getInstance().now();
     this.text = text;
     this.author = author;
   }
 
-  public Date getPostDate() {
+  public LocalDateTime getPostDate() {
     return postDate;
   }
 

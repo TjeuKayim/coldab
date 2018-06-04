@@ -1,5 +1,6 @@
 package com.github.coldab.server;
 
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.project.Project;
 import org.springframework.boot.CommandLineRunner;
@@ -17,9 +18,10 @@ public class Main {
   }
 
   @Bean
-  public CommandLineRunner demo(ProjectStore projectStore) {
+  public CommandLineRunner demo(ProjectStore projectStore, FileStore fileStore) {
     return args -> {
-      projectStore.save(new Project("TestProject"));
+      Project project = new Project("TestProject");
+      projectStore.save(project);
     };
   }
 }

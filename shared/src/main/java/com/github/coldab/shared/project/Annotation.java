@@ -1,7 +1,8 @@
 package com.github.coldab.shared.project;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.edit.Letter;
+import com.github.coldab.shared.edit.Position;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 // TODO: Should annotation have a list of mentioned accounts?
 @Entity
@@ -31,14 +31,12 @@ public class Annotation {
   @Column(nullable = false)
   private LocalDateTime creationDate;
 
-  // FIXME: 13-5-2018
-  @Transient
-  private Letter start;
+  private Position start;
 
-  public Annotation(Account account, LocalDateTime creationDate,
-      Letter start, boolean todo, String text) {
+  public Annotation(Account account,
+      Position start, boolean todo, String text) {
     this.account = account;
-    this.creationDate = creationDate;
+    this.creationDate = TimeProvider.getInstance().now();
     this.start = start;
     this.todo = todo;
     this.text = text;
@@ -68,7 +66,7 @@ public class Annotation {
     return creationDate;
   }
 
-  public Letter getStart() {
+  public Position getStart() {
     return start;
   }
 }

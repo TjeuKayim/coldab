@@ -18,9 +18,9 @@ public class FileTreeTest {
     // Test files
     LocalDateTime now = LocalDateTime.now();
     Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt", now),
-        new TextFile("path/to/another-file.txt", now),
-        new TextFile("website/index.html", now)
+        new TextFile(0, "path/to/file.txt"),
+        new TextFile(0, "path/to/another-file.txt"),
+        new TextFile(0, "website/index.html")
     );
 
     DirectoryNode fileTree = FileTree.createFrom(files);

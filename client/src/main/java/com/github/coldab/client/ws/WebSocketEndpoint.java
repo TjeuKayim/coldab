@@ -1,27 +1,28 @@
 package com.github.coldab.client.ws;
 
-import com.github.coldab.client.project.ChatService;
-import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.project.ChatComponent;
+import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.shared.ws.ClientEndpoint;
+import com.github.coldab.shared.ws.ProjectClient;
 
 public class WebSocketEndpoint implements ClientEndpoint {
 
-  private final ChatService chatService;
-  private final ProjectService projectService;
+  private final ChatComponent chatComponent;
+  private final ProjectComponent projectComponent;
 
-  public WebSocketEndpoint(ChatService chatService,
-      ProjectService projectService) {
-    this.chatService = chatService;
-    this.projectService = projectService;
+  public WebSocketEndpoint(ChatComponent chatComponent,
+      ProjectComponent projectComponent) {
+    this.chatComponent = chatComponent;
+    this.projectComponent = projectComponent;
   }
 
   @Override
-  public ProjectService project() {
-    return projectService;
+  public ProjectClient project() {
+    return projectComponent;
   }
 
   @Override
-  public ChatService chat() {
-    return chatService;
+  public ChatComponent chat() {
+    return chatComponent;
   }
 }

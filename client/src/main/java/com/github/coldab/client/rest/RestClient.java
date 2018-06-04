@@ -1,5 +1,6 @@
 package com.github.coldab.client.rest;
 
+import com.github.coldab.client.Main;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.ws.MessageEncoder;
@@ -16,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 public class RestClient implements AccountServer {
 
-  private static final String ENDPOINT_URL = "http://localhost:8080";
   private RestTemplate restTemplate = new RestTemplate();
   private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
@@ -44,7 +44,7 @@ public class RestClient implements AccountServer {
   }
 
   public URI url(String path) {
-    return URI.create(ENDPOINT_URL + path);
+    return URI.create(Main.getRestEndpoint() + path);
   }
 
   private class ErrorHandler implements ResponseErrorHandler {
