@@ -216,7 +216,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     private Optional<TextFileServer> textFileServer(int fileId) {
-      return Optional.of(subscriptions.get(fileId))
+      return Optional.ofNullable(subscriptions.get(fileId))
           .map(s -> s.textFileServer);
     }
 

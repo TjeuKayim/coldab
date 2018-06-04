@@ -26,7 +26,7 @@ public class Annotation {
   @Column(nullable = false)
   private String text;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.PERSIST)
   private Account account;
 
   @Column(nullable = false)

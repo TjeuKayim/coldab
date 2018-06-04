@@ -48,7 +48,7 @@ public abstract class Edit {
   @Expose
   protected Position start;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.PERSIST)
   @Expose
   private Account account;
 
