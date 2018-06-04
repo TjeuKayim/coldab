@@ -46,6 +46,10 @@ public class ConnectionManager {
     ProjectSession projectSession = clients.remove(clientEndpoint);
     projectSession.chatService.disconnect(clientEndpoint.chat());
     projectSession.projectService.disconnect(clientEndpoint.project());
+    if (!clients.containsValue(projectSession)) {
+      // No one left in this project, so unload it
+      projects.remove(projectSession.project.getId());
+    }
   }
 
   /**
