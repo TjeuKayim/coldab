@@ -100,16 +100,6 @@ public class ProjectServiceTest {
     verify(client).confirmAddition(1, new Addition(0, account, null, "Hello World"));
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void sendEditBeforeSubscribing() {
-    // Client should be subscribed before sending edits
-    TextFile textFile = new TextFile(1, "path/to/hello.world");
-    project.getFiles().add(textFile);
-    ProjectClient client = mock(ProjectClient.class);
-    ProjectServer server = service.connect(client, account);
-    server.addition(1, new Addition(-1, account, null, "Hello World"));
-  }
-
   @Test
   public void receiveRemoteEdit() {
     TextFile textFile = new TextFile(1, "path/to/hello.world");

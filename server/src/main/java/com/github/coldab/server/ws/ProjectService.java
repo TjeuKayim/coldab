@@ -170,12 +170,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     @Override
     public void addition(int fileId, Addition addition) {
-      textFileServer(fileId).newEdit(addition);
+      textFileServer(fileId).ifPresent(s -> s.newEdit(addition));
     }
 
     @Override
     public void deletion(int fileId, Deletion deletion) {
-      textFileServer(fileId).newEdit(deletion);
+      textFileServer(fileId).ifPresent(s -> s.newEdit(deletion));
     }
 
     @Override
@@ -192,14 +192,9 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
     }
 
-    private TextFileServer textFileServer(int fileId) {
-      Subscription subscription = subscriptions.get(fileId);
-      if (subscription != null) {
-        return subscription.textFileServer;
-      } else {
-        LOGGER.severe("Edit send before subscribing");
-        throw new IllegalStateException("Edit send before subscribing");
-      }
+    private Optional<TextFileServer> textFileServer(int fileId) {
+      return Optional.of(subscriptions.get(fileId))
+          .map(s -> s.textFileServer);
     }
 
     private void file(File file) {
@@ -235,7 +230,10 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     @Override
     public void removeFile(int fileId) {
-
+      clients.forEach((c, receiver) -> {
+        receiver.unsubscribe(fileId);
+      });
+      textFileServices.remove(fileId);
     }
 
     @Override
