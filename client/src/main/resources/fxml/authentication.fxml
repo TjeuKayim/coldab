@@ -12,8 +12,8 @@
   fx:controller="com.github.coldab.client.gui.AuthenticationController"
   prefHeight="300.0" prefWidth="500.0">
 
-  <TextField fx:id="password" layoutX="143.0" layoutY="22.0" />
-  <PasswordField fx:id="username" layoutX="143.0" layoutY="57.0" />
+  <TextField fx:id="nickname" layoutX="143.0" layoutY="22.0" />
+  <PasswordField fx:id="password" layoutX="143.0" layoutY="57.0" />
 
   <Label layoutX="14.0" layoutY="26.0" text="Username:" />
   <Label layoutX="14.0" layoutY="61.0" text="Password:" />

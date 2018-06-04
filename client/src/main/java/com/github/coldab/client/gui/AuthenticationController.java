@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class AuthenticationController implements Initializable {
 
   @FXML
-  private TextField username;
+  private TextField nickname;
   @FXML
   private TextField password;
   @FXML
