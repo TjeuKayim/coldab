@@ -35,14 +35,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   @Value("${security.jwt.resource-ids}")
   private String resourceIds;
 
-  @Autowired
-  private TokenStore tokenStore;
+  private final TokenStore tokenStore;
 
-  @Autowired
-  private JwtAccessTokenConverter accessTokenConverter;
+  private final JwtAccessTokenConverter accessTokenConverter;
 
-  @Autowired
-  private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
+
+
+  public AuthorizationServerConfig(TokenStore tokenStore,JwtAccessTokenConverter accessTokenConverter,AuthenticationManager authenticationManager) {
+    this.tokenStore = tokenStore;
+    this.accessTokenConverter = accessTokenConverter;
+    this.authenticationManager = authenticationManager;
+  }
+
+
 
   @Override
   public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {

@@ -13,5 +13,13 @@ public interface AccountStore extends CrudRepository<Account, Integer> {
    */
   Account findAccountByemail(String email);
 
+  /**
+   * Finds the account associated with the given nickName.
+   *
+   * @return the account associated with the given nickName. If no account is found, this methode
+   * returns NULL.
+   */
+  Account findAccountBynickName(String nickName);
+
 
 }

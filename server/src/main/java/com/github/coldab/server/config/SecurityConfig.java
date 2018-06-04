@@ -1,5 +1,6 @@
 package com.github.coldab.server.config;
 
+import com.github.coldab.server.AppAccountDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,10 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Value("${security.security-realm}")
   private String securityRealm;
 
-  private final UserDetailsService userDetailsService;
+  private final AppAccountDetailsService AccountDetailsService;
 
-  public SecurityConfig(UserDetailsService userDetailsService) {
-    this.userDetailsService = userDetailsService;
+  public SecurityConfig(AppAccountDetailsService  accountDetailsService) {
+    this.AccountDetailsService = accountDetailsService;
   }
 
   @Bean
@@ -47,8 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDetailsService)
-        .passwordEncoder(new BCryptPasswordEncoder(encodingStrength));
+    auth.userDetailsService(AccountDetailsService)
+        .passwordEncoder(new BCryptPasswordEncoder());
   }
 
   @Override

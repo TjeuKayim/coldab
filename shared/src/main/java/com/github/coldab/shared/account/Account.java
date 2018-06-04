@@ -65,4 +65,8 @@ public class Account {
   public int hashCode() {
     return Objects.hash(id, nickName, email);
   }
+
+  public String getPassword() {
+    return password;
+  }
 }
