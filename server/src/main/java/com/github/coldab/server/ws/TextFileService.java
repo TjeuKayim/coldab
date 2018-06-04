@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.project.Annotation;
@@ -19,11 +20,13 @@ import java.util.logging.Logger;
 public class TextFileService implements Service<TextFileServer, TextFileClient> {
 
   private final TextFile file;
+  private final FileStore fileStore;
   private final List<TextFileClient> clients = new ArrayList<>();
   private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
 
-  public TextFileService(TextFile file) {
+  public TextFileService(TextFile file, FileStore fileStore) {
     this.file = file;
+    this.fileStore = fileStore;
   }
 
   @Override
@@ -71,7 +74,7 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
       localIndices.put(localIndex, edit.getIndex());
       client.confirmEdit(edit);
       notifyOthers(c -> c.newEdit(edit));
-      // todo: Save edit in database
+      fileStore.save(file);
     }
 
     @Override

@@ -40,6 +40,7 @@ public class Project {
   private LocalDateTime creationDate = TimeProvider.getInstance().now();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonIgnore
   private List<File> files = new ArrayList<>();
 
   @Transient

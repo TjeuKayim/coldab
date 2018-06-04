@@ -158,7 +158,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
           TextFile textFile = (TextFile) file;
           textFiles.add(textFile);
           textFileServices.computeIfAbsent(file.getId(),
-              id -> new TextFileService(textFile));
+              id -> new TextFileService(textFile, fileStore));
         } else if (file instanceof BinaryFile) {
           binaryFiles.add(((BinaryFile) file));
         }
