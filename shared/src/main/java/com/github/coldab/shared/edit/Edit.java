@@ -3,12 +3,14 @@ package com.github.coldab.shared.edit;
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.TextFile;
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -32,21 +34,28 @@ public abstract class Edit {
   private int id;
 
   @Column(nullable = false)
+  @Expose
   private int index;
 
   @Column(nullable = false)
-  private final LocalDateTime creationDate;
+  @Expose
+  private LocalDateTime creationDate;
 
   /**
    * The start position where the edit is applied.
    */
   @Embedded
+  @Expose
   protected Position start;
 
-  @ManyToOne
-  private final Account account;
+  @ManyToOne(cascade = CascadeType.ALL)
+  @Expose
+  private Account account;
 
   static final Logger LOGGER = Logger.getLogger(Edit.class.getName());
+
+  public Edit() {
+  }
 
   /**
    * Create an edit.
@@ -62,6 +71,10 @@ public abstract class Edit {
 
   public Account getAccount() {
     return account;
+  }
+
+  public void setAccount(Account account) {
+    this.account = account;
   }
 
   public int getIndex() {
@@ -114,6 +127,7 @@ public abstract class Edit {
 
   /**
    * Confirms this edit by changing the index of this edit and start-position.
+   *
    * @param index the new index
    * @param localIndices Maps local-indices to remote-indices
    */

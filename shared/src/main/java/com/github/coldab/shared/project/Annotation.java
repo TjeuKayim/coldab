@@ -4,6 +4,7 @@ import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Position;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Annotation {
   @Column(nullable = false)
   private String text;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private Account account;
 
   @Column(nullable = false)

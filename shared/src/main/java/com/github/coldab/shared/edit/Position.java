@@ -1,14 +1,23 @@
 package com.github.coldab.shared.edit;
 
+import com.google.gson.annotations.Expose;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Position {
 
+  @Expose
+  @Column(nullable = true)
   private int additionIndex;
 
-  private final int position;
+  @Expose
+  @Column(nullable = true)
+  private int position;
+
+  public Position() {
+  }
 
   public Position(int additionIndex, int position) {
     this.additionIndex = additionIndex;

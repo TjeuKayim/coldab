@@ -2,6 +2,7 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.ws.MessageEncoder;
+import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,13 +19,18 @@ import javax.persistence.Transient;
 public class Addition extends Edit {
 
   @Transient
-  private transient List<Letter> insertedLetters;
+  private List<Letter> insertedLetters;
 
+  @Expose
   private String text;
+
+  public Addition() {
+  }
 
   /**
    * Create an addition.
-   *  @param start the start position, or null if adding at the start of the document
+   *
+   * @param start the start position, or null if adding at the start of the document
    * @param text the characters to insert
    */
   public Addition(Account account, Position start, String text) {

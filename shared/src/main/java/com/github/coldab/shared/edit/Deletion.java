@@ -2,6 +2,7 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.ws.MessageEncoder;
+import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,14 +16,19 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
+  @Expose
   private Position end;
 
   @Transient
-  private transient List<Letter> deletedLetters = new ArrayList<>();
+  private List<Letter> deletedLetters = new ArrayList<>();
+
+  public Deletion() {
+  }
 
   /**
    * Create an deletion.
-   *  @param start the start position (exclusive), or null if adding at the start of the document
+   *
+   * @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
   public Deletion(Account account, Position start, Position end) {

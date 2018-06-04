@@ -2,12 +2,17 @@ package com.github.coldab.shared.chat;
 
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 
 public class ChatMessage implements Comparable<ChatMessage> {
+  @Expose
   private LocalDateTime postDate;
+  @Expose
   private int index;
+  @Expose
   private String text;
+  @Expose
   private Account author;
 
   public ChatMessage(String text, Account author) {

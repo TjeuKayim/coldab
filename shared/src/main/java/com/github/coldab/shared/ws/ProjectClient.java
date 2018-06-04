@@ -19,5 +19,12 @@ public interface ProjectClient extends UpdateSender {
    */
   void confirmDeletion(int fileId, Deletion deletion);
 
+  /**
+   * @param admins a list of admins in a project.
+   * @param collaborators a list of collaborators in a project.
+   *
+   * A list of admins and collaborators gets send to the client.
+   */
+
   void collaborators(List<Account> admins, List<Account> collaborators);
 }

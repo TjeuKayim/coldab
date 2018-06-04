@@ -51,12 +51,12 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   public void files(TextFile[] textFiles, BinaryFile[] binaryFiles) {
     if (textFiles != null) {
       for (TextFile textFile : textFiles) {
-        project.getFiles().add(textFile);
+        project.updateFile(textFile);
       }
     }
     if (binaryFiles != null) {
       for (BinaryFile binaryFile : binaryFiles) {
-        project.getFiles().add(binaryFile);
+        project.updateFile(binaryFile);
       }
     }
     projectObserver.updateFiles();

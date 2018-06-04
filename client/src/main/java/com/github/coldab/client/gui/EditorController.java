@@ -2,14 +2,10 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.gui.FileTree.FileNode;
-import com.github.coldab.client.project.ChatComponent;
-import com.github.coldab.client.project.ProjectComponent;
+import com.github.coldab.client.project.ChatController;
 import com.github.coldab.client.project.ProjectController;
 import com.github.coldab.client.project.ProjectObserver;
-import com.github.coldab.client.ws.WebSocketConnection;
-import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
@@ -37,7 +33,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class EditorController implements Initializable, ProjectObserver {
 
-  private final Project project;
   @FXML
   private TabPane tabPane;
   @FXML
@@ -53,36 +48,31 @@ public class EditorController implements Initializable, ProjectObserver {
   @FXML
   private MenuItem menuOpenChat;
 
-  private final Chat chat = new Chat();
-  private Account account = new Account("HenkJan", "henk@jan.org");
-  private ChatComponent chatComponent;
+  private final Project project;
+  private final Account account;
+
+  private ChatController chatController;
+
   private ProjectController projectController;
 
-  public EditorController(Project project) {
+  public EditorController(Project project, Account account) {
     this.project = project;
+    this.account = account;
   }
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    //TODO: move this to another class (SOLID)
-    new WebSocketConnection(project, serverEndpoint -> {
-      chatComponent = new ChatComponent(chat, serverEndpoint.chat());
-      ProjectComponent projectComponent = new ProjectComponent(project, serverEndpoint.project(),
-          account, this);
-      projectController = projectComponent;
-      Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatComponent, projectComponent);
-    });
   }
 
-  private void afterConnectionEstablished() {
+  public void afterConnectionEstablished(ChatController chatController, ProjectController projectController) {
+    this.chatController = chatController;
+    this.projectController = projectController;
     updateFiles();
     initChat();
   }
 
   private void initChat() {
-    chat.addObserver(this::receiveChatMessage);
-    project.setChat(chat);
+    project.getChat().addObserver(this::receiveChatMessage);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }
@@ -98,7 +88,7 @@ public class EditorController implements Initializable, ProjectObserver {
       return;
     }
     ChatMessage message = new ChatMessage(messageText, account);
-    chatComponent.sendMessage(message);
+    chatController.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
