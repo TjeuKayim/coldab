@@ -83,4 +83,12 @@ public class Project {
   public Chat getChat() {
     return chat;
   }
+
+  public void updateFile(File file) {
+    files.stream()
+        .filter(f -> f.getId() == file.getId())
+        .findAny()
+        .ifPresent(files::remove);
+    files.add(file);
+  }
 }
