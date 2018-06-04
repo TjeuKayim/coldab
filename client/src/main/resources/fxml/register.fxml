@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <AnchorPane xmlns="http://javafx.com/javafx"
   xmlns:fx="http://javafx.com/fxml"
   fx:controller="com.github.coldab.client.gui.RegisterController"
   prefHeight="400.0" prefWidth="600.0">
+
+  <TextField fx:id="password" layoutX="143.0" layoutY="22.0" />
+  <TextField fx:id="username" layoutX="143.0" layoutY="57.0" />
+  <TextField fx:id="usernameRepeat" layoutX="143.0" layoutY="92.0" />
+
+  <Label layoutX="14.0" layoutY="26.0" text="Username:" />
+  <Label layoutX="14.0" layoutY="61.0" text="Password:" />
+  <Label layoutX="14.0" layoutY="96.0" text="Confirm Password:" />
+
+  <Button fx:id="register" layoutX="205.0" layoutY="108.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" text="register" />
 
 </AnchorPane>
