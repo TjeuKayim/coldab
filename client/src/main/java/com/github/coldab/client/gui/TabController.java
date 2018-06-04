@@ -35,6 +35,10 @@ public class TabController implements TextFileObserver {
     this.textFileController = projectController.openFile(file, this);
   }
 
+  public void fileDeleted() {
+    tab.getTabPane().getTabs().remove(tab);
+  }
+
   private void initializeGui() {
     tab.setText(file.getName());
     tab.setOnClosed(e -> closeTab());
@@ -61,7 +65,6 @@ public class TabController implements TextFileObserver {
   private void closeTab() {
     projectController.closeFile(file);
   }
-
 
   private void textChanged(List<PlainTextChange> changes) {
     for (PlainTextChange change : changes) {

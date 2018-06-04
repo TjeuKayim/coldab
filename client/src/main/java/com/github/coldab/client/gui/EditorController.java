@@ -11,6 +11,8 @@ import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -54,6 +56,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private ChatController chatController;
 
   private ProjectController projectController;
+  private final HashMap<TextFile, TabController> tabs = new HashMap<>();
 
   public EditorController(Project project, Account account) {
     this.project = project;
@@ -64,7 +67,8 @@ public class EditorController implements Initializable, ProjectObserver {
   public void initialize(URL location, ResourceBundle resources) {
   }
 
-  public void afterConnectionEstablished(ChatController chatController, ProjectController projectController) {
+  public void afterConnectionEstablished(ChatController chatController,
+      ProjectController projectController) {
     this.chatController = chatController;
     this.projectController = projectController;
     updateFiles();
@@ -103,12 +107,18 @@ public class EditorController implements Initializable, ProjectObserver {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    new TabController(file, tab, projectController);
+    tabs.put(file, new TabController(file, tab, projectController));
   }
 
   @Override
   public void updateFiles() {
     Platform.runLater(() -> {
+      // Close tabs for removed files
+      project.getFiles().stream()
+          .map(tabs::get)
+          .filter(Objects::nonNull)
+          .forEach(TabController::fileDeleted);
+
       // Create root
       TreeItem<FileTree> rootItem = new TreeItem<>();
 
