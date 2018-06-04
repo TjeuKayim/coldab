@@ -7,7 +7,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
   xmlns:fx="http://javafx.com/fxml"
   fx:controller="com.github.coldab.client.gui.RegisterController"
-  prefHeight="400.0" prefWidth="600.0">
+  prefHeight="200.0" prefWidth="400.0">
 
   <TextField fx:id="password" layoutX="143.0" layoutY="22.0" />
   <TextField fx:id="username" layoutX="143.0" layoutY="57.0" />
@@ -17,6 +17,6 @@
   <Label layoutX="14.0" layoutY="61.0" text="Password:" />
   <Label layoutX="14.0" layoutY="96.0" text="Confirm Password:" />
 
-  <Button fx:id="register" layoutX="205.0" layoutY="108.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" text="register" />
+  <Button fx:id="register" layoutX="205.0" layoutY="138.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" text="register" />
 
 </AnchorPane>
