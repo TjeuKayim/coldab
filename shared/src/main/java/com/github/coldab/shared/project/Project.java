@@ -7,7 +7,9 @@ import com.github.coldab.shared.chat.Chat;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,12 +31,12 @@ public class Project {
   @Column(nullable = false)
   @Expose
   private String name;
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Expose
-  private final List<Account> admins = new ArrayList<>();
-  @OneToMany(cascade = CascadeType.ALL)
+  private final Set<Account> admins = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Expose
-  private final List<Account> collaborators = new ArrayList<>();
+  private final Set<Account> collaborators = new HashSet<>();
   @Column(nullable = false)
   @Expose
   private LocalDateTime creationDate = TimeProvider.getInstance().now();
@@ -58,11 +60,11 @@ public class Project {
     return files;
   }
 
-  public List<Account> getAdmins() {
+  public Set<Account> getAdmins() {
     return admins;
   }
 
-  public List<Account> getCollaborators() {
+  public Set<Account> getCollaborators() {
     return collaborators;
   }
 

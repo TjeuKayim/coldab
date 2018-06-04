@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -98,14 +99,50 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     }
 
+    private boolean isAdmin() {
+      return project.getAdmins().contains(account);
+    }
+
+    private Optional<Account> removeAccount(Collection<Account> collection, int accountId) {
+      Optional<Account> optional = collection.stream().filter(a -> a.getId() == accountId)
+          .findAny();
+      optional.ifPresent(collection::remove);
+      return optional;
+    }
+
     @Override
     public void promote(int accountId) {
-
+      // Only admins can promote someone
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to promote someone");
+        return;
+      }
+      Optional<Account> accountToPromote = removeAccount(project.getCollaborators(), accountId);
+      if (!accountToPromote.isPresent()) {
+        LOGGER.info("Account to promote is not a collaborator");
+        return;
+      }
+      project.getAdmins().add(accountToPromote.get());
     }
 
     @Override
     public void demote(int accountId) {
-
+      // Only admins can demote someone
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to promote someone");
+        return;
+      }
+      Optional<Account> accountToDemote = removeAccount(project.getAdmins(), accountId);
+      if (!accountToDemote.isPresent()) {
+        LOGGER.info("Account to demote is not an admin");
+        return;
+      }
+      // Anti lockout
+      if (project.getAdmins().size() == 1) {
+        LOGGER.info("Cannot demote the only admin left");
+        return;
+      }
+      project.getCollaborators().add(accountToDemote.get());
     }
 
     @Override

@@ -69,6 +69,7 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
         LOGGER.severe("Edit has invalid author");
         return;
       }
+      edit.setAccount(account);
       int localIndex = edit.getIndex();
       file.confirmEdit(edit, localIndices);
       localIndices.put(localIndex, edit.getIndex());

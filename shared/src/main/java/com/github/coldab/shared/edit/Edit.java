@@ -73,6 +73,10 @@ public abstract class Edit {
     return account;
   }
 
+  public void setAccount(Account account) {
+    this.account = account;
+  }
+
   public int getIndex() {
     return index;
   }
