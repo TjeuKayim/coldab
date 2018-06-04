@@ -8,7 +8,8 @@ import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
 public class Highlighting {
-  public static StyleSpans<Collection<String>> compute(String text) {
+
+  static StyleSpans<Collection<String>> compute(String text) {
 
     Matcher matcher = PATTERN.matcher(text);
     int lastKwEnd = 0;
@@ -18,8 +19,8 @@ public class Highlighting {
       String styleClass =
           matcher.group("KEYWORD") != null ? "keyword" :
               matcher.group("KEYWORD2") != null ? "paren" :
-                  matcher.group("BRACE") != null ? "brace" :
-                      matcher.group("COMMENT") != null ? "comment" : null;
+                  matcher.group("COMMENT") != null ? "comment" :
+                      matcher.group("BRACE") != null ? "brace" : "default";
       assert styleClass != null;
       spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
       spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
@@ -27,6 +28,7 @@ public class Highlighting {
       counter++;
     }
     if (counter == 0) {
+
       return null;
     }
     return spansBuilder.create();
@@ -43,9 +45,10 @@ public class Highlighting {
       "class", "id"
   };
   private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
-  private static final String KEYWORD_PATTERN2 = "\\b(" + String.join("|", KEYWORDS2) + ")\\b";
 
+  private static final String KEYWORD_PATTERN2 = "\\b(" + String.join("|", KEYWORDS2) + ")\\b";
   private static final String BRACE_PATTERN = "\\<|\\>";
+
   private static final String COMMENT_PATTERN = "<!--(?<=\\<!--)(.*?)(?=\\-->)-->";
 
   private static final Pattern PATTERN = Pattern.compile(
@@ -53,5 +56,4 @@ public class Highlighting {
           + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
           + "|(?<BRACE>" + BRACE_PATTERN + ")"
           + "|(?<KEYWORD2>" + KEYWORD_PATTERN2 + ")");
-
 }
