@@ -8,6 +8,7 @@ import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,15 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
       localIndices.put(localIndex, edit.getIndex());
       client.confirmEdit(edit);
       notifyOthers(c -> c.newEdit(edit));
-      fileStore.save(file);
+      while (true) {
+        try {
+          fileStore.save(file);
+          break;
+        } catch (ConcurrentModificationException e) {
+          LOGGER.severe("ConcurrentModificationException while saving edit");
+          LOGGER.info(e.toString());
+        }
+      }
     }
 
     @Override
