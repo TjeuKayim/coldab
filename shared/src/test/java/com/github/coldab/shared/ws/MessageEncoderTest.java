@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import java.io.IOException;
 import java.util.Objects;
 import org.junit.Before;
@@ -48,7 +49,6 @@ public class MessageEncoderTest {
 
   static class Receiver implements Protocol {
 
-
     private MyObject[] a1;
     private int a2;
 
@@ -62,6 +62,7 @@ public class MessageEncoderTest {
   }
 
   static class MyObject {
+    @Expose
     final String text;
 
     MyObject(String text) {
