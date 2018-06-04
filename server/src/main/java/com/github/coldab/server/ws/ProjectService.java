@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.AccountStore;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
@@ -33,13 +34,15 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
   private final FileStore fileStore;
+  private final AccountStore accountStore;
   private static final Logger LOGGER = Logger.getLogger(ProjectService.class.getName());
 
   ProjectService(Project project, ProjectStore projectStore,
-      FileStore fileStore) {
+      FileStore fileStore, AccountStore accountStore) {
     this.project = project;
     this.projectStore = projectStore;
     this.fileStore = fileStore;
+    this.accountStore = accountStore;
   }
 
   @Override
@@ -90,13 +93,33 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     @Override
-    public void share(String email) {
-
+    public void share(String email, boolean admin) {
+      // Only admins can share
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to share");
+        return;
+      }
+      Account accountToShare = accountStore.findAccountByemail(email);
+      if (accountToShare == null) {
+        LOGGER.info("Account to share not found");
+        return;
+      }
+      if (admin) {
+        project.getAdmins().add(accountToShare);
+      } else {
+        project.getCollaborators().add(accountToShare);
+      }
     }
 
     @Override
     public void unshare(int accountId) {
-
+      // Only admins can unshare
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to unshare");
+        return;
+      }
+      removeAccount(project.getCollaborators(), accountId);
+      removeAccount(project.getAdmins(), accountId);
     }
 
     private boolean isAdmin() {
