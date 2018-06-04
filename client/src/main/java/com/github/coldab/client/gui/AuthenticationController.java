@@ -9,8 +9,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -24,17 +27,30 @@ public class AuthenticationController implements Initializable {
   private Hyperlink register;
   @FXML
   private Button login;
-
-  private Stage registerStage;
+  @FXML
+  private Label nicknameWarning;
+  @FXML
+  private Label passwordWarning;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     register.setOnAction(this::registerHyperlinkClicked);
+    login.setOnAction(this:: loginButtonClicked);
+  }
+
+  private void loginButtonClicked(ActionEvent actionEvent) {
+    nicknameWarning.setText("");
+    passwordWarning.setText("");
+
+    if(nickname.getText().trim().isEmpty() || nickname.getText() == null){
+      nicknameWarning.setText("Username Required!");
+    }
+    if(password.getText().trim().isEmpty() || password.getText() == null){
+      passwordWarning.setText("Password Required!");
+    }
   }
 
   private void registerHyperlinkClicked(ActionEvent actionEvent) {
-    //System.out.println(actionEvent.toString());
-
     Stage stage = new Stage();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
     loader.setControllerFactory(c -> new RegisterController());
@@ -49,5 +65,4 @@ public class AuthenticationController implements Initializable {
     stage.setScene(scene);
     stage.show();
   }
-
 }
