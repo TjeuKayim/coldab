@@ -35,6 +35,7 @@ public class ColdabApplication extends Application {
   }
 
   private void startProjectChooser(Account account) {
+    authenticationStage.hide();
     this.projectChooserStage = new Stage();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
     loader.setControllerFactory(c ->

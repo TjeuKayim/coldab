@@ -41,9 +41,13 @@ public class RestClient implements AccountServer {
 
   @Override
   public List<Project> getProjects() {
-    ResponseEntity<Project[]> entity = restTemplate
-        .getForEntity("/account/project", Project[].class);
-    return Arrays.asList(entity.getBody());
+    Project[] projects = restTemplate
+        .getForObject("/account/project", Project[].class);
+    if (projects != null) {
+      return Arrays.asList(projects);
+    } else {
+      return null;
+    }
   }
 
   @Override
