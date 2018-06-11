@@ -20,12 +20,12 @@ public class ColdabApplication extends Application {
 
   private Stage projectChooserStage;
   private Stage authenticationStage;
+  private AccountServer accountServer = new RestClient();
 
   @Override
   public void start(Stage primaryStage) throws IOException {
     this.authenticationStage = primaryStage;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
-    AccountServer accountServer = new RestClient();
     loader.setControllerFactory(c -> new AuthenticationController(accountServer, this::startProjectChooser));
     Parent root = loader.load();
     authenticationStage.setTitle("Coldab Login");
@@ -37,13 +37,13 @@ public class ColdabApplication extends Application {
   private void startProjectChooser(Account account) {
     this.projectChooserStage = new Stage();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
-    AccountServer accountServer = new RestClient();
     loader.setControllerFactory(c ->
         new ProjectChooserController(accountServer, p -> startEditor(p, account)));
     Parent root = null;
     try {
       root = loader.load();
     } catch (IOException e) {
+      e.printStackTrace();
       throw new IllegalStateException("Could not load FXML");
     }
     projectChooserStage.setTitle("Coldab text");
