@@ -1,5 +1,6 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
+import com.github.coldab.server.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.ws.ChatClient;

@@ -1,4 +1,4 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
