@@ -31,10 +31,10 @@ public class Project {
   @Column(nullable = false)
   @Expose
   private String name;
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(fetch = FetchType.EAGER)
   @Expose
   private final Set<Account> admins = new HashSet<>();
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(fetch = FetchType.EAGER)
   @Expose
   private final Set<Account> collaborators = new HashSet<>();
   @Column(nullable = false)

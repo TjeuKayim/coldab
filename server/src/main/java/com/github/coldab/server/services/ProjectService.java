@@ -122,7 +122,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         LOGGER.info("Non admin tries to share");
         return;
       }
-      Account accountToShare = accountStore.findAccountByemail(email);
+      Account accountToShare = accountStore.findAccountByEmail(email);
       if (accountToShare == null) {
         LOGGER.info("account to share not found");
         return;
