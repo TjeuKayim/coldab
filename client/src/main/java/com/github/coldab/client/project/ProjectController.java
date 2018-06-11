@@ -12,4 +12,6 @@ public interface ProjectController {
   void createFile(File file);
 
   void deleteFile(File file);
+
+  void share(String email, boolean admin);
 }

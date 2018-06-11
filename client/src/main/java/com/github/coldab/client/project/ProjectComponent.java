@@ -131,6 +131,11 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     projectServer.removeFile(file.getId());
   }
 
+  @Override
+  public void share(String email, boolean admin) {
+    projectServer.share(email, admin);
+  }
+
   /**
    * Passes messages from TextFileComponent to the server.
    */
