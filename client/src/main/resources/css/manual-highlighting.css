@@ -25,6 +25,10 @@
     -fx-fill: cadetblue;
 }
 
+.default {
+    -fx-full: black;
+}
+
 .paragraph-box:has-caret {
     -fx-background-color: #f2f9fc;
 }

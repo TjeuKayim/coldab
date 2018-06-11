@@ -2,11 +2,14 @@ package com.github.coldab.shared.session;
 
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Position;
+import com.google.gson.annotations.Expose;
 import java.util.Objects;
 
 public class Caret {
 
+  @Expose
   private final Account account;
+  @Expose
   private final Position position;
 
   public Caret(Account account, Position position) {

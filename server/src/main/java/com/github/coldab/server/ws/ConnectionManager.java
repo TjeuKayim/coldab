@@ -1,11 +1,10 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.AccountStore;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.project.Project;
-import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ChatServer;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.ProjectServer;
@@ -22,11 +21,13 @@ public class ConnectionManager {
   private final Map<Integer, ProjectSession> projects = new HashMap<>();
   private final Map<ClientEndpoint, ProjectSession> clients = new HashMap<>();
   private final FileStore fileStore;
+  private final AccountStore accountStore;
 
   public ConnectionManager(ProjectStore projectStore,
-      FileStore fileStore) {
+      FileStore fileStore, AccountStore accountStore) {
     this.projectStore = projectStore;
     this.fileStore = fileStore;
+    this.accountStore = accountStore;
   }
 
   /**
@@ -45,6 +46,10 @@ public class ConnectionManager {
     ProjectSession projectSession = clients.remove(clientEndpoint);
     projectSession.chatService.disconnect(clientEndpoint.chat());
     projectSession.projectService.disconnect(clientEndpoint.project());
+    if (!clients.containsValue(projectSession)) {
+      // No one left in this project, so unload it
+      projects.remove(projectSession.project.getId());
+    }
   }
 
   /**
@@ -59,14 +64,8 @@ public class ConnectionManager {
       Optional<Project> optionalProject = projectStore.findById(projectId);
       if (optionalProject.isPresent()) {
         Project project = optionalProject.get();
-        // todo: Save textFiles in database
-        TextFile textFile = new TextFile(0, "index.html");
-        Account piet = new Account("Piet Hein", "piet@hein.email");
-        textFile.addEdit(new Addition(0, piet, null, "Hello World"));
-        project.getFiles().add(textFile);
-
         projectSession = new ProjectSession(project,
-            new ProjectService(project, projectStore, fileStore),
+            new ProjectService(project, projectStore, fileStore, accountStore),
             new ChatService()
         );
         projects.put(projectId, projectSession);

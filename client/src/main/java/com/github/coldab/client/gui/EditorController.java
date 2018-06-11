@@ -131,7 +131,15 @@ public class EditorController implements Initializable, ProjectObserver {
           }
         }
       });
-      ContextMenu menu = new ContextMenu(openBtn);
+      MenuItem removeBtn = new MenuItem("Remove file");
+      removeBtn.setOnAction(event -> {
+        FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+        if (selected instanceof FileNode) {
+          File file = ((FileNode) selected).getFile();
+          projectController.deleteFile(file);
+        }
+      });
+      ContextMenu menu = new ContextMenu(openBtn, removeBtn);
       fileTreeView.setContextMenu(menu);
     });
   }

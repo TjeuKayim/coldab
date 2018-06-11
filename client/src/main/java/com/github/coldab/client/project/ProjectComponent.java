@@ -65,6 +65,7 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   @Override
   public void removeFile(int fileId) {
     project.getFiles().removeIf(f -> f.getId() == fileId);
+    projectObserver.updateFiles();
   }
 
   @Override
@@ -121,6 +122,11 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     } else if (file instanceof BinaryFile) {
       projectServer.files(new TextFile[0], new BinaryFile[]{((BinaryFile) file)});
     }
+  }
+
+  @Override
+  public void deleteFile(File file) {
+    projectServer.removeFile(file.getId());
   }
 
   /**

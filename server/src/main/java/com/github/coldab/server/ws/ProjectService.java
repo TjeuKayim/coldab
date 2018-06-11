@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.dal.AccountStore;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -32,13 +34,15 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
   private final FileStore fileStore;
+  private final AccountStore accountStore;
   private static final Logger LOGGER = Logger.getLogger(ProjectService.class.getName());
 
   ProjectService(Project project, ProjectStore projectStore,
-      FileStore fileStore) {
+      FileStore fileStore, AccountStore accountStore) {
     this.project = project;
     this.projectStore = projectStore;
     this.fileStore = fileStore;
+    this.accountStore = accountStore;
   }
 
   @Override
@@ -54,6 +58,29 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         .unsubscribeAll();
   }
 
+  private void notifyFiles(Collection<ProjectClient> clients, File... files) {
+    List<TextFile> textFiles = new ArrayList<>();
+    List<BinaryFile> binaryFiles = new ArrayList<>();
+    for (File file : files) {
+      if (file instanceof TextFile) {
+        TextFile textFile = (TextFile) file;
+        textFiles.add(textFile);
+        textFileServices.computeIfAbsent(file.getId(),
+            id -> new TextFileService(textFile, fileStore));
+      } else if (file instanceof BinaryFile) {
+        binaryFiles.add(((BinaryFile) file));
+      }
+    }
+    if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
+      return;
+    }
+    // Notify clients
+    for (ProjectClient projectClient : clients) {
+      projectClient
+          .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
+    }
+  }
+
   private class MessageReceiver implements ProjectServer {
 
     private final ProjectClient client;
@@ -63,7 +90,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     public MessageReceiver(ProjectClient client, Account account) {
       this.client = client;
       this.account = account;
-      filesUpdated(
+      notifyFiles(
           Collections.singletonList(client),
           project.getFiles().toArray(new File[0]));
     }
@@ -89,33 +116,89 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     }
 
     @Override
-    public void share(String email) {
-
+    public void share(String email, boolean admin) {
+      // Only admins can share
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to share");
+        return;
+      }
+      Account accountToShare = accountStore.findAccountByemail(email);
+      if (accountToShare == null) {
+        LOGGER.info("Account to share not found");
+        return;
+      }
+      if (admin) {
+        project.getAdmins().add(accountToShare);
+      } else {
+        project.getCollaborators().add(accountToShare);
+      }
     }
 
     @Override
     public void unshare(int accountId) {
+      // Only admins can unshare
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to unshare");
+        return;
+      }
+      removeAccount(project.getCollaborators(), accountId);
+      removeAccount(project.getAdmins(), accountId);
+    }
 
+    private boolean isAdmin() {
+      return project.getAdmins().contains(account);
+    }
+
+    private Optional<Account> removeAccount(Collection<Account> collection, int accountId) {
+      Optional<Account> optional = collection.stream().filter(a -> a.getId() == accountId)
+          .findAny();
+      optional.ifPresent(collection::remove);
+      return optional;
     }
 
     @Override
     public void promote(int accountId) {
-
+      // Only admins can promote someone
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to promote someone");
+        return;
+      }
+      Optional<Account> accountToPromote = removeAccount(project.getCollaborators(), accountId);
+      if (!accountToPromote.isPresent()) {
+        LOGGER.info("Account to promote is not a collaborator");
+        return;
+      }
+      project.getAdmins().add(accountToPromote.get());
     }
 
     @Override
     public void demote(int accountId) {
-
+      // Only admins can demote someone
+      if (!isAdmin()) {
+        LOGGER.info("Non admin tries to promote someone");
+        return;
+      }
+      Optional<Account> accountToDemote = removeAccount(project.getAdmins(), accountId);
+      if (!accountToDemote.isPresent()) {
+        LOGGER.info("Account to demote is not an admin");
+        return;
+      }
+      // Anti lockout
+      if (project.getAdmins().size() == 1) {
+        LOGGER.info("Cannot demote the only admin left");
+        return;
+      }
+      project.getCollaborators().add(accountToDemote.get());
     }
 
     @Override
     public void addition(int fileId, Addition addition) {
-      textFileServer(fileId).newEdit(addition);
+      textFileServer(fileId).ifPresent(s -> s.newEdit(addition));
     }
 
     @Override
     public void deletion(int fileId, Deletion deletion) {
-      textFileServer(fileId).newEdit(deletion);
+      textFileServer(fileId).ifPresent(s -> s.newEdit(deletion));
     }
 
     @Override
@@ -132,50 +215,33 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
     }
 
-    private TextFileServer textFileServer(int fileId) {
-      Subscription subscription = subscriptions.get(fileId);
-      if (subscription != null) {
-        return subscription.textFileServer;
-      } else {
-        LOGGER.severe("Edit send before subscribing");
-        throw new IllegalStateException("Edit send before subscribing");
-      }
+    private Optional<TextFileServer> textFileServer(int fileId) {
+      return Optional.ofNullable(subscriptions.get(fileId))
+          .map(s -> s.textFileServer);
     }
 
     private void file(File file) {
       // Update
       file = fileStore.save(file);
       project.getFiles().add(file);
+      projectStore.save(project);
       // Notify all clients about it
-      filesUpdated(clients.keySet(), file);
-    }
-
-    private void filesUpdated(Collection<ProjectClient> clients, File... files) {
-      List<TextFile> textFiles = new ArrayList<>();
-      List<BinaryFile> binaryFiles = new ArrayList<>();
-      for (File file : files) {
-        if (file instanceof TextFile) {
-          TextFile textFile = (TextFile) file;
-          textFiles.add(textFile);
-          textFileServices.computeIfAbsent(file.getId(),
-              id -> new TextFileService(textFile));
-        } else if (file instanceof BinaryFile) {
-          binaryFiles.add(((BinaryFile) file));
-        }
-      }
-      if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
-        return;
-      }
-      // Notify clients
-      for (ProjectClient projectClient : clients) {
-        projectClient
-            .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
-      }
+      notifyFiles(clients.keySet(), file);
     }
 
     @Override
     public void removeFile(int fileId) {
-
+      clients.forEach((c, receiver) -> {
+        Subscription subscription = receiver.subscriptions.remove(fileId);
+        if (subscription != null) {
+          textFileServices.get(fileId).disconnect(subscription.textFileClient);
+        }
+        c.removeFile(fileId);
+      });
+      textFileServices.remove(fileId);
+      project.getFiles().removeIf(f -> f.getId() == fileId);
+      projectStore.save(project);
+      fileStore.deleteById(fileId);
     }
 
     @Override

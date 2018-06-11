@@ -21,9 +21,10 @@ public interface ProjectServer extends UpdateSender {
   /**
    * Share a project with a user using there email.
    * @param email the emailadress of the user that receives access to the project.
+   * @param admin if the user should be promoted to admin
    */
 
-  void share(String email);
+  void share(String email, boolean admin);
 
   /**
    * unshare a project with a user, using there id.

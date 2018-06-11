@@ -10,4 +10,6 @@ public interface ProjectController {
   void closeFile(TextFile file);
 
   void createFile(File file);
+
+  void deleteFile(File file);
 }

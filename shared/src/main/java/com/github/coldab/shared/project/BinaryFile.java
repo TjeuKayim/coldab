@@ -1,5 +1,6 @@
 package com.github.coldab.shared.project;
 
+import com.google.gson.annotations.Expose;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -7,6 +8,7 @@ import javax.persistence.Entity;
 public class BinaryFile extends File {
 
   @Column(nullable = false)
+  @Expose
   private String hash;
 
   public BinaryFile() {
