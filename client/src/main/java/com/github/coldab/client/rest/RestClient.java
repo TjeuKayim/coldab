@@ -1,6 +1,7 @@
 package com.github.coldab.client.rest;
 
 import com.github.coldab.client.Main;
+import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.ws.MessageEncoder;
@@ -40,6 +41,11 @@ public class RestClient implements AccountServer {
 
   @Override
   public boolean createProject(Project project) {
+    return false;
+  }
+
+  @Override
+  public boolean authorize(Account account) {
     return false;
   }
 

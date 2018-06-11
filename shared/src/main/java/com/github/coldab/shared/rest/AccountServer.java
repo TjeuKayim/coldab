@@ -1,5 +1,6 @@
 package com.github.coldab.shared.rest;
 
+import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import java.util.List;
 
@@ -19,4 +20,11 @@ public interface AccountServer {
    * @return true if successful
    */
   boolean createProject(Project project);
+
+  /**
+   * Authorize the user
+   *
+   * @return true if succesful
+   */
+  boolean authorize(Account account);
 }
