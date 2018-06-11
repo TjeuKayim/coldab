@@ -21,11 +21,12 @@ public class ProjectController {
 
   /**
    * Create a new project.
-   * @param input contains the project name
+   * @param input contains the project name, and current user as admin
    * @return a empty project with the current user as admin
    */
   @PostMapping
   ResponseEntity<Project> createProject(@RequestBody Project input) {
+    // todo: Check if project contains a logged in user
     return ResponseEntity.noContent().build();
   }
 
@@ -33,7 +34,7 @@ public class ProjectController {
    * Get all projects the current user collaborates on.
    */
   @GetMapping
-  Iterable<Project> getProjects() {
+  Iterable<Project> getProjects(@RequestBody String sessionId) {
     //TODO: find by account
     return projectStore.findAll();
   }

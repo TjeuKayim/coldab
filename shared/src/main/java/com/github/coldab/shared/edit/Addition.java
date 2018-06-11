@@ -2,6 +2,7 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.ws.MessageEncoder;
+import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +19,9 @@ import javax.persistence.Transient;
 public class Addition extends Edit {
 
   @Transient
-  private transient List<Letter> insertedLetters;
+  private List<Letter> insertedLetters;
 
+  @Expose
   private String text;
 
   public Addition() {

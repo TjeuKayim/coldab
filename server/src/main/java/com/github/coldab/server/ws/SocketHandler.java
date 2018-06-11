@@ -33,7 +33,6 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     // TODO: logged in account
-    Account account = new Account("HenkJan", "henk@jan.org");
     int projectId = (int) session.getAttributes().get("projectId");
     Project project = connectionManager.getProject(projectId);
     if (project == null) {
@@ -50,6 +49,7 @@ public class SocketHandler extends TextWebSocketHandler {
             LOGGER.severe(e.toString());
           }
         });
+    Account account = project.getAdmins().iterator().next();
     ServerEndpoint serverEndpoint = connectionManager.connect(project, account, clientEndpoint);
     SocketReceiver socketReceiver = new SocketReceiver(ServerEndpoint.class, serverEndpoint);
     sessions.put(session, new SocketSession(socketReceiver, clientEndpoint));
