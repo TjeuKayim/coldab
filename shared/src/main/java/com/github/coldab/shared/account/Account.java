@@ -20,7 +20,7 @@ public class Account {
   @Expose
   private int id;
 
-  @Column(unique = true, nullable = false)
+  @Column(unique = true)
   @Expose
   private String nickName;
 

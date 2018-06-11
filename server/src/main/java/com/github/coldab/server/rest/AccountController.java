@@ -5,12 +5,12 @@ import com.github.coldab.server.services.LoginSessionManager;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.rest.Credentials;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/account/", method = RequestMethod.POST)
+@RequestMapping("/account/")
 public class AccountController {
   private final AccountStore accountStore;
   private final LoginSessionManager sessionManager;
@@ -27,7 +27,7 @@ public class AccountController {
    * @return Account met SID
    */
   @PostMapping("login")
-  public Account login(Credentials credentials) {
+  public Account login(@RequestBody Credentials credentials) {
     Account account = accountStore.findAccountByemail(credentials.getEmail());
     if (account != null) {
       if (account.validatePassword(credentials.getPassword())) {
@@ -43,7 +43,7 @@ public class AccountController {
   }
 
   @PostMapping("register")
-  public Account register(Credentials credentials) {
+  public Account register(@RequestBody Credentials credentials) {
     Account account = new Account(null, credentials.getEmail(), credentials.getPassword());
     accountStore.save(account);
     sessionManager.login(account);
@@ -51,7 +51,7 @@ public class AccountController {
   }
 
   @PostMapping("logout")
-  public boolean logout(String sessionId) {
+  public boolean logout(@RequestBody String sessionId) {
     sessionManager.logout(sessionId);
     return true;
   }
