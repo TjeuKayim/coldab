@@ -72,7 +72,7 @@ public class SocketHandlerTest {
     private final ChatClientMock chatMock = new ChatClientMock();
     private ProjectClient projectMock = Mockito.mock(ProjectClient.class);
     private ChatMessage chatMessage =
-        new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org"));
+        new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org", "1234"));
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {

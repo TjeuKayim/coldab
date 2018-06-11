@@ -1,7 +1,5 @@
 package com.github.coldab.client.project;
 
-import static org.junit.Assert.*;
-
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.Chat.ChatObserver;
@@ -13,7 +11,7 @@ import org.mockito.Mockito;
 
 public class ChatComponentTest {
 
-  private Account account = new Account("TestAccount", "TestMail@test.com");
+  private Account account = new Account("TestAccount", "TestMail@test.com", "1234");
   private ChatComponent chatComponent;
   private ChatServer chatServer;
   private Chat chat;

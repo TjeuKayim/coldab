@@ -20,7 +20,7 @@ import org.junit.Test;
 
 public class ProjectServerTest {
 
-  private Account account = new Account("Piet Hein", "piet@hein.email");
+  private Account account = new Account("Piet Hein", "piet@hein.email", "1234");
 
   @Before
   public void setUp() {

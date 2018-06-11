@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class ChatServerTest {
 
-  private Account author = new Account("Piet Hein", "piet@hein.email");
+  private Account author = new Account("Piet Hein", "piet@hein.email", "1234");
 
   @Before
   public void setUp() {

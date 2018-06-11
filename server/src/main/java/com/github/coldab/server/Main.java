@@ -25,7 +25,7 @@ public class Main {
     return args -> {
       Project project = new Project("TestProject");
       TextFile textFile = new TextFile(0, "index.html");
-      Account piet = new Account("Piet Hein", "piet@hein.email");
+      Account piet = new Account("Piet Hein", "piet@hein.email", "1234");
       textFile.addEdit(new Addition(0, piet, null, "Hello World from database"));
       project.getAdmins().add(piet);
       project.getFiles().add(textFile);
