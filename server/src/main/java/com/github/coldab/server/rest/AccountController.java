@@ -1,27 +1,39 @@
 package com.github.coldab.server.rest;
 
+import com.github.coldab.server.dal.AccountStore;
 import com.github.coldab.shared.account.Account;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/account/login", method = RequestMethod.POST)
+@RequestMapping(value = "/account/", method = RequestMethod.POST)
 public class AccountController {
+  private final AccountStore accountStore;
+
+  public AccountController(AccountStore accountStore) {
+    this.accountStore = accountStore;
+  }
 
   /**
    * Login with account
    *
-   * @param login
-   * @return jwt token
+   * @return Account met SID
    */
-  @PostMapping
-  public String login(@RequestBody Account login) {
+  @PostMapping("login")
+  public Account login(String email, String password) {
 
-    //TODO: return jwt token??
-    return "test";
+    return null;
+  }
+
+  @PostMapping("register")
+  public Account register(String email, String password) {
+    return null;
+  }
+
+  @PostMapping("logout")
+  public void logout(String sessionId) {
+
   }
 }
