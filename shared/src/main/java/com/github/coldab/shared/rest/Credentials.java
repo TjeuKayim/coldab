@@ -2,9 +2,12 @@ package com.github.coldab.shared.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.Expose;
 
 public class Credentials {
+  @Expose
   private final String email;
+  @Expose
   private final String password;
 
   @JsonCreator

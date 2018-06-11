@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 public class Account {
 
   @Transient
+  @Expose
   private String sessionId = null;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

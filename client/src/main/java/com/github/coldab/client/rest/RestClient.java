@@ -20,26 +20,20 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class RestClient implements AccountServer {
 
-  private RestTemplate jacksonRest = new RestTemplate();
-  private RestTemplate gsonRest = new RestTemplate();
+  private RestTemplate restTemplate = new RestTemplate();
   private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
   private String sessionId;
 
   public RestClient() {
-    configureRest(jacksonRest);
-    configureRest(gsonRest).setMessageConverters(Collections.singletonList(
-        new GsonHttpMessageConverter(MessageEncoder.getGson())
-    ));
-  }
-
-  private RestTemplate configureRest(RestTemplate restTemplate) {
     restTemplate.setErrorHandler(new ErrorHandler());
     restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(Main.getRestEndpoint()));
     restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
       request.getHeaders().add("Session", getSessionId());
       return execution.execute(request, body);
     }));
-    return restTemplate;
+    restTemplate.setMessageConverters(Collections.singletonList(
+        new GsonHttpMessageConverter(MessageEncoder.getGson())
+    ));
   }
 
   public String getSessionId() {
@@ -54,7 +48,7 @@ public class RestClient implements AccountServer {
 
   @Override
   public List<Project> getProjects() {
-    Project[] projects = gsonRest
+    Project[] projects = restTemplate
         .getForObject("/account/project", Project[].class);
     if (projects != null) {
       return Arrays.asList(projects);
@@ -65,14 +59,14 @@ public class RestClient implements AccountServer {
 
   @Override
   public boolean createProject(String projectName) {
-    ResponseEntity<Project> entity = gsonRest
+    ResponseEntity<Project> entity = restTemplate
         .postForEntity("/account/project", projectName, Project.class);
     return entity.hasBody();
   }
 
   @Override
   public Account register(Credentials credentials) {
-    Account account = jacksonRest
+    Account account = restTemplate
         .postForObject("/account/register", credentials, Account.class);
     setSessionId(account.getSessionId());
     return account;
@@ -80,7 +74,7 @@ public class RestClient implements AccountServer {
 
   @Override
   public Account login(Credentials credentials) {
-    Account account = jacksonRest
+    Account account = restTemplate
         .postForObject("/account/login", credentials, Account.class);
     setSessionId(account.getSessionId());
     return account;
@@ -88,7 +82,7 @@ public class RestClient implements AccountServer {
 
   @Override
   public void logout(String sessionId) {
-    jacksonRest
+    restTemplate
         .postForEntity("/account/logout", sessionId, Boolean.TYPE);
   }
 
