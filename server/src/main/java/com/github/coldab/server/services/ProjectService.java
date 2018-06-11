@@ -137,6 +137,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       } else {
         project.getCollaborators().add(accountToShare);
       }
+      projectStore.save(project);
     }
 
     @Override
