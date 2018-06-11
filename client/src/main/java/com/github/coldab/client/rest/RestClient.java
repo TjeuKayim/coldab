@@ -4,6 +4,7 @@ import com.github.coldab.client.Main;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
+import com.github.coldab.shared.rest.Credentials;
 import com.github.coldab.shared.ws.MessageEncoder;
 import java.io.IOException;
 import java.net.URI;
@@ -45,12 +46,12 @@ public class RestClient implements AccountServer {
   }
 
   @Override
-  public Account register(String email, String password) {
+  public Account register(Credentials credentials) {
     return null;
   }
 
   @Override
-  public Account login(String email, String password) {
+  public Account login(Credentials credentials) {
     return null;
   }
 
