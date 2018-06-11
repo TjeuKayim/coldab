@@ -3,6 +3,7 @@ package com.github.coldab.server.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -40,7 +41,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         .and()
         .authorizeRequests()
         .antMatchers("/actuator/**", "/api-docs/**").permitAll()
-        .antMatchers("/springjwt/**" ).authenticated();
+        .antMatchers("/springjwt/**" ).authenticated()
+        .antMatchers(HttpMethod.OPTIONS, "/oauth/token").permitAll();
   }
 }
 

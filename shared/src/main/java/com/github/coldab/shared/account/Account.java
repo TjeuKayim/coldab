@@ -11,22 +11,18 @@ import javax.persistence.Transient;
 @Entity
 public class Account {
 
+  @Transient
+  private final String sessionId = null;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
   private int id;
-
-  @Column(unique=true,  nullable = false)
+  @Column(unique = true, nullable = false)
   private String nickName;
-
   @Column(nullable = false)
   private String password;
-
   @Column(unique = true, nullable = false)
   private String email;
-
-  @Transient
-  private final String sessionId = null;
 
   /**
    * This constructor is used by JPA.
@@ -70,7 +66,16 @@ public class Account {
     return Objects.hash(id, nickName, email);
   }
 
-  public String getPassword() {
-    return password;
+  /**
+   * validate if a given password matches the password of the account
+   * @param password the input password
+   * @return Boolean true if the passwords match, else returns false.
+   */
+  public Boolean validatePassword(String password) {
+    if (this.password.equals(password)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

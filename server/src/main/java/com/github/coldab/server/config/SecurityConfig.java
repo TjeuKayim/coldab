@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -50,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  protected void configure(final HttpSecurity http) throws Exception {
     http
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -61,13 +62,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf()
         .disable();
 
+
   }
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    //super.configure(web);
-    web.ignoring().antMatchers("**"); // everything is open until we lock it down (currently waiting on EU web)
-  }
+    // without this h2 console returns a blank page, so don't remove this if you need h2 console.
+    web.ignoring().antMatchers(
+        "**");}
+
 
   @Bean
   public JwtAccessTokenConverter accessTokenConverter() {

@@ -35,6 +35,7 @@ public class ChatService implements Service<ChatServer, ChatClient> {
       this.account = account;
     }
 
+
     @Override
     public void message(ChatMessage message) {
       // Check if author is correct
