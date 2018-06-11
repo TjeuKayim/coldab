@@ -55,12 +55,13 @@ public class ProjectChooserController implements Initializable {
       if (projectName.isEmpty()) {
         return;
       }
-      accountServer.createProject(result.toString());
+      accountServer.createProject(result.get());
       refreshProjects();
     });
   }
   @FXML
   public void refreshProjects(){
+      projectsListView.getItems().clear();
     projectsListView.setItems(projects);
     projectsListView.setCellFactory(ProjectRow::new);
 

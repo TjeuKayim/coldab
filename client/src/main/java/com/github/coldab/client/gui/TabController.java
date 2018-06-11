@@ -105,6 +105,7 @@ public class TabController implements TextFileObserver {
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {
+    int caret = codeArea.getCaretPosition();
     eventStream.suspendWhile(() -> {
       MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
           .createMultiChange();
@@ -113,6 +114,7 @@ public class TabController implements TextFileObserver {
       additions.forEach(a -> builder
           .insertTextAbsolutely(a.getStart() + 1, a.getText()));
       builder.commit();
+      codeArea.moveTo(caret);
     });
   }
 }
