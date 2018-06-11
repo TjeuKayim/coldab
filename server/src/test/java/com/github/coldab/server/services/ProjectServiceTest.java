@@ -39,7 +39,7 @@ public class ProjectServiceTest {
 
   private Project project;
   private ProjectService service;
-  private Account account = new Account("PietHein", "piet@hein.email");
+  private Account account = new Account("PietHein", "piet@hein.email", "1234");
 
   @Before
   public void setUp() throws Exception {

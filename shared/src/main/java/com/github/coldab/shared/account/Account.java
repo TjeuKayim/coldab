@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 public class Account {
 
   @Transient
-  private final String sessionId = null;
+  private String sessionId = null;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
@@ -37,9 +37,10 @@ public class Account {
   protected Account() {
   }
 
-  public Account(String nickName, String email) {
+  public Account(String nickName, String email, String password) {
     this.nickName = nickName;
     this.email = email;
+    this.password = password;
   }
 
   public int getId() {
@@ -52,6 +53,14 @@ public class Account {
 
   public String getEmail() {
     return email;
+  }
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
   }
 
   @Override
