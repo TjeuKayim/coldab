@@ -7,6 +7,7 @@ import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.rest.Credentials;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +42,25 @@ public class RestClient implements AccountServer {
 
   @Override
   public Account register(Credentials credentials) {
-    return restTemplate
+    Account account = restTemplate
         .postForObject("/account/register", credentials, Account.class);
+    useSession(account.getSessionId());
+    return account;
   }
 
   @Override
   public Account login(Credentials credentials) {
-    return restTemplate
+    Account account = restTemplate
         .postForObject("/account/login", credentials, Account.class);
+    useSession(account.getSessionId());
+    return account;
+  }
+
+  private void useSession(String sessionId) {
+    restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
+      request.getHeaders().add("Session", sessionId);
+      return execution.execute(request, body);
+    }));
   }
 
   @Override
