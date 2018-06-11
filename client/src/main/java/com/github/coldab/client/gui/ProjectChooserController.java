@@ -29,7 +29,6 @@ public class ProjectChooserController implements Initializable {
   private final ObservableList<Project> projects = FXCollections.observableArrayList();
 
   private final AccountServer accountServer;
-  private final RestClient restClient = new RestClient();
 
   public ProjectChooserController(AccountServer accountServer,
       Consumer<Project> resultCallback) {
@@ -39,13 +38,7 @@ public class ProjectChooserController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    projectsListView.setItems(projects);
-    projectsListView.setCellFactory(ProjectRow::new);
-
-    List<Project> updatedProjects = accountServer.getProjects();
-    if (updatedProjects != null) {
-      this.projects.addAll(updatedProjects);
-    }
+    refreshProjects();
   }
 
   private void openProject(Project project) {
@@ -62,15 +55,19 @@ public class ProjectChooserController implements Initializable {
       if (projectName.isEmpty()) {
         return;
       }
-      restClient.createProject(result.toString());
+      accountServer.createProject(result.toString());
+      refreshProjects();
     });
   }
   @FXML
-  public void refreshProjects(ActionEvent actionEvent){
+  public void refreshProjects(){
     projectsListView.setItems(projects);
     projectsListView.setCellFactory(ProjectRow::new);
 
-    projects.addAll(accountServer.getProjects());
+    List<Project> updatedProjects = accountServer.getProjects();
+    if (updatedProjects != null) {
+      this.projects.addAll(updatedProjects);
+  }
   }
 
 
