@@ -26,17 +26,19 @@ public class RestClient implements AccountServer {
     restTemplate.setErrorHandler(new ErrorHandler());
     restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(Main.getRestEndpoint()));
     restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
-      request.getHeaders().add("Session", sessionId);
+      request.getHeaders().add("Session", getSessionId());
       return execution.execute(request, body);
     }));
   }
 
   public String getSessionId() {
+    LOGGER.info(() -> "Get session " + sessionId);
     return sessionId;
   }
 
   private void setSessionId(String sessionId) {
     this.sessionId = sessionId;
+    LOGGER.info(() -> "Set session " + sessionId);
   }
 
   @Override
