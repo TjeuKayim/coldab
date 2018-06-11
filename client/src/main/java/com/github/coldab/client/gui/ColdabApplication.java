@@ -23,7 +23,18 @@ public class ColdabApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    this.projectChooserStage = primaryStage;
+    this.authenticationStage = primaryStage;
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
+    AccountServer accountServer = new RestClient();
+    loader.setControllerFactory(c -> new AuthenticationController());
+
+    Parent root = loader.load();
+    authenticationStage.setTitle("Coldab Login");
+    Scene scene = new Scene(root);
+    authenticationStage.setScene(scene);
+    authenticationStage.show();
+
+/*    this.projectChooserStage = primaryStage;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
     AccountServer accountServer = new RestClient();
     Account account = new Account("HenkJan", "henk@jan.org");
@@ -33,7 +44,7 @@ public class ColdabApplication extends Application {
     projectChooserStage.setTitle("Coldab text");
     Scene scene = new Scene(root);
     projectChooserStage.setScene(scene);
-    projectChooserStage.show();
+    projectChooserStage.show();*/
   }
 
   private void startEditor(Project project, Account todo) {
