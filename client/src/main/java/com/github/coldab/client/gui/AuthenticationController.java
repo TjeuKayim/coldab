@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class AuthenticationController implements Initializable {
 
   @FXML
-  private TextField nickname;
+  private TextField email;
   @FXML
   private TextField password;
   @FXML
@@ -28,7 +28,7 @@ public class AuthenticationController implements Initializable {
   @FXML
   private Button login;
   @FXML
-  private Label nicknameWarning;
+  private Label emailWarning;
   @FXML
   private Label passwordWarning;
 
@@ -39,11 +39,11 @@ public class AuthenticationController implements Initializable {
   }
 
   private void loginButtonClicked(ActionEvent actionEvent) {
-    nicknameWarning.setText("");
+    emailWarning.setText("");
     passwordWarning.setText("");
 
-    if(nickname.getText().trim().isEmpty() || nickname.getText() == null){
-      nicknameWarning.setText("Username Required!");
+    if(email.getText().trim().isEmpty() || email.getText() == null){
+      emailWarning.setText("Username Required!");
     }
     if(password.getText().trim().isEmpty() || password.getText() == null){
       passwordWarning.setText("Password Required!");
