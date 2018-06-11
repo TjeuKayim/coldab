@@ -17,16 +17,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -47,6 +38,8 @@ public class EditorController implements Initializable, ProjectObserver {
   private TreeView<FileTree> fileTreeView;
   @FXML
   private MenuItem menuOpenChat;
+  @FXML
+  private MenuItem newProject;
 
   private final Project project;
   private final Account account;
@@ -82,6 +75,7 @@ public class EditorController implements Initializable, ProjectObserver {
         chatPane.getItems().add(message));
   }
 
+
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) {
@@ -105,6 +99,7 @@ public class EditorController implements Initializable, ProjectObserver {
     tabPane.getTabs().add(tab);
     new TabController(file, tab, projectController);
   }
+
 
   @Override
   public void updateFiles() {
@@ -182,4 +177,15 @@ public class EditorController implements Initializable, ProjectObserver {
       projectController.createFile(new TextFile(0, fileName));
     });
   }
+
+    @FXML
+    private void newProject(ActionEvent actionEvent){
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("New Project");
+        dialog.setHeaderText("New Project");
+        dialog.setContentText("ProjectName");
+        Optional<String> result = dialog.showAndWait();
+
+    }
+
 }

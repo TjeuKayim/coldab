@@ -23,7 +23,7 @@
         <MenuItem text="New File" onAction="#newFile" />
         <!-- "Keep things separated" - Marijn 2018 -->
         <SeparatorMenuItem />
-        <MenuItem text="New Project" />
+        <MenuItem text="New Project" onAction="#newProject"/>
         <MenuItem text="Open Project" />
         <MenuItem text="Open Recent" />
       </Menu>
@@ -64,15 +64,19 @@
     </VBox>
   </right>
   <bottom>
-    <HBox>
-      <HBox id="leftStatusBar">
-        <Label>{{FileName}}</Label>
-        <Label>5:10</Label>
+      <HBox styleClass="status-bar">
+          <HBox id="leftStatusBar">
+              <Label>{{FileName}}</Label>
+              <Label>5:10</Label>
+          </HBox>
+          <HBox  HBox.hgrow="ALWAYS" fx:id="characterTotal" id="status-bar">
+              <Label>Total amount of Characters : </Label>
+              <Label>0</Label>
+          </HBox>
+          <HBox id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
+              <Label>UTF-8</Label>
+              <Label>text/html</Label>
+          </HBox>
       </HBox>
-      <HBox id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
-        <Label>UTF-8</Label>
-        <Label>text/html</Label>
-      </HBox>
-    </HBox>
   </bottom>
 </BorderPane>
