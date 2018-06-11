@@ -55,6 +55,7 @@ public class MessageEncoder {
 
   private static Gson createGson() {
     return new GsonBuilder()
+        .excludeFieldsWithoutExposeAnnotation()
         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
         .create();
   }

@@ -45,8 +45,18 @@ public class RestClient implements AccountServer {
   }
 
   @Override
-  public boolean authorize(Account account) {
-    return false;
+  public Account register(String email, String password) {
+    return null;
+  }
+
+  @Override
+  public Account login(String email, String password) {
+    return null;
+  }
+
+  @Override
+  public void logout(String sessionId) {
+
   }
 
   public URI url(String path) {

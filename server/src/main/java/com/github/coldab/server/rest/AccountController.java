@@ -23,6 +23,11 @@ public class AccountController {
    */
   @PostMapping("login")
   public Account login(String email, String password) {
+    Account account = accountStore.findAccountByemail(email);
+    if (account != null) {
+      //TODO: check if password is correct
+
+    }
 
     return null;
   }

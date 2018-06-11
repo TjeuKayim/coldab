@@ -1,5 +1,6 @@
 package com.github.coldab.shared.account;
 
+import com.google.gson.annotations.Expose;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,12 +17,16 @@ public class Account {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
+  @Expose
   private int id;
+
   @Column(unique = true, nullable = false)
+  @Expose
   private String nickName;
   @Column(nullable = false)
   private String password;
   @Column(unique = true, nullable = false)
+  @Expose
   private String email;
 
   /**

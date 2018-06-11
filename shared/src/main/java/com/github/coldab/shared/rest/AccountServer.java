@@ -7,9 +7,9 @@ import java.util.List;
 public interface AccountServer {
 
   /**
-   *Get a list of projects
+   * Get a list of projects
    *
-   * @return  A list with projects, if there are no projects it returns an empty list.
+   * @return A list with projects, if there are no projects it returns an empty list.
    */
 
   List<Project> getProjects();
@@ -21,10 +21,9 @@ public interface AccountServer {
    */
   boolean createProject(Project project);
 
-  /**
-   * Authorize the user
-   *
-   * @return true if succesful
-   */
-  boolean authorize(Account account);
+  Account register(String email, String password);
+
+  Account login(String email, String password);
+
+  void logout(String sessionId);
 }

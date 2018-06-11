@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,22 +26,28 @@ public class Project {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", updatable = false, nullable = false)
+  @Expose
   private int id;
   @Column(nullable = false)
+  @Expose
   private String name;
-  @OneToMany
-  private final List<Account> admins = new ArrayList<>();
-  @OneToMany
-  private final List<Account> collaborators = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Expose
+  private final Set<Account> admins = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Expose
+  private final Set<Account> collaborators = new HashSet<>();
   @Column(nullable = false)
+  @Expose
   private LocalDateTime creationDate = TimeProvider.getInstance().now();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private transient final List<File> files = new ArrayList<>();
+  @JsonIgnore
+  private List<File> files = new ArrayList<>();
 
   @Transient
   @JsonIgnore
-  private final transient Chat chat = new Chat();
+  private final Chat chat = new Chat();
 
   public Project() {
   }
@@ -48,15 +56,15 @@ public class Project {
     this.name = name;
   }
 
-  public Collection<File> getFiles() {
+  public List<File> getFiles() {
     return files;
   }
 
-  public List<Account> getAdmins() {
+  public Set<Account> getAdmins() {
     return admins;
   }
 
-  public List<Account> getCollaborators() {
+  public Set<Account> getCollaborators() {
     return collaborators;
   }
 

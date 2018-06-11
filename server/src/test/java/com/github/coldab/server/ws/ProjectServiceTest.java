@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import com.github.coldab.server.dal.AccountStore;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.TimeProvider;
@@ -33,6 +34,9 @@ public class ProjectServiceTest {
   private ProjectStore projectStore;
   @Autowired
   private FileStore fileStore;
+  @Autowired
+  private AccountStore accountStore;
+
   private Project project;
   private ProjectService service;
   private Account account = new Account("PietHein", "piet@hein.email");
@@ -41,7 +45,7 @@ public class ProjectServiceTest {
   public void setUp() throws Exception {
     TimeProvider.useMock();
     project = new Project("MyProject");
-    service = new ProjectService(project, projectStore, fileStore);
+    service = new ProjectService(project, projectStore, fileStore, accountStore);
   }
 
   @Test
@@ -94,16 +98,6 @@ public class ProjectServiceTest {
     server.subscribe(1);
     server.addition(1, new Addition(-1, account, null, "Hello World"));
     verify(client).confirmAddition(1, new Addition(0, account, null, "Hello World"));
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void sendEditBeforeSubscribing() {
-    // Client should be subscribed before sending edits
-    TextFile textFile = new TextFile(1, "path/to/hello.world");
-    project.getFiles().add(textFile);
-    ProjectClient client = mock(ProjectClient.class);
-    ProjectServer server = service.connect(client, account);
-    server.addition(1, new Addition(-1, account, null, "Hello World"));
   }
 
   @Test

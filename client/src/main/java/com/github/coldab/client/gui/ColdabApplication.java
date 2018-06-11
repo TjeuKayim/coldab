@@ -36,7 +36,10 @@ public class ColdabApplication extends Application {
     projectChooserStage.show();
   }
 
-  private void startEditor(Project project, Account account) {
+  private void startEditor(Project project, Account todo) {
+    //todo: Use account parameter
+    Account account = project.getAdmins().iterator().next();
+
     projectChooserStage.hide();
     EditorController controller = new EditorController(project, account);
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editor.fxml"));
