@@ -4,6 +4,7 @@ import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.server.services.LoginSessionManager;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +48,8 @@ public class ProjectController {
    */
   @GetMapping
   Iterable<Project> getProjects(@RequestHeader("Session") String sessionId) {
-    Account account = sessionManager.validateSessionId(sessionId);
-    return projectStore.findProjectsByUser(account);
+    return Optional.ofNullable(sessionManager.validateSessionId(sessionId))
+        .map(projectStore::findProjectsByUser)
+        .orElse(null);
   }
 }

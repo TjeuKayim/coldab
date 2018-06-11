@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -48,7 +47,7 @@ public abstract class Edit {
   @Expose
   protected Position start;
 
-  @ManyToOne(cascade = CascadeType.PERSIST)
+  @ManyToOne
   @Expose
   private Account account;
 

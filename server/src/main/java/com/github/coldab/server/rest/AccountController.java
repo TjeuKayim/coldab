@@ -28,7 +28,7 @@ public class AccountController {
    */
   @PostMapping("login")
   public Account login(@RequestBody Credentials credentials) {
-    Account account = accountStore.findAccountByemail(credentials.getEmail());
+    Account account = accountStore.findAccountByEmail(credentials.getEmail());
     if (account != null) {
       if (account.validatePassword(credentials.getPassword())) {
         // Valid login
@@ -45,7 +45,7 @@ public class AccountController {
   @PostMapping("register")
   public Account register(@RequestBody Credentials credentials) {
     Account account = new Account(null, credentials.getEmail(), credentials.getPassword());
-    accountStore.save(account);
+    account = accountStore.save(account);
     sessionManager.login(account);
     return account;
   }
