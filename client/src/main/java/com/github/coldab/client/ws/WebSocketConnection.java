@@ -30,11 +30,12 @@ public class WebSocketConnection extends TextWebSocketHandler {
   private final WebSocketConnectionManager manager;
 
   public WebSocketConnection(Project project,
-      Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
+      String sessionId, Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
     this.endpointFactory = endpointFactory;
     WebSocketClient client = new StandardWebSocketClient();
     String url = Main.getWebSocketEndpoint() + project.getId();
     manager = new WebSocketConnectionManager(client, this, url);
+    manager.getHeaders().add("Session", sessionId);
     manager.start();
     LOGGER.info("Connecting to WebSocket");
     // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
