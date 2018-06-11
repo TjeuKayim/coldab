@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface ProjectStore extends CrudRepository<Project, Integer> {
 
   /**
-   * Finds the projects where the Account is listed as a Collaborator.
+   * Finds the projects where the account is listed as a Collaborator.
    *
    * @return A list of projects where the given account is a collaborator. If no projects are found,
    * this method returns an empty list.
@@ -17,7 +17,7 @@ public interface ProjectStore extends CrudRepository<Project, Integer> {
   List<Project> findProjectByCollaboratorsContains(Account account);
 
   /**
-   * Finds the projects where the Account is listed as a admin.
+   * Finds the projects where the account is listed as a admin.
    *
    * @return A list of projects where the given account is a admin. If no projects are found, this
    * method returns an empty list.
@@ -25,7 +25,7 @@ public interface ProjectStore extends CrudRepository<Project, Integer> {
   List<Project> findProjectByAdminsContains(Account account);
 
   /**
-   * Finds the projects where the Account is listed as a admin or collaborator
+   * Finds the projects where the account is listed as a admin or collaborator
    *
    * @return A list of projects where the given account is a admin or collaborator. If no projects
    * are found, this method returns an empty list.

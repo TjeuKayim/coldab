@@ -22,5 +22,5 @@
   <Button fx:id="login" layoutX="205.0" layoutY="130.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" text="Login" />
   <Button fx:id="register" layoutX="310.0" layoutY="130.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="86.0" text="Register" />
 
-  <!--<Hyperlink fx:id="register" layoutX="14.0" layoutY="180.0" text="No Account? Register Here" />-->
+  <!--<Hyperlink fx:id="register" layoutX="14.0" layoutY="180.0" text="No account? Register Here" />-->
 </AnchorPane>

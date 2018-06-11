@@ -1,6 +1,5 @@
-package com.github.coldab.shared.Account;
+package com.github.coldab.shared.account;
 
-import com.github.coldab.shared.account.Account;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,8 +22,8 @@ public class AccountTest {
 
   @Test
   public void validate(){
-    assertTrue(account.validatePassword(correct));
-    assertFalse(account.validatePassword(incorrect));
+    assertTrue("false negative on validate password",account.validatePassword(correct));
+    assertFalse("false positive on validate password",account.validatePassword(incorrect));
   }
 }
 

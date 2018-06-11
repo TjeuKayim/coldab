@@ -124,7 +124,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
       Account accountToShare = accountStore.findAccountByemail(email);
       if (accountToShare == null) {
-        LOGGER.info("Account to share not found");
+        LOGGER.info("account to share not found");
         return;
       }
       if (admin) {
@@ -165,7 +165,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
       Optional<Account> accountToPromote = removeAccount(project.getCollaborators(), accountId);
       if (!accountToPromote.isPresent()) {
-        LOGGER.info("Account to promote is not a collaborator");
+        LOGGER.info("account to promote is not a collaborator");
         return;
       }
       project.getAdmins().add(accountToPromote.get());
@@ -180,7 +180,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       }
       Optional<Account> accountToDemote = removeAccount(project.getAdmins(), accountId);
       if (!accountToDemote.isPresent()) {
-        LOGGER.info("Account to demote is not an admin");
+        LOGGER.info("account to demote is not an admin");
         return;
       }
       // Anti lockout

@@ -37,7 +37,7 @@ public class ColdabApplication extends Application {
 /*    this.projectChooserStage = primaryStage;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
     AccountServer accountServer = new RestClient();
-    Account account = new Account("HenkJan", "henk@jan.org", "1234");
+    account account = new account("HenkJan", "henk@jan.org", "1234");
     loader.setControllerFactory(c ->
         new ProjectChooserController(accountServer, p -> startEditor(p, account)));
     Parent root = loader.load();
