@@ -7,7 +7,6 @@ import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.rest.Credentials;
 import com.github.coldab.shared.ws.MessageEncoder;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,6 +15,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class RestClient implements AccountServer {
 
@@ -24,6 +24,7 @@ public class RestClient implements AccountServer {
 
   public RestClient() {
     restTemplate.setErrorHandler(new ErrorHandler());
+    restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(Main.getRestEndpoint()));
     restTemplate.getMessageConverters().stream()
         .filter(c -> c instanceof GsonHttpMessageConverter)
         .map(c -> (GsonHttpMessageConverter) c)
@@ -34,34 +35,33 @@ public class RestClient implements AccountServer {
   @Override
   public List<Project> getProjects() {
     ResponseEntity<Project[]> entity = restTemplate
-        .getForEntity(url("/account/project"), Project[].class);
+        .getForEntity("/account/project", Project[].class);
     return Arrays.asList(entity.getBody());
-//    ResponseEntity<String> entity = restTemplate
-//        .getForEntity(url("/account/project"), String.class);
   }
 
   @Override
   public boolean createProject(Project project) {
-    return false;
+    ResponseEntity<Project> entity = restTemplate
+        .postForEntity("/account/project", project, Project.class);
+    return entity.hasBody();
   }
 
   @Override
   public Account register(Credentials credentials) {
-    return null;
+    return restTemplate
+        .postForObject("/account/register", credentials, Account.class);
   }
 
   @Override
   public Account login(Credentials credentials) {
-    return null;
+    return restTemplate
+        .postForObject("/account/login", credentials, Account.class);
   }
 
   @Override
   public void logout(String sessionId) {
-
-  }
-
-  public URI url(String path) {
-    return URI.create(Main.getRestEndpoint() + path);
+    restTemplate
+        .postForEntity("/account/logout", sessionId, Boolean.TYPE);
   }
 
   private class ErrorHandler implements ResponseErrorHandler {

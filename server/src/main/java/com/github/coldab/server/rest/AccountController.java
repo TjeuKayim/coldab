@@ -51,7 +51,8 @@ public class AccountController {
   }
 
   @PostMapping("logout")
-  public void logout(String sessionId) {
+  public boolean logout(String sessionId) {
     sessionManager.logout(sessionId);
+    return true;
   }
 }
