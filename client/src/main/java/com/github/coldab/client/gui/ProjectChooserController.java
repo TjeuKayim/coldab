@@ -2,8 +2,8 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
-
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
@@ -42,7 +42,10 @@ public class ProjectChooserController implements Initializable {
     projectsListView.setItems(projects);
     projectsListView.setCellFactory(ProjectRow::new);
 
-    projects.addAll(accountServer.getProjects());
+    List<Project> updatedProjects = accountServer.getProjects();
+    if (updatedProjects != null) {
+      this.projects.addAll(updatedProjects);
+    }
   }
 
   private void openProject(Project project) {
