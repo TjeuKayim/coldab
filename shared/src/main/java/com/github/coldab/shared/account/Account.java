@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 public class Account {
 
   @Transient
-  @JsonIgnore
   private String sessionId = null;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
