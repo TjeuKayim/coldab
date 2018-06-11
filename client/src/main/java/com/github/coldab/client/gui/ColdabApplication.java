@@ -26,31 +26,35 @@ public class ColdabApplication extends Application {
     this.authenticationStage = primaryStage;
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/authentication.fxml"));
     AccountServer accountServer = new RestClient();
-    loader.setControllerFactory(c -> new AuthenticationController());
-
+    loader.setControllerFactory(c -> new AuthenticationController(accountServer, this::startProjectChooser));
     Parent root = loader.load();
     authenticationStage.setTitle("Coldab Login");
     Scene scene = new Scene(root);
     authenticationStage.setScene(scene);
     authenticationStage.show();
+  }
 
-/*    this.projectChooserStage = primaryStage;
+  private void startProjectChooser(Account account) {
+    this.projectChooserStage = new Stage();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/projectChooser.fxml"));
     AccountServer accountServer = new RestClient();
-    account account = new account("HenkJan", "henk@jan.org", "1234");
     loader.setControllerFactory(c ->
         new ProjectChooserController(accountServer, p -> startEditor(p, account)));
-    Parent root = loader.load();
+    Parent root = null;
+    try {
+      root = loader.load();
+    } catch (IOException e) {
+      throw new IllegalStateException("Could not load FXML");
+    }
     projectChooserStage.setTitle("Coldab text");
     Scene scene = new Scene(root);
     projectChooserStage.setScene(scene);
-    projectChooserStage.show();*/
+    projectChooserStage.show();
   }
 
   private void startEditor(Project project, Account todo) {
     //todo: Use account parameter
     Account account = project.getAdmins().iterator().next();
-
     projectChooserStage.hide();
     EditorController controller = new EditorController(project, account);
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editor.fxml"));
