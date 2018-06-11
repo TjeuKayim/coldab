@@ -31,6 +31,10 @@ public class RestClient implements AccountServer {
     }));
   }
 
+  public String getSessionId() {
+    return sessionId;
+  }
+
   private void setSessionId(String sessionId) {
     this.sessionId = sessionId;
   }
