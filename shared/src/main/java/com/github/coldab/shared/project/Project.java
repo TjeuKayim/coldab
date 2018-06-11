@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -31,10 +32,10 @@ public class Project {
   @Column(nullable = false)
   @Expose
   private String name;
-  @OneToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @Expose
   private final Set<Account> admins = new HashSet<>();
-  @OneToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER)
   @Expose
   private final Set<Account> collaborators = new HashSet<>();
   @Column(nullable = false)
