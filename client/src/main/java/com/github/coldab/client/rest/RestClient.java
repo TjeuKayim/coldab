@@ -20,10 +20,19 @@ public class RestClient implements AccountServer {
 
   private RestTemplate restTemplate = new RestTemplate();
   private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
+  private String sessionId;
 
   public RestClient() {
     restTemplate.setErrorHandler(new ErrorHandler());
     restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(Main.getRestEndpoint()));
+    restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
+      request.getHeaders().add("Session", sessionId);
+      return execution.execute(request, body);
+    }));
+  }
+
+  private void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
   }
 
   @Override
@@ -44,7 +53,7 @@ public class RestClient implements AccountServer {
   public Account register(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/register", credentials, Account.class);
-    useSession(account.getSessionId());
+    setSessionId(account.getSessionId());
     return account;
   }
 
@@ -52,15 +61,8 @@ public class RestClient implements AccountServer {
   public Account login(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/login", credentials, Account.class);
-    useSession(account.getSessionId());
+    setSessionId(account.getSessionId());
     return account;
-  }
-
-  private void useSession(String sessionId) {
-    restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
-      request.getHeaders().add("Session", sessionId);
-      return execution.execute(request, body);
-    }));
   }
 
   @Override
