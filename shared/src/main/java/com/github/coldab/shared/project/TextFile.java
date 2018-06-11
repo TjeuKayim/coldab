@@ -85,4 +85,8 @@ public class TextFile extends File {
 
     return Objects.hash(super.hashCode(), edits, annotations);
   }
+
+  public void reset() {
+    edits.clear();
+  }
 }

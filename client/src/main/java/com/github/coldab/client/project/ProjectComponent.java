@@ -102,6 +102,7 @@ public class ProjectComponent implements ProjectClient, ProjectController {
 
   @Override
   public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
+    file.reset();
     TextFileComponent textFileClient =
         new TextFileComponent(file, account, new TextFileHandler(file));
     textFileClient.addObserver(textFileObserver);
@@ -113,6 +114,7 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   @Override
   public void closeFile(TextFile file) {
     projectServer.unsubscribe(file.getId());
+    file.reset();
   }
 
   @Override
@@ -127,6 +129,11 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   @Override
   public void deleteFile(File file) {
     projectServer.removeFile(file.getId());
+  }
+
+  @Override
+  public void share(String email, boolean admin) {
+    projectServer.share(email, admin);
   }
 
   /**

@@ -112,7 +112,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
     @Override
     public void unsubscribe(int fileId) {
       Subscription subscription = subscriptions.remove(fileId);
-      textFileServices.get(fileId).disconnect(subscription.textFileClient);
+      TextFileService textFileService = textFileServices.get(fileId);
+      if (textFileService != null) {
+        textFileService.disconnect(subscription.textFileClient);
+      } else {
+        LOGGER.info("Unsubscribe: file doesn't exist");
+      }
     }
 
     @Override
@@ -132,6 +137,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       } else {
         project.getCollaborators().add(accountToShare);
       }
+      projectStore.save(project);
     }
 
     @Override

@@ -11,13 +11,25 @@ import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -47,6 +59,7 @@ public class EditorController implements Initializable, ProjectObserver {
   private ChatController chatController;
 
   private ProjectController projectController;
+  private final HashMap<TextFile, TabController> tabs = new HashMap<>();
 
   public EditorController(Project project, Account account) {
     this.project = project;
@@ -57,7 +70,8 @@ public class EditorController implements Initializable, ProjectObserver {
   public void initialize(URL location, ResourceBundle resources) {
   }
 
-  public void afterConnectionEstablished(ChatController chatController, ProjectController projectController) {
+  public void afterConnectionEstablished(ChatController chatController,
+      ProjectController projectController) {
     this.chatController = chatController;
     this.projectController = projectController;
     updateFiles();
@@ -97,13 +111,19 @@ public class EditorController implements Initializable, ProjectObserver {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    new TabController(file, tab, projectController);
+    tabs.put(file, new TabController(file, tab, projectController));
   }
 
 
   @Override
   public void updateFiles() {
     Platform.runLater(() -> {
+      // Close tabs for removed files
+      project.getFiles().stream()
+          .map(tabs::get)
+          .filter(Objects::nonNull)
+          .forEach(TabController::fileDeleted);
+
       // Create root
       TreeItem<FileTree> rootItem = new TreeItem<>();
 
@@ -178,14 +198,26 @@ public class EditorController implements Initializable, ProjectObserver {
     });
   }
 
-    @FXML
-    private void newProject(ActionEvent actionEvent){
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("New Project");
-        dialog.setHeaderText("New Project");
-        dialog.setContentText("ProjectName");
-        Optional<String> result = dialog.showAndWait();
+  @FXML
+  private void newProject(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New Project");
+    dialog.setHeaderText("New Project");
+    dialog.setContentText("ProjectName");
+    Optional<String> result = dialog.showAndWait();
+  }
 
-    }
-
+  public void share(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("Share");
+    dialog.setHeaderText("Invite someone");
+    dialog.setContentText("E-mail");
+    CheckBox checkBox = new CheckBox("Give admin privileges");
+    checkBox.setSelected(true);
+    dialog.getDialogPane().getChildren().add(checkBox);
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(email -> {
+      projectController.share(email, checkBox.isSelected());
+    });
+  }
 }

@@ -44,6 +44,6 @@ public class ChatMessage implements Comparable<ChatMessage> {
 
   @Override
   public String toString() {
-    return author.getNickName() + ": " + text;
+    return author.getEmail() + ": " + text;
   }
 }

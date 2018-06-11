@@ -26,6 +26,7 @@
         <MenuItem text="New Project" onAction="#newProject"/>
         <MenuItem text="Open Project" />
         <MenuItem text="Open Recent" />
+        <MenuItem text="Share project" onAction="#share" />
       </Menu>
       <Menu text="Edit">
         <MenuItem text="Undo" />
