@@ -43,7 +43,7 @@ public class ProjectStoreTest {
   public void saveTextFile() {
     Project project = new Project("Hello World");
     TextFile textFile = new TextFile(0, "index.html");
-    Account piet = new Account("Piet Hein", "piet@hein.email", "1234");
+    Account piet = new Account("Piet Hein8", "piet8@hein.email", "1234");
     textFile.addEdit(new Addition(0, piet, null, "Hello World"));
     project.getFiles().add(textFile);
     int id = projects.save(project).getId();
