@@ -1,9 +1,11 @@
 package com.github.coldab.client.gui;
 
+import com.github.coldab.client.rest.RestClient;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
@@ -11,10 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -30,6 +29,7 @@ public class ProjectChooserController implements Initializable {
   private final ObservableList<Project> projects = FXCollections.observableArrayList();
 
   private final AccountServer accountServer;
+  private final RestClient restClient = new RestClient();
 
   public ProjectChooserController(AccountServer accountServer,
       Consumer<Project> resultCallback) {
@@ -50,7 +50,17 @@ public class ProjectChooserController implements Initializable {
   }
   @FXML
   private void addNewProject(ActionEvent actionEvent){
-    
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New Project");
+    dialog.setHeaderText("New Project");
+    dialog.setContentText("ProjectName");
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(projectName -> {
+      if (projectName.isEmpty()) {
+        return;
+      }
+      restClient.createProject(result.toString());
+    });
   }
   @FXML
   public void refreshProjects(ActionEvent actionEvent){
