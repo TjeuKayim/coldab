@@ -1,10 +1,16 @@
 package com.github.coldab.client.gui;
 
+import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.rest.AccountServer;
+import com.github.coldab.shared.rest.Credentials;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,22 +30,60 @@ public class AuthenticationController implements Initializable {
   @FXML
   private Label passwordWarning;
 
+  private final AccountServer accountServer;
+
+  private Consumer<Account> callback;
+
+  public AuthenticationController(AccountServer accountServer, Consumer<Account> callback) {
+    this.accountServer = accountServer;
+    this.callback = callback;
+  }
+
+
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     register.setOnAction(this::registerButtonClicked);
     login.setOnAction(this:: loginButtonClicked);
   }
 
-  private void registerButtonClicked(ActionEvent actionEvent) {
+  private void loginButtonClicked(ActionEvent actionEvent) {
     if(checkInput()){
-      //TODO: register the user
+      Account account = accountServer.login(new Credentials(email.getText(), password.getText()));
+
+      if(account != null){
+        callback.accept(account);
+      }
+      else{
+        showAlert("Login Error", "Unable to login!");
+      }
     }
   }
 
-  private void loginButtonClicked(ActionEvent actionEvent) {
+  private void registerButtonClicked(ActionEvent actionEvent) {
     if(checkInput()){
-      //TODO: Login the user
+      Account account = accountServer.register(new Credentials(email.getText(), password.getText()));
+
+      if(account != null){
+        callback.accept(account);
+      }
+      else{
+        showAlert("Register Error", "Unable to register account!");
+      }
     }
+  }
+
+  /**
+   * Show alert when unable to login or register
+   *
+   * @param alertTitle
+   * @param alertMessage
+   */
+  private void showAlert(String alertTitle, String alertMessage){
+    Alert alert = new Alert(AlertType.WARNING);
+    alert.setTitle(alertTitle);
+    alert.setHeaderText(null);
+    alert.setContentText(alertMessage);
+    alert.showAndWait();
   }
 
   /**
