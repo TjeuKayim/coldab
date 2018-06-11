@@ -8,6 +8,9 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -64,7 +67,7 @@ public class TabController implements TextFileObserver {
 
 
   private void textChanged(List<PlainTextChange> changes) {
-    for (PlainTextChange change : changes) {
+      for (PlainTextChange change : changes) {
       String inserted = change.getInserted();
       String removed = change.getRemoved();
       if (!inserted.equals("")) {

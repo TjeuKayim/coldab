@@ -2,11 +2,13 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -46,6 +48,19 @@ public class ProjectChooserController implements Initializable {
   private void openProject(Project project) {
     resultCallback.accept(project);
   }
+  @FXML
+  private void addNewProject(ActionEvent actionEvent){
+    
+  }
+  @FXML
+  public void refreshProjects(ActionEvent actionEvent){
+    projectsListView.setItems(projects);
+    projectsListView.setCellFactory(ProjectRow::new);
+
+    projects.addAll(accountServer.getProjects());
+  }
+
+
 
   private class ProjectRow extends ListCell<Project> {
 
@@ -72,5 +87,6 @@ public class ProjectChooserController implements Initializable {
         setGraphic(box);
       }
     }
+
   }
 }

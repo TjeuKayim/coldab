@@ -43,9 +43,9 @@ public class RestClient implements AccountServer {
   }
 
   @Override
-  public boolean createProject(Project project) {
+  public boolean createProject(String projectName) {
     ResponseEntity<Project> entity = restTemplate
-        .postForEntity("/account/project", project, Project.class);
+        .postForEntity("/account/project", projectName, Project.class);
     return entity.hasBody();
   }
 
