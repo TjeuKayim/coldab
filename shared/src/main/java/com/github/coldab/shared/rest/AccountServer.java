@@ -21,9 +21,9 @@ public interface AccountServer {
    */
   boolean createProject(Project project);
 
-  Account register(String email, String password);
+  Account register(Credentials credentials);
 
-  Account login(String email, String password);
+  Account login(Credentials credentials);
 
   void logout(String sessionId);
 }
