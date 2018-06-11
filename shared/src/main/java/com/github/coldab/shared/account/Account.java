@@ -23,8 +23,10 @@ public class Account {
   @Column(unique = true, nullable = false)
   @Expose
   private String nickName;
+
   @Column(nullable = false)
   private String password;
+
   @Column(unique = true, nullable = false)
   @Expose
   private String email;
