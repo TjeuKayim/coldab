@@ -5,6 +5,7 @@ import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.rest.Credentials;
+import com.github.coldab.shared.ws.MessageEncoder;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -29,6 +31,9 @@ public class RestClient implements AccountServer {
       request.getHeaders().add("Session", getSessionId());
       return execution.execute(request, body);
     }));
+    restTemplate.setMessageConverters(Collections.singletonList(
+        new GsonHttpMessageConverter(MessageEncoder.getGson())
+    ));
   }
 
   public String getSessionId() {
