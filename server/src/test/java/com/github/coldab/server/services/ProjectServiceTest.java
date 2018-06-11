@@ -1,4 +1,4 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
