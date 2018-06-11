@@ -1,5 +1,6 @@
 package com.github.coldab.shared.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Transient;
 public class Account {
 
   @Transient
+  @JsonIgnore
   private String sessionId = null;
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,6 +27,7 @@ public class Account {
   private String nickName;
 
   @Column(nullable = false)
+  @JsonIgnore
   private String password;
 
   @Column(unique = true, nullable = false)
