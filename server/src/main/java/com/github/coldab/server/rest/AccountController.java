@@ -19,7 +19,7 @@ public class AccountController {
   /**
    * Login with account
    *
-   * @return Account met SID
+   * @return account met SID
    */
   @PostMapping("login")
   public Account login(String email, String password) {
