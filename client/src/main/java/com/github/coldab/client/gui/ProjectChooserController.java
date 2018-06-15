@@ -1,11 +1,10 @@
 package com.github.coldab.client.gui;
 
-import com.github.coldab.client.rest.RestClient;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import java.net.URL;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
@@ -13,7 +12,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -44,8 +47,9 @@ public class ProjectChooserController implements Initializable {
   private void openProject(Project project) {
     resultCallback.accept(project);
   }
+
   @FXML
-  private void addNewProject(ActionEvent actionEvent){
+  private void addNewProject(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("New Project");
     dialog.setHeaderText("New Project");
@@ -59,18 +63,18 @@ public class ProjectChooserController implements Initializable {
       refreshProjects();
     });
   }
+
   @FXML
-  public void refreshProjects(){
-      projectsListView.getItems().clear();
+  public void refreshProjects() {
+    projectsListView.getItems().clear();
     projectsListView.setItems(projects);
     projectsListView.setCellFactory(ProjectRow::new);
 
     List<Project> updatedProjects = accountServer.getProjects();
     if (updatedProjects != null) {
       this.projects.addAll(updatedProjects);
+    }
   }
-  }
-
 
 
   private class ProjectRow extends ListCell<Project> {

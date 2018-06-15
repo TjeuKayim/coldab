@@ -11,10 +11,10 @@ public class Highlighting {
 
   static StyleSpans<Collection<String>> compute(String text) {
     /**
-    * Gets Text
-    * @matcher Matches Tekst to matching keywords or patterns
-    * @spansBuilder Adds styles to patterns
-    */
+     * Gets Text
+     * @matcher Matches Tekst to matching keywords or patterns
+     * @spansBuilder Adds styles to patterns
+     */
 
     Matcher matcher = PATTERN.matcher(text);
     int lastKwEnd = 0;
@@ -41,10 +41,10 @@ public class Highlighting {
 
 
   private static final String[] KEYWORDS = new String[]{
-          /**
-           * Adds keywords used for matching
-           * Edit this to add or remove keywords to be styled
-          */
+      /**
+       * Adds keywords used for matching
+       * Edit this to add or remove keywords to be styled
+      */
       "DOCTYPE", "html", "head", "title", "/title",
       "head", "/head", "body", "/body", "h1",
       "/h1", "h2", "/h2", "h3", "/h3",
@@ -52,9 +52,9 @@ public class Highlighting {
       "/ul"
   };
   private static final String[] KEYWORDS2 = new String[]{
-          /**
-           * Enables Keywords to differ in Style from others
-          */
+      /**
+       * Enables Keywords to differ in Style from others
+      */
 
       "class", "id"
   };

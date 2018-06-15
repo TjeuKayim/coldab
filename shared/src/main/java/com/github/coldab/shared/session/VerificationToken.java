@@ -13,57 +13,57 @@ import javax.persistence.OneToOne;
 @Entity
 public class VerificationToken {
 
-    private static final int EXPIRATION = 60 * 24;
- 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-     
-    private String token;
-   
-    @OneToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "account_id")
-    private Account account;
-     
-    private Date expiryDate;
+  private static final int EXPIRATION = 60 * 24;
 
-    public static int getExpiration() {
-        return EXPIRATION;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    public Long getId() {
-        return id;
-    }
+  private String token;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  @OneToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
+  @JoinColumn(nullable = false, name = "account_id")
+  private Account account;
 
-    public String getToken() {
-        return token;
-    }
+  private Date expiryDate;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+  public static int getExpiration() {
+    return EXPIRATION;
+  }
 
-    public Account getUser() {
-        return account;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setUser(Account account) {
-        this.account = account;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 
-    public VerificationToken() {
-        //Spring requires an explicit empty constructor
-    }
+  public Account getUser() {
+    return account;
+  }
+
+  public void setUser(Account account) {
+    this.account = account;
+  }
+
+  public Date getExpiryDate() {
+    return expiryDate;
+  }
+
+  public void setExpiryDate(Date expiryDate) {
+    this.expiryDate = expiryDate;
+  }
+
+  public VerificationToken() {
+    //Spring requires an explicit empty constructor
+  }
 }

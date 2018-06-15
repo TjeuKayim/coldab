@@ -43,30 +43,29 @@ public class AuthenticationController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     register.setOnAction(this::registerButtonClicked);
-    login.setOnAction(this:: loginButtonClicked);
+    login.setOnAction(this::loginButtonClicked);
   }
 
   private void loginButtonClicked(ActionEvent actionEvent) {
-    if(checkInput()){
+    if (checkInput()) {
       Account account = accountServer.login(new Credentials(email.getText(), password.getText()));
 
-      if(account != null){
+      if (account != null) {
         callback.accept(account);
-      }
-      else{
+      } else {
         showAlert("Login Error", "Unable to login!");
       }
     }
   }
 
   private void registerButtonClicked(ActionEvent actionEvent) {
-    if(checkInput()){
-      Account account = accountServer.register(new Credentials(email.getText(), password.getText()));
+    if (checkInput()) {
+      Account account = accountServer
+          .register(new Credentials(email.getText(), password.getText()));
 
-      if(account != null){
+      if (account != null) {
         callback.accept(account);
-      }
-      else{
+      } else {
         showAlert("Register Error", "Unable to register account!");
       }
     }
@@ -74,11 +73,8 @@ public class AuthenticationController implements Initializable {
 
   /**
    * Show alert when unable to login or register
-   *
-   * @param alertTitle
-   * @param alertMessage
    */
-  private void showAlert(String alertTitle, String alertMessage){
+  private void showAlert(String alertTitle, String alertMessage) {
     Alert alert = new Alert(AlertType.WARNING);
     alert.setTitle(alertTitle);
     alert.setHeaderText(null);
@@ -88,6 +84,7 @@ public class AuthenticationController implements Initializable {
 
   /**
    * Check if form input are not empty
+   *
    * @return boolean
    */
   private boolean checkInput() {
@@ -96,12 +93,12 @@ public class AuthenticationController implements Initializable {
     emailWarning.setText("");
     passwordWarning.setText("");
 
-    if(email.getText().trim().isEmpty() || email.getText() == null){
+    if (email.getText().trim().isEmpty() || email.getText() == null) {
       emailWarning.setText("Username Required!");
 
       input = false;
     }
-    if(password.getText().trim().isEmpty() || password.getText() == null){
+    if (password.getText().trim().isEmpty() || password.getText() == null) {
       passwordWarning.setText("Password Required!");
 
       input = false;

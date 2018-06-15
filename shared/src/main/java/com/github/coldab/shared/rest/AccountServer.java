@@ -18,7 +18,6 @@ public interface AccountServer {
    * Save a new project in the database and generate id.
    *
    * @return true if successful
-   * @param projectName
    */
   boolean createProject(String projectName);
 

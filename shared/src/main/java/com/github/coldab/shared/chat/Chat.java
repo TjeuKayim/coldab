@@ -6,6 +6,7 @@ import java.util.List;
 
 
 public class Chat {
+
   private final List<ChatMessage> messages = new LinkedList<>();
   private final List<ChatObserver> chatObservers = new LinkedList<>();
 
@@ -20,11 +21,13 @@ public class Chat {
       chatObserver.receiveChatMessage(message);
     }
   }
+
   public void addObserver(ChatObserver chatObserver) {
     chatObservers.add(chatObserver);
   }
 
   public interface ChatObserver {
+
     void receiveChatMessage(ChatMessage message);
   }
 }

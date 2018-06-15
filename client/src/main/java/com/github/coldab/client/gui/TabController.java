@@ -67,7 +67,7 @@ public class TabController implements TextFileObserver {
   }
 
   private void textChanged(List<PlainTextChange> changes) {
-      for (PlainTextChange change : changes) {
+    for (PlainTextChange change : changes) {
       String inserted = change.getInserted();
       String removed = change.getRemoved();
       if (!inserted.equals("")) {
@@ -109,7 +109,7 @@ public class TabController implements TextFileObserver {
       additions.forEach(a -> builder
           .insertTextAbsolutely(a.getStart() + 1, a.getText()));
       builder.commit();
-      codeArea.moveTo(caret+1);
+      codeArea.moveTo(caret + 1);
     });
   }
 }
