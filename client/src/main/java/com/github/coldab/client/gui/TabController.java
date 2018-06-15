@@ -8,9 +8,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -93,11 +90,6 @@ public class TabController implements TextFileObserver {
       LOGGER.info("Actual: " + codeArea.getText());
       throw new IllegalStateException("Unresolvable conflict");
     }
-  }
-
-  @Override
-  public void updateAnnotations() {
-
   }
 
   @Override

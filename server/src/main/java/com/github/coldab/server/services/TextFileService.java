@@ -3,7 +3,6 @@ package com.github.coldab.server.services;
 import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
@@ -85,11 +84,6 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
           LOGGER.info(e.toString());
         }
       }
-    }
-
-    @Override
-    public void newAnnotation(Annotation annotation) {
-
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.github.coldab.server.services;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.TextFileClient;
@@ -50,11 +49,6 @@ class TextFileForwarder implements TextFileClient {
       Deletion deletion = (Deletion) edit;
       client.confirmDeletion(fileId, deletion);
     }
-  }
-
-  @Override
-  public void newAnnotation(Annotation annotation) {
-
   }
 
   @Override

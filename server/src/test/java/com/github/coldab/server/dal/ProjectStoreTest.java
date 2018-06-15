@@ -26,6 +26,8 @@ public class ProjectStoreTest {
 
   @Autowired
   private ProjectStore projects;
+  @Autowired
+  private AccountStore accountStore;
 
   @Test
   public void getById() {
@@ -44,6 +46,7 @@ public class ProjectStoreTest {
     Project project = new Project("Hello World");
     TextFile textFile = new TextFile(0, "index.html");
     Account piet = new Account("Piet Hein8", "piet8@hein.email", "1234");
+    accountStore.save(piet);
     textFile.addEdit(new Addition(0, piet, null, "Hello World"));
     project.getFiles().add(textFile);
     int id = projects.save(project).getId();

@@ -6,12 +6,10 @@ import com.github.coldab.server.dal.ProjectStore;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
-import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileServer;
@@ -250,14 +248,5 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       fileStore.deleteById(fileId);
     }
 
-    @Override
-    public void annotations(int fileId, List<Annotation> annotations) {
-
-    }
-
-    @Override
-    public void caret(int fileId, Caret caret) {
-
-    }
   }
 }

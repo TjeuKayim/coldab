@@ -6,7 +6,6 @@ import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Position;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.TextFileClient;
 import java.util.Arrays;
@@ -48,13 +47,6 @@ public class TextFileComponentTest {
     client.newEdit(beta);
     assertEquals("Hello World", observerMock.getText());
     assertEquals(file.getEdits(), Arrays.asList(alpha, beta));
-  }
-
-  @Test
-  public void remoteAnnotation() {
-    Annotation annotation = new Annotation(account, null, true, "FIXME");
-    client.newAnnotation(annotation);
-    assertEquals(1, observerMock.getUpdateAnnotationsCounter());
   }
 
   @Test

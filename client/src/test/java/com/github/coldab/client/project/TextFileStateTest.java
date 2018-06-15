@@ -78,11 +78,6 @@ public class TextFileStateTest implements TextFileObserver {
   }
 
   @Override
-  public void updateAnnotations() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void updateTextFile() {
     throw new UnsupportedOperationException();
   }

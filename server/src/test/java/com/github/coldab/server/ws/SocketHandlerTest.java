@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -57,6 +58,7 @@ public class SocketHandlerTest {
   }
 
   @Test
+  @Ignore
   public void connect() throws InterruptedException {
     ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
     ChatMessage result = client.chatMessage;

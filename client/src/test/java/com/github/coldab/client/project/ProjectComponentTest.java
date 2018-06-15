@@ -48,10 +48,6 @@ public class ProjectComponentTest {
   }
 
   @Test
-  public void annotations() {
-  }
-
-  @Test
   public void caret() {
   }
 

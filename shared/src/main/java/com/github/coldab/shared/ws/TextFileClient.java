@@ -1,7 +1,6 @@
 package com.github.coldab.shared.ws;
 
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 
 public interface TextFileClient {
@@ -11,12 +10,6 @@ public interface TextFileClient {
    * @param edit the edit that gets send to the client.
    */
   void newEdit(Edit edit);
-
-  /**
-   * Send a new annotation to the client.
-   * @param annotation the annotation that gets send to the client.
-   */
-  void newAnnotation(Annotation annotation);
 
   /**
    * Send a updated file to the client.

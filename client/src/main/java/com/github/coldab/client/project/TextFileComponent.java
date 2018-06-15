@@ -5,7 +5,6 @@ import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Position;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
@@ -41,12 +40,6 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   }
 
   @Override
-  public void newAnnotation(Annotation annotation) {
-    file.getAnnotations().add(annotation);
-    observers.forEach(TextFileObserver::updateAnnotations);
-  }
-
-  @Override
   public void updateTextFile(TextFile updatedFile) {
     file.setPath(updatedFile.getPath());
   }
@@ -60,12 +53,6 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   @Override
   public void addObserver(TextFileObserver observer) {
     observers.add(observer);
-  }
-
-  @Override
-  public void createAnnotation(int position, boolean todo, String text) {
-    Annotation annotation = new Annotation(account, getPosition(position), todo, text);
-    server.newAnnotation(annotation);
   }
 
   @Override

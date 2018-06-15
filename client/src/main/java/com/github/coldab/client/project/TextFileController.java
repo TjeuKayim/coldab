@@ -4,8 +4,6 @@ public interface TextFileController {
 
   void addObserver(TextFileObserver observer);
 
-  void createAnnotation(int position, boolean todo, String text);
-
   /**
    * Create a new addition and send it to the server.
    * @param position index of the character to insert text after, or -1 if at the start of file

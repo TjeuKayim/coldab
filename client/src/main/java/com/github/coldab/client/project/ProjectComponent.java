@@ -4,18 +4,15 @@ import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
-import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -89,18 +86,6 @@ public class ProjectComponent implements ProjectClient, ProjectController {
   }
 
   @Override
-  public void annotations(int fileId, List<Annotation> annotations) {
-    for (Annotation annotation : annotations) {
-      textFileServices.get(fileId).newAnnotation(annotation);
-    }
-  }
-
-  @Override
-  public void caret(int fileId, Caret caret) {
-
-  }
-
-  @Override
   public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
     file.reset();
     TextFileComponent textFileClient =
@@ -154,11 +139,6 @@ public class ProjectComponent implements ProjectClient, ProjectController {
       } else if (edit instanceof Deletion) {
         projectServer.deletion(file.getId(), (Deletion) edit);
       }
-    }
-
-    @Override
-    public void newAnnotation(Annotation annotation) {
-      projectServer.annotations(file.getId(), Collections.singletonList(annotation));
     }
 
     @Override

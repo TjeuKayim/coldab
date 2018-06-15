@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -19,9 +18,6 @@ public class TextFile extends File {
   @OneToMany(cascade = CascadeType.ALL)
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<Edit> edits = new ArrayList<>();
-
-  @Transient
-  private List<Annotation> annotations = new ArrayList<>();
 
   public TextFile() {
   }
@@ -35,13 +31,6 @@ public class TextFile extends File {
       edits = new ArrayList<>();
     }
     return Collections.unmodifiableList(edits);
-  }
-
-  public List<Annotation> getAnnotations() {
-    if (annotations == null) {
-      annotations = new ArrayList<>();
-    }
-    return annotations;
   }
 
   public void addEdit(Edit edit) {
@@ -76,14 +65,13 @@ public class TextFile extends File {
       return false;
     }
     TextFile textFile = (TextFile) o;
-    return Objects.equals(edits, textFile.edits) &&
-        Objects.equals(annotations, textFile.annotations);
+    return Objects.equals(edits, textFile.edits);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(super.hashCode(), edits, annotations);
+    return Objects.hash(super.hashCode(), edits);
   }
 
   public void reset() {
