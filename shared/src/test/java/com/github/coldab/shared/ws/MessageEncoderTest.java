@@ -25,9 +25,6 @@ public class MessageEncoderTest {
 
   @Test
   public void encodeDecode() throws IOException {
-    // todo: Fix bug in socket-interface
-    // https://stackoverflow.com/a/14506181/5537074
-
     MyObject[] myObjects = new MyObject[] {new MyObject("hello"), new MyObject("world")};
     SocketMessage message =
         new SocketMessage("e", "m", myObjects, 2);

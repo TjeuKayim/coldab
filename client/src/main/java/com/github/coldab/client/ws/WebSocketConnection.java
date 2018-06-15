@@ -38,7 +38,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
     manager.getHeaders().add("Session", sessionId);
     manager.start();
     LOGGER.info("Connecting to WebSocket");
-    // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
   }
 
   @Override
@@ -60,6 +59,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     LOGGER.log(Level.INFO, "WebSocket disconnected, status: {0}", status);
     this.session = null;
+    // todo: Close editor
   }
 
   public void disconnect() {
