@@ -10,15 +10,12 @@ import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -34,7 +31,7 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorController implements Initializable, ProjectObserver {
+public class EditorController implements ProjectObserver {
 
   @FXML
   private TabPane tabPane;
@@ -64,10 +61,6 @@ public class EditorController implements Initializable, ProjectObserver {
   public EditorController(Project project, Account account) {
     this.project = project;
     this.account = account;
-  }
-
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
   }
 
   public void afterConnectionEstablished(ChatController chatController,
@@ -205,6 +198,7 @@ public class EditorController implements Initializable, ProjectObserver {
     dialog.setHeaderText("New Project");
     dialog.setContentText("ProjectName");
     Optional<String> result = dialog.showAndWait();
+    // todo
   }
 
   public void share(ActionEvent actionEvent) {
@@ -216,8 +210,6 @@ public class EditorController implements Initializable, ProjectObserver {
     checkBox.setSelected(true);
     dialog.getDialogPane().getChildren().add(checkBox);
     Optional<String> result = dialog.showAndWait();
-    result.ifPresent(email -> {
-      projectController.share(email, checkBox.isSelected());
-    });
+    result.ifPresent(email -> projectController.share(email, checkBox.isSelected()));
   }
 }
