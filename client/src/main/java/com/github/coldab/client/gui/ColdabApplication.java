@@ -8,6 +8,8 @@ import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +22,8 @@ public class ColdabApplication extends Application {
   private Stage projectChooserStage;
   private Stage authenticationStage;
   private RestClient restClient = new RestClient();
+
+  private static final Logger LOGGER = Logger.getLogger(ColdabApplication.class.getName());
 
   @Override
   public void start(Stage primaryStage) throws IOException {
@@ -44,7 +48,7 @@ public class ColdabApplication extends Application {
     try {
       root = loader.load();
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, e, () -> "Exception while loading");
       throw new IllegalStateException("Could not load FXML");
     }
     projectChooserStage.setTitle("Coldab text");
