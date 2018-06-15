@@ -109,7 +109,7 @@ public class TabController implements TextFileObserver {
       additions.forEach(a -> builder
           .insertTextAbsolutely(a.getStart() + 1, a.getText()));
       builder.commit();
-      codeArea.moveTo(caret);
+      codeArea.moveTo(caret+1);
     });
   }
 }
