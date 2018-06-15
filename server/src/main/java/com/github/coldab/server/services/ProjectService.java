@@ -125,6 +125,11 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         LOGGER.info("Non admin tries to share");
         return;
       }
+      // You cannot share with yourself
+      if (account.getEmail().equals(email)) {
+        LOGGER.info(() -> email + " tried to share with himself");
+        return;
+      }
       Account accountToShare = accountStore.findAccountByEmail(email);
       if (accountToShare == null) {
         LOGGER.info("account to share not found");
@@ -226,9 +231,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     private void file(File file) {
       // Update
-      file = fileStore.save(file);
       project.getFiles().add(file);
-      projectStore.save(project);
+      fileStore.save(file);
       // Notify all clients about it
       notifyFiles(clients.keySet(), file);
     }
