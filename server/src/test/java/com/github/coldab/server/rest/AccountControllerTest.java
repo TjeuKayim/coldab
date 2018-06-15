@@ -32,7 +32,7 @@ public class AccountControllerTest {
 
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     restTemplate = new RestTemplate();
     restTemplate.setUriTemplateHandler(
         new DefaultUriBuilderFactory("http://localhost:" + port));

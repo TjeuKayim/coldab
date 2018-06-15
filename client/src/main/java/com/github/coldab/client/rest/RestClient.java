@@ -6,7 +6,6 @@ import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.rest.AccountServer;
 import com.github.coldab.shared.rest.Credentials;
 import com.github.coldab.shared.ws.MessageEncoder;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -89,12 +88,12 @@ public class RestClient implements AccountServer {
   private class ErrorHandler implements ResponseErrorHandler {
 
     @Override
-    public void handleError(ClientHttpResponse response) throws IOException {
+    public void handleError(ClientHttpResponse response) {
       LOGGER.severe("HTTP error");
     }
 
     @Override
-    public boolean hasError(ClientHttpResponse response) throws IOException {
+    public boolean hasError(ClientHttpResponse response) {
       return false;
     }
   }

@@ -6,8 +6,6 @@ public interface TextFileObserver {
 
   void updateText(String text);
 
-  void updateTextFile();
-
   /**
    * After resolving conflicts, the edits are flattened to RemoteDeletions and RemoteAdditions.
    */

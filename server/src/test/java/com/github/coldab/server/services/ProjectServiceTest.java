@@ -42,7 +42,7 @@ public class ProjectServiceTest {
   private Account account = new Account("PietHein", "piet@hein.email", "1234");
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     TimeProvider.useMock();
     project = new Project("MyProject");
     service = new ProjectService(project, projectStore, fileStore, accountStore);

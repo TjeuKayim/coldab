@@ -46,14 +46,14 @@ public class SocketHandlerTest {
   private WebSocketConnectionManager connectionManager;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     String url = String.format("ws://localhost:%d/ws/1", port);
     connectionManager = new WebSocketConnectionManager(new StandardWebSocketClient(), client, url);
     connectionManager.start();
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     connectionManager.stop();
   }
 
@@ -77,7 +77,7 @@ public class SocketHandlerTest {
         new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org", "1234"));
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) {
       this.session = session;
       serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
       socketReceiver = new SocketReceiver(ClientEndpoint.class, this);

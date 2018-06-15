@@ -15,7 +15,7 @@ public class ProjectComponentTest {
   private ProjectObserver projectObserver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     projectServer = Mockito.mock(ProjectServer.class);
     project = new Project();
     account = new Account("Test", "Test@email.com", "test");

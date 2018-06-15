@@ -9,6 +9,9 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 
 public class Highlighting {
 
+  private Highlighting() {
+  }
+
   static StyleSpans<Collection<String>> compute(String text) {
     /**
      * Gets Text

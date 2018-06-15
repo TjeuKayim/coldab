@@ -18,7 +18,7 @@ public class ChatComponentTest {
   private ChatObserver chatObserver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     chatServer = Mockito.mock(ChatServer.class);
     chatObserver = Mockito.mock(ChatObserver.class);
     chat = new Chat();

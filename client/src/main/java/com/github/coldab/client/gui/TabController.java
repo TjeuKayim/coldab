@@ -86,15 +86,10 @@ public class TabController implements TextFileObserver {
   public void updateText(String text) {
     if (!codeArea.getText().equals(text)) {
       LOGGER.severe("Unresolvable conflict!!!");
-      LOGGER.info("Expected: " + text);
+      LOGGER.info(() -> "Expected: " + text);
       LOGGER.info("Actual: " + codeArea.getText());
       throw new IllegalStateException("Unresolvable conflict");
     }
-  }
-
-  @Override
-  public void updateTextFile() {
-
   }
 
   @Override

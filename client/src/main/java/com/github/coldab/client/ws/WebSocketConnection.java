@@ -41,10 +41,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
     // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
   }
 
-  public ServerEndpoint getServerEndpoint() {
-    return serverEndpoint;
-  }
-
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     LOGGER.info("WebSocket connection established");

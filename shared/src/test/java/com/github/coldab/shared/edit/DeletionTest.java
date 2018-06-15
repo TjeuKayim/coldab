@@ -10,7 +10,7 @@ public class DeletionTest {
   private List<Letter> letters;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     letters = new ArrayList<>();
     new Addition(null, null, "Hello #remove this#World").apply(letters);
   }

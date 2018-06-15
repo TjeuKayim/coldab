@@ -1,6 +1,6 @@
 package com.github.coldab.shared.project;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
@@ -40,7 +40,7 @@ public class ProjectTest {
   public void updatefile() {
     file1.setPath(file2.getPath());
     project.updateFile(file1);
-    assertEquals("failed update", project.getFileById(1).getPath(), file2.getPath());
+    assertArrayEquals("failed update", project.getFileById(1).getPath(), file2.getPath());
   }
 
 }

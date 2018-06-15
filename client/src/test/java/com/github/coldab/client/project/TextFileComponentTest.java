@@ -23,7 +23,7 @@ public class TextFileComponentTest {
   private TextFileServerMock serverMock;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     TimeProvider.useMock();
     file = new TextFile(0, "/test.txt");
     account = new Account("PietHein", "piet@hein.email", "1234");

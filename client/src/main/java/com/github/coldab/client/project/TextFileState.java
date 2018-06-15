@@ -4,7 +4,6 @@ import com.github.coldab.client.project.TextFileObserver.RemoteAddition;
 import com.github.coldab.client.project.TextFileObserver.RemoteDeletion;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Letter;
-import com.github.coldab.shared.edit.Position;
 import com.github.coldab.shared.project.TextFile;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class TextFileState {
 
@@ -40,7 +38,7 @@ public class TextFileState {
       unconfirmedEdit.apply(this.letters);
     }
     parseEdits(previous);
-    notifyObservers(edit);
+    notifyObservers();
   }
 
   /**
@@ -64,7 +62,7 @@ public class TextFileState {
     return letters.get(index);
   }
 
-  private void notifyObservers(Edit edit) {
+  private void notifyObservers() {
     String text = lettersToString(letters);
     for (TextFileObserver observer : observers) {
       observer.updateText(text);
@@ -108,12 +106,6 @@ public class TextFileState {
       additions.add(new RemoteAddition(position, text));
     }
     observers.forEach(o -> o.remoteEdits(deletions, additions));
-  }
-
-  private int indexOf(Position startPosition) {
-    return IntStream.range(0, letters.size())
-        .filter(i -> startPosition.equals(letters.get(i).getPosition()))
-        .findAny().orElseThrow(IllegalStateException::new);
   }
 
   private <T> List<List<T>> groupNeighbours(LinkedHashMap<Integer, T> list) {

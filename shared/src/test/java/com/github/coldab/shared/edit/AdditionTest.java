@@ -11,7 +11,7 @@ public class AdditionTest {
   private List<Letter> letters;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     letters = new ArrayList<>();
   }
 

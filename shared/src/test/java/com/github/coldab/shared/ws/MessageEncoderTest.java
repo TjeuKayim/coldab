@@ -18,7 +18,7 @@ public class MessageEncoderTest {
   private Receiver receiver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     receiver = new Receiver();
     socketReceiver = new SocketReceiver(Protocol.class, receiver);
   }
