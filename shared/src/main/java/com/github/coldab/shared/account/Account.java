@@ -91,10 +91,6 @@ public class Account {
    * @return Boolean true if the passwords match, else returns false.
    */
   public Boolean validatePassword(String password) {
-    if (this.password.equals(password)) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.password.equals(password);
   }
 }
