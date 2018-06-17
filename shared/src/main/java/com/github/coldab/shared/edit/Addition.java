@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -22,6 +23,7 @@ public class Addition extends Edit {
   private List<Letter> insertedLetters;
 
   @Expose
+  @Column(length = 10485760)
   private String text;
 
   public Addition() {
