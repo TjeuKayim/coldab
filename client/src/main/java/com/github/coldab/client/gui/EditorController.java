@@ -1,8 +1,9 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
-import com.github.coldab.client.project.ChatService;
-import com.github.coldab.client.project.ProjectService;
+import com.github.coldab.client.gui.FileTree.FileNode;
+import com.github.coldab.client.project.ChatComponent;
+import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.client.ws.WebSocketConnection;
 import com.github.coldab.client.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
@@ -14,7 +15,6 @@ import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.google.gson.Gson;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -23,8 +23,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -36,6 +39,8 @@ public class EditorController implements Initializable {
 
   private final Project project;
   @FXML
+  private TabPane tabPane;
+  @FXML
   private TextField textFieldChatMessage;
   @FXML
   private Button btnChatMessage;
@@ -44,14 +49,14 @@ public class EditorController implements Initializable {
   @FXML
   private VBox chatVBox;
   @FXML
-  private TreeView<String> fileTreeView;
+  private TreeView<FileTree> fileTreeView;
   @FXML
   private MenuItem menuOpenChat;
 
   private final Chat chat = new Chat();
   private Account account = new Account("Henkie", "henkie@gmail.com");
-  private ChatService chatService;
-  private ProjectService projectService;
+  private ChatComponent chatComponent;
+  private ProjectComponent projectComponent;
 
   public EditorController(Project project) {
     this.project = project;
@@ -59,13 +64,12 @@ public class EditorController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
+    //TODO: move this to another class (SOLID)
     new WebSocketConnection(project, serverEndpoint -> {
-      chatService = new ChatService(chat, serverEndpoint.chat());
-      projectService = new ProjectService(project, serverEndpoint.project(), account,
-          this);
+      chatComponent = new ChatComponent(chat, serverEndpoint.chat());
+      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account);
       Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatService, projectService);
+      return new WebSocketEndpoint(chatComponent, projectComponent);
     });
   }
 
@@ -75,21 +79,24 @@ public class EditorController implements Initializable {
   }
 
   private void initChat() {
-    chat.addObserver(message -> Platform.runLater(() -> receiveChatMessage(message)));
+    chat.addObserver(this::receiveChatMessage);
     project.setChat(chat);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }
 
   private void receiveChatMessage(ChatMessage message) {
-    chatPane.getItems().add(message);
+    Platform.runLater(() ->
+        chatPane.getItems().add(message));
   }
 
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
-    if (messageText.length() < 1) return;
+    if (messageText.length() < 1) {
+      return;
+    }
     ChatMessage message = new ChatMessage(messageText, account);
-    chatService.sendMessage(message);
+    chatComponent.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
@@ -101,16 +108,21 @@ public class EditorController implements Initializable {
     }
   }
 
+  private void openFile(TextFile file) {
+    Tab tab = new Tab();
+    tabPane.getTabs().add(tab);
+    TabController tabController = new TabController(file, tab, projectComponent.openFile(file));
+  }
+
   private void updateFileTree() {
     // Create root
-    TreeItem<String> rootItem = new TreeItem<>();
+    TreeItem<FileTree> rootItem = new TreeItem<>();
 
     // Test files
-    LocalDateTime now = LocalDateTime.now();
     Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt", now),
-        new TextFile("path/to/another-file.txt", now),
-        new TextFile("website/index.html", now)
+        new TextFile("path/to/file.txt"),
+        new TextFile("path/to/another-file.txt"),
+        new TextFile("website/index.html")
     );
 
     DirectoryNode fileTree = FileTree.createFrom(files);
@@ -120,11 +132,24 @@ public class EditorController implements Initializable {
 
     fileTreeView.setShowRoot(false);
     fileTreeView.setRoot(rootItem);
+
+    MenuItem openBtn = new MenuItem("Open in editor");
+    openBtn.setOnAction(e -> {
+      FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+      if (selected instanceof FileNode) {
+        File file = ((FileNode) selected).getFile();
+        if (file instanceof TextFile) {
+          openFile(((TextFile) file));
+        }
+      }
+    });
+    ContextMenu menu = new ContextMenu(openBtn);
+    fileTreeView.setContextMenu(menu);
   }
 
-  private void addNodesToFileTree(TreeItem<String> treeItem, DirectoryNode fileTree) {
+  private void addNodesToFileTree(TreeItem<FileTree> treeItem, DirectoryNode fileTree) {
     for (FileTree child : fileTree.getChildren()) {
-      TreeItem<String> childItem = new TreeItem<>(child.toString());
+      TreeItem<FileTree> childItem = new TreeItem<>(child);
       treeItem.getChildren().add(childItem);
       if (child instanceof DirectoryNode) {
         // Directory

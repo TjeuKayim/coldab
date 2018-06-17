@@ -1,8 +1,8 @@
 package com.github.coldab.shared.project;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class Project {
   @OneToMany
   private final List<Account> collaborators = new ArrayList<>();
   @Column(nullable = false)
-  private LocalDateTime creationDate = LocalDateTime.now(Clock.systemUTC());
+  private LocalDateTime creationDate = TimeProvider.getInstance().now();
 
   @Transient
   private final Map<Integer, File> filesById = new HashMap<>();

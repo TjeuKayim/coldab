@@ -1,6 +1,5 @@
 package com.github.coldab.client.project;
 
-import com.github.coldab.client.gui.EditorController;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
@@ -12,25 +11,24 @@ import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.session.Caret;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.ProjectServer;
+import com.github.coldab.shared.ws.TextFileClient;
+import com.github.coldab.shared.ws.TextFileServer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ProjectService implements ProjectClient {
+public class ProjectComponent implements ProjectClient {
 
   private final ProjectServer projectServer;
   private final Project project;
   private final Account account;
-  private final EditorController editorController;
-  private HashMap<Integer, TextFileService> textFileServices = new HashMap<>();
+  private HashMap<Integer, TextFileClient> textFileServices = new HashMap<>();
 
-  public ProjectService(Project project, ProjectServer projectServer,
-      Account account, EditorController editorController) {
+  public ProjectComponent(Project project, ProjectServer projectServer, Account account) {
     this.project = project;
     this.projectServer = projectServer;
     this.account = account;
-    this.editorController = editorController;
   }
 
   @Override
@@ -81,12 +79,12 @@ public class ProjectService implements ProjectClient {
 
   }
 
-  public TextFileService openFile(TextFile file) {
-    TextFileService textFileService = new TextFileService(file, account, new TextFileHandler(file),
-        editorController);
+  public TextFileController openFile(TextFile file) {
+    TextFileComponent textFileClient =
+        new TextFileComponent(file, account, new TextFileHandler(file));
     projectServer.subscribe(file.getId());
-    textFileServices.put(file.getId(), textFileService);
-    return textFileService;
+    textFileServices.put(file.getId(), textFileClient);
+    return textFileClient;
   }
 
   public void closeFile(TextFile file) {
@@ -94,9 +92,9 @@ public class ProjectService implements ProjectClient {
   }
 
   /**
-   * Passes messages from TextFileService to the server.
+   * Passes messages from TextFileComponent to the server.
    */
-  private class TextFileHandler implements TextFileObserver {
+  private class TextFileHandler implements TextFileServer {
 
     private final TextFile file;
 

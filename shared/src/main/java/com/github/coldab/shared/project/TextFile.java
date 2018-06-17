@@ -1,61 +1,41 @@
 package com.github.coldab.shared.project;
 
 import com.github.coldab.shared.edit.Edit;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 @Entity
 public class TextFile extends File {
 
-  @Transient
-  private Map<Integer, Edit> editsByIndex = new HashMap<>();
-
-  @Transient
-  private Map<Integer, Annotation> annotationsById = new HashMap<>();
-
-  public TextFile(String path, LocalDateTime creationDate) {
-    super(path, creationDate);
-  }
+  @OneToMany
+  private List<Edit> edits = new ArrayList<>();
 
   @OneToMany
+  private List<Annotation> annotations = new ArrayList<>();
+
+  public TextFile(String path) {
+    super(path);
+  }
+
   @Column
   public Collection<Edit> getEdits() {
-    return editsByIndex.values();
+    return Collections.unmodifiableList(edits);
   }
 
-  public void setEdits(Collection<Edit> edits) {
-    this.editsByIndex = edits.stream()
-        .collect(Collectors.toMap(
-            Edit::getIndex, Function.identity()
-        ));
-  }
-
-  @OneToMany
   @Column
-  public Collection<Annotation> getAnnotations() {
-    return annotationsById.values();
+  public List<Annotation> getAnnotations() {
+    return annotations;
   }
 
-  public void setAnnotations(Collection<Annotation> edits) {
-    this.annotationsById = edits.stream()
-        .collect(Collectors.toMap(
-            Annotation::getId, Function.identity()
-        ));
-  }
-
-  public Map<Integer, Edit> getEditsByIndex() {
-    return editsByIndex;
-  }
-
-  public Map<Integer, Annotation> getAnnotationsById() {
-    return annotationsById;
+  public void addEdit(Edit edit) {
+    if (edits.size() != edit.getIndex()) {
+      throw new IllegalStateException("Invalid index");
+    }
+    edits.add(edit);
   }
 }
