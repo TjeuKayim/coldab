@@ -28,6 +28,8 @@ public class ProjectStoreTest {
   private ProjectStore projects;
   @Autowired
   private AccountStore accountStore;
+  @Autowired
+  private FileStore fileStore;
 
   @Test
   public void getById() {
@@ -43,13 +45,18 @@ public class ProjectStoreTest {
 
   @Test
   public void saveTextFile() {
-    Project project = new Project("Hello World");
-    TextFile textFile = new TextFile(0, "index.html");
+    // Create account
     Account piet = new Account("Piet Hein8", "piet8@hein.email", "1234");
     accountStore.save(piet);
+    // Create textFile with edit
+    TextFile textFile = new TextFile(0, "index.html");
     textFile.addEdit(new Addition(0, piet, null, "Hello World"));
+    fileStore.save(textFile);
+    // Create project, and add textFle
+    Project project = new Project("Hello World");
     project.getFiles().add(textFile);
     int id = projects.save(project).getId();
+    // After saving everything, get it back and assert if equal
     project = projects.findById(id).orElseThrow(NullPointerException::new);
     assertEquals(1, project.getFiles().size());
     TextFile actual = (TextFile) project.getFiles().get(0);
