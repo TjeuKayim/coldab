@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-public class EditTest {
+public class EditTestHelpers {
 
   public static void lettersEqual(String expected, List<Letter> letters) {
     String actual = letters.stream()

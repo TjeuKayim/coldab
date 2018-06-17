@@ -1,6 +1,9 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
+import com.github.coldab.server.dal.AccountStore;
+import com.github.coldab.server.dal.FileStore;
 import com.github.coldab.server.dal.ProjectStore;
+import com.github.coldab.server.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ChatServer;
@@ -18,9 +21,14 @@ public class ConnectionManager {
   private final ProjectStore projectStore;
   private final Map<Integer, ProjectSession> projects = new HashMap<>();
   private final Map<ClientEndpoint, ProjectSession> clients = new HashMap<>();
+  private final FileStore fileStore;
+  private final AccountStore accountStore;
 
-  public ConnectionManager(ProjectStore projectStore) {
+  public ConnectionManager(ProjectStore projectStore,
+      FileStore fileStore, AccountStore accountStore) {
     this.projectStore = projectStore;
+    this.fileStore = fileStore;
+    this.accountStore = accountStore;
   }
 
   /**
@@ -36,9 +44,13 @@ public class ConnectionManager {
   }
 
   public void disconnect(ClientEndpoint clientEndpoint) {
-    ProjectSession projectSession = clients.get(clientEndpoint);
+    ProjectSession projectSession = clients.remove(clientEndpoint);
     projectSession.chatService.disconnect(clientEndpoint.chat());
     projectSession.projectService.disconnect(clientEndpoint.project());
+    if (!clients.containsValue(projectSession)) {
+      // No one left in this project, so unload it
+      projects.remove(projectSession.project.getId());
+    }
   }
 
   /**
@@ -54,7 +66,7 @@ public class ConnectionManager {
       if (optionalProject.isPresent()) {
         Project project = optionalProject.get();
         projectSession = new ProjectSession(project,
-            new ProjectService(project, projectStore),
+            new ProjectService(project, projectStore, fileStore, accountStore),
             new ChatService()
         );
         projects.put(projectId, projectSession);

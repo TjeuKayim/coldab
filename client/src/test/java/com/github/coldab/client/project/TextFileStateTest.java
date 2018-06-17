@@ -16,8 +16,8 @@ public class TextFileStateTest implements TextFileObserver {
   private String text = "";
 
   @Before
-  public void setUp() throws Exception {
-    file = new TextFile("/test.txt");
+  public void setUp() {
+    file = new TextFile(0, "/test.txt");
     state = new TextFileState(file, Collections.singletonList(this));
   }
 
@@ -77,13 +77,4 @@ public class TextFileStateTest implements TextFileObserver {
     this.text = text;
   }
 
-  @Override
-  public void updateAnnotations() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void updateTextFile() {
-    throw new UnsupportedOperationException();
-  }
 }

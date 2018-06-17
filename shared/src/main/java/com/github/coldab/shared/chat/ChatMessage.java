@@ -1,21 +1,27 @@
 package com.github.coldab.shared.chat;
 
+import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
-import java.util.Date;
+import com.google.gson.annotations.Expose;
+import java.time.LocalDateTime;
 
 public class ChatMessage implements Comparable<ChatMessage> {
-  private Date postDate;
+  @Expose
+  private LocalDateTime postDate;
+  @Expose
   private int index;
+  @Expose
   private String text;
+  @Expose
   private Account author;
 
   public ChatMessage(String text, Account author) {
-    this.postDate = new Date();
+    this.postDate = TimeProvider.getInstance().now();
     this.text = text;
     this.author = author;
   }
 
-  public Date getPostDate() {
+  public LocalDateTime getPostDate() {
     return postDate;
   }
 
@@ -38,6 +44,6 @@ public class ChatMessage implements Comparable<ChatMessage> {
 
   @Override
   public String toString() {
-    return author.getNickName() + ": " + text;
+    return author.getEmail() + ": " + text;
   }
 }

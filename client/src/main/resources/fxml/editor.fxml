@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -9,28 +10,23 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import org.fxmisc.richtext.StyleClassedTextArea?>
-
-
 <BorderPane stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.coldab.client.gui.EditorController">
   <top>
     <MenuBar>
       <Menu text="File">
-        <MenuItem text="New File" />
+        <MenuItem text="New File" onAction="#newFile" />
         <!-- "Keep things separated" - Marijn 2018 -->
         <SeparatorMenuItem />
-        <MenuItem text="New Project" />
+        <MenuItem text="New Project" onAction="#newProject"/>
         <MenuItem text="Open Project" />
         <MenuItem text="Open Recent" />
+        <MenuItem text="Share project" onAction="#share" />
       </Menu>
       <Menu text="Edit">
         <MenuItem text="Undo" />
@@ -69,15 +65,19 @@
     </VBox>
   </right>
   <bottom>
-    <HBox>
-      <HBox id="leftStatusBar">
-        <Label>{{FileName}}</Label>
-        <Label>5:10</Label>
+      <HBox styleClass="status-bar">
+          <HBox id="leftStatusBar">
+              <Label>{{FileName}}</Label>
+              <Label>5:10</Label>
+          </HBox>
+          <HBox  HBox.hgrow="ALWAYS" fx:id="characterTotal" id="status-bar">
+              <Label>Total amount of Characters : </Label>
+              <Label>0</Label>
+          </HBox>
+          <HBox id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
+              <Label>UTF-8</Label>
+              <Label>text/html</Label>
+          </HBox>
       </HBox>
-      <HBox id="rightStatusBar" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
-        <Label>UTF-8</Label>
-        <Label>text/html</Label>
-      </HBox>
-    </HBox>
   </bottom>
 </BorderPane>

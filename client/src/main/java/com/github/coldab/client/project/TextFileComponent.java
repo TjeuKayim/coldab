@@ -5,7 +5,6 @@ import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
 import com.github.coldab.shared.edit.Position;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.TextFileClient;
 import com.github.coldab.shared.ws.TextFileServer;
@@ -41,12 +40,6 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   }
 
   @Override
-  public void newAnnotation(Annotation annotation) {
-    file.getAnnotations().add(annotation);
-    observers.forEach(TextFileObserver::updateAnnotations);
-  }
-
-  @Override
   public void updateTextFile(TextFile updatedFile) {
     file.setPath(updatedFile.getPath());
   }
@@ -63,28 +56,12 @@ public class TextFileComponent implements TextFileClient, TextFileController {
   }
 
   @Override
-  public void createAnnotation(int position, boolean todo, String text) {
-    Annotation annotation = new Annotation(account, getPosition(position), todo, text);
-    server.newAnnotation(annotation);
-  }
-
-  /**
-   * Create a new addition and send it to the server.
-   * @param position index of the character to insert text after, or -1 if at the start of file
-   */
-  @Override
   public void createAddition(int position, String text) {
     int index = getIndex();
     Addition addition = new Addition(index, account, getPosition(position), text);
     createEdit(addition);
   }
 
-  /**
-   * Create a new deletion and send it to the server.
-   *
-   * @param position start (inclusive)
-   * @param length amount of characters to remove
-   */
   @Override
   public void createDeletion(int position, int length) {
     Position start = getPosition(position);

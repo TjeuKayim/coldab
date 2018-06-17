@@ -2,10 +2,14 @@ package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.project.TextFile;
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
+import java.util.stream.IntStream;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -17,7 +21,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
 /**
- * An Edit is a change in a {@link com.github.coldab.shared.project.TextFile}.
+ * An Edit is a change in a {@link TextFile}.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -29,19 +33,28 @@ public abstract class Edit {
   private int id;
 
   @Column(nullable = false)
+  @Expose
   private int index;
 
   @Column(nullable = false)
-  private final LocalDateTime creationDate;
+  @Expose
+  private LocalDateTime creationDate;
 
   /**
    * The start position where the edit is applied.
    */
   @Embedded
+  @Expose
   protected Position start;
 
   @ManyToOne
-  private final Account account;
+  @Expose
+  private Account account;
+
+  static final Logger LOGGER = Logger.getLogger(Edit.class.getName());
+
+  public Edit() {
+  }
 
   /**
    * Create an edit.
@@ -57,6 +70,10 @@ public abstract class Edit {
 
   public Account getAccount() {
     return account;
+  }
+
+  public void setAccount(Account account) {
+    this.account = account;
   }
 
   public int getIndex() {
@@ -77,6 +94,12 @@ public abstract class Edit {
    */
   public abstract void undo(List<Letter> letters);
 
+  protected int indexOf(List<Letter> letters, Position position) {
+    return IntStream.range(0, letters.size())
+        .filter(i -> letters.get(i).getPosition().equals(position))
+        .findAny().orElseThrow(IllegalStateException::new);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -86,8 +109,7 @@ public abstract class Edit {
       return false;
     }
     Edit edit = (Edit) o;
-    return id == edit.id &&
-        index == edit.index &&
+    return index == edit.index &&
         Objects.equals(creationDate, edit.creationDate) &&
         Objects.equals(start, edit.start) &&
         Objects.equals(account, edit.account);
@@ -95,21 +117,31 @@ public abstract class Edit {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, index, creationDate, start, account);
+    return Objects.hash(index, creationDate, start, account);
   }
 
   public LocalDateTime getCreationDate() {
     return creationDate;
   }
 
+  /**
+   * Confirms this edit by changing the index of this edit and start-position.
+   *
+   * @param index the new index
+   * @param localIndices Maps local-indices to remote-indices
+   */
   public void confirmIndex(int index, Map<Integer, Integer> localIndices) {
-    if (index >= 0) {
+    if (this.index >= 0) {
       throw new IllegalStateException("Index should be unconfirmed");
     }
     this.index = index;
-    if (start.getAdditionIndex() < 0) {
+    if (start != null && start.getAdditionIndex() < 0) {
       int startIndex = localIndices.get(start.getAdditionIndex());
-      this.start = new Position(startIndex, start.getPosition());
+      this.start.confirmAddition(startIndex);
     }
+  }
+
+  public Position getStart() {
+    return start;
   }
 }

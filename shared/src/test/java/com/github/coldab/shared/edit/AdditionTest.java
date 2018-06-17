@@ -11,7 +11,7 @@ public class AdditionTest {
   private List<Letter> letters;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     letters = new ArrayList<>();
   }
 
@@ -19,7 +19,7 @@ public class AdditionTest {
   public void apply() {
     Addition addition = new Addition(null, null, "Hello");
     addition.apply(letters);
-    EditTest.lettersEqual("Hello", letters);
+    EditTestHelpers.lettersEqual("Hello", letters);
   }
 
   @Test
@@ -30,9 +30,9 @@ public class AdditionTest {
     Addition a2 = new Addition(null, position, " World");
     a2.apply(letters);
     System.out.println(letters);
-    EditTest.lettersEqual("Hello World", letters);
+    EditTestHelpers.lettersEqual("Hello World", letters);
     a1.undo(letters);
-    EditTest.lettersEqual(" World", letters);
+    EditTestHelpers.lettersEqual(" World", letters);
   }
 
 }

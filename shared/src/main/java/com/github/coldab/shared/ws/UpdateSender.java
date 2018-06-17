@@ -1,21 +1,19 @@
 package com.github.coldab.shared.ws;
 
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.BinaryFile;
 import com.github.coldab.shared.project.TextFile;
-import com.github.coldab.shared.session.Caret;
-import java.util.List;
 
 public interface UpdateSender {
 
   /**
    * New or updated files.
    */
-  void files(List<TextFile> textFiles, List<BinaryFile> binaryFiles);
+  void files(TextFile[] textFiles, BinaryFile[] binaryFiles);
 
+  /**
+   * remove a file.
+   * @param fileId the id of the file that gets removed.
+   */
   void removeFile(int fileId);
 
-  void annotations(int fileId, List<Annotation> annotations);
-
-  void caret(int fileId, Caret caret);
 }

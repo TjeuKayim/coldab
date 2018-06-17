@@ -3,6 +3,7 @@ package com.github.coldab.client.ws;
 import com.github.coldab.client.project.ChatComponent;
 import com.github.coldab.client.project.ProjectComponent;
 import com.github.coldab.shared.ws.ClientEndpoint;
+import com.github.coldab.shared.ws.ProjectClient;
 
 public class WebSocketEndpoint implements ClientEndpoint {
 
@@ -16,7 +17,7 @@ public class WebSocketEndpoint implements ClientEndpoint {
   }
 
   @Override
-  public ProjectComponent project() {
+  public ProjectClient project() {
     return projectComponent;
   }
 

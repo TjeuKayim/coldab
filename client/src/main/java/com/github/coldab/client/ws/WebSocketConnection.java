@@ -1,5 +1,6 @@
 package com.github.coldab.client.ws;
 
+import com.github.coldab.client.Main;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
@@ -21,26 +22,22 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 public class WebSocketConnection extends TextWebSocketHandler {
 
-  public static final String WS_ENDPOINT = "ws://localhost:8080/ws/";
   private WebSocketSession session;
   private SocketReceiver socketReceiver;
   private ServerEndpoint serverEndpoint;
   private final Function<ServerEndpoint, ClientEndpoint> endpointFactory;
   private static final Logger LOGGER = Logger.getLogger(WebSocketConnection.class.getName());
+  private final WebSocketConnectionManager manager;
 
   public WebSocketConnection(Project project,
-      Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
+      String sessionId, Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
     this.endpointFactory = endpointFactory;
     WebSocketClient client = new StandardWebSocketClient();
-    String url = WS_ENDPOINT + project.getId();
-    WebSocketConnectionManager manager = new WebSocketConnectionManager(client, this, url);
+    String url = Main.getWebSocketEndpoint() + project.getId();
+    manager = new WebSocketConnectionManager(client, this, url);
+    manager.getHeaders().add("Session", sessionId);
     manager.start();
     LOGGER.info("Connecting to WebSocket");
-    // TODO: 7-5-2018 Sluit de connectie af nadat het project is gesloten
-  }
-
-  public ServerEndpoint getServerEndpoint() {
-    return serverEndpoint;
   }
 
   @Override
@@ -62,6 +59,11 @@ public class WebSocketConnection extends TextWebSocketHandler {
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     LOGGER.log(Level.INFO, "WebSocket disconnected, status: {0}", status);
     this.session = null;
+    // todo: Close editor
+  }
+
+  public void disconnect() {
+    manager.stop();
   }
 
   private void sendMessage(SocketMessage socketMessage) {

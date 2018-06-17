@@ -1,11 +1,13 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.ws.MessageEncoder;
+import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -20,23 +22,27 @@ public class Addition extends Edit {
   @Transient
   private List<Letter> insertedLetters;
 
+  @Expose
+  @Column(length = 10485760)
   private String text;
+
+  public Addition() {
+  }
 
   /**
    * Create an addition.
-   *  @param start the start position, or null if adding at the start of the document
+   *
+   * @param start the start position, or null if adding at the start of the document
    * @param text the characters to insert
    */
   public Addition(Account account, Position start, String text) {
     super(0, account, start);
     this.text = text;
-    createLetters();
   }
 
   public Addition(int index, Account account, Position start, String text) {
     super(index, account, start);
     this.text = text;
-    createLetters();
   }
 
   private void createLetters() {
@@ -50,23 +56,25 @@ public class Addition extends Edit {
   }
 
   public List<Letter> getLetters() {
+    if (insertedLetters == null) {
+      createLetters();
+    }
     return insertedLetters;
   }
 
   @Override
   public void apply(List<Letter> letters) {
-    int index = -1;
-    if (start != null) {
-      index = IntStream.range(0, letters.size())
-          .filter(i -> letters.get(i).getPosition().equals(start))
-          .findAny().orElseThrow(IllegalStateException::new);
+    try {
+      int index = start == null ? -1 : indexOf(letters, start);
+      letters.addAll(index + 1, getLetters());
+    } catch (IllegalStateException e) {
+      LOGGER.info("Resolve conflict by not applying this addition");
     }
-    letters.addAll(index + 1, insertedLetters);
   }
 
   @Override
   public void undo(List<Letter> letters) {
-    letters.removeAll(insertedLetters);
+    letters.removeAll(getLetters());
   }
 
   char getCharacter(int position) {
@@ -75,7 +83,7 @@ public class Addition extends Edit {
 
   @Override
   public String toString() {
-    return "Addition: " + text;
+    return MessageEncoder.getGson().toJson(this);
   }
 
   public String getText() {

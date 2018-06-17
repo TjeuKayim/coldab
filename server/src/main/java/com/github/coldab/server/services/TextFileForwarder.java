@@ -1,9 +1,8 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
 import com.github.coldab.shared.edit.Addition;
 import com.github.coldab.shared.edit.Deletion;
 import com.github.coldab.shared.edit.Edit;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ProjectClient;
 import com.github.coldab.shared.ws.TextFileClient;
@@ -38,7 +37,7 @@ class TextFileForwarder implements TextFileClient {
     } else if (edit instanceof Deletion) {
       deletions = Collections.singletonList((Deletion) edit);
     }
-    client.edits(fileId, additions, deletions);
+    client.edits(fileId, additions.toArray(new Addition[0]), deletions.toArray(new Deletion[0]));
   }
 
   @Override
@@ -50,11 +49,6 @@ class TextFileForwarder implements TextFileClient {
       Deletion deletion = (Deletion) edit;
       client.confirmDeletion(fileId, deletion);
     }
-  }
-
-  @Override
-  public void newAnnotation(Annotation annotation) {
-
   }
 
   @Override

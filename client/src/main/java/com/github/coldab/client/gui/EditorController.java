@@ -2,42 +2,37 @@ package com.github.coldab.client.gui;
 
 import com.github.coldab.client.gui.FileTree.DirectoryNode;
 import com.github.coldab.client.gui.FileTree.FileNode;
-import com.github.coldab.client.project.ChatComponent;
-import com.github.coldab.client.project.ProjectComponent;
-import com.github.coldab.client.ws.WebSocketConnection;
-import com.github.coldab.client.ws.WebSocketEndpoint;
+import com.github.coldab.client.project.ChatController;
+import com.github.coldab.client.project.ProjectController;
+import com.github.coldab.client.project.ProjectObserver;
 import com.github.coldab.shared.account.Account;
-import com.github.coldab.shared.chat.Chat;
 import com.github.coldab.shared.chat.ChatMessage;
-import com.github.coldab.shared.project.Annotation;
 import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
-import com.google.gson.Gson;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.ResourceBundle;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-public class EditorController implements Initializable {
+public class EditorController implements ProjectObserver {
 
-  private final Project project;
   @FXML
   private TabPane tabPane;
   @FXML
@@ -52,35 +47,32 @@ public class EditorController implements Initializable {
   private TreeView<FileTree> fileTreeView;
   @FXML
   private MenuItem menuOpenChat;
+  @FXML
+  private MenuItem newProject;
 
-  private final Chat chat = new Chat();
-  private Account account = new Account("Henkie", "henkie@gmail.com");
-  private ChatComponent chatComponent;
-  private ProjectComponent projectComponent;
+  private final Project project;
+  private final Account account;
 
-  public EditorController(Project project) {
+  private ChatController chatController;
+
+  private ProjectController projectController;
+  private final HashMap<TextFile, TabController> tabs = new HashMap<>();
+
+  public EditorController(Project project, Account account) {
     this.project = project;
+    this.account = account;
   }
 
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-    //TODO: move this to another class (SOLID)
-    new WebSocketConnection(project, serverEndpoint -> {
-      chatComponent = new ChatComponent(chat, serverEndpoint.chat());
-      projectComponent = new ProjectComponent(project, serverEndpoint.project(), account);
-      Platform.runLater(this::afterConnectionEstablished);
-      return new WebSocketEndpoint(chatComponent, projectComponent);
-    });
-  }
-
-  private void afterConnectionEstablished() {
-    updateFileTree();
+  public void afterConnectionEstablished(ChatController chatController,
+      ProjectController projectController) {
+    this.chatController = chatController;
+    this.projectController = projectController;
+    updateFiles();
     initChat();
   }
 
   private void initChat() {
-    chat.addObserver(this::receiveChatMessage);
-    project.setChat(chat);
+    project.getChat().addObserver(this::receiveChatMessage);
     menuOpenChat.setOnAction(this::toggleChat);
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }
@@ -90,13 +82,14 @@ public class EditorController implements Initializable {
         chatPane.getItems().add(message));
   }
 
+
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) {
       return;
     }
     ChatMessage message = new ChatMessage(messageText, account);
-    chatComponent.sendMessage(message);
+    chatController.sendMessage(message);
     textFieldChatMessage.setText("");
   }
 
@@ -111,40 +104,52 @@ public class EditorController implements Initializable {
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
-    TabController tabController = new TabController(file, tab, projectComponent.openFile(file));
+    tabs.put(file, new TabController(file, tab, projectController));
   }
 
-  private void updateFileTree() {
-    // Create root
-    TreeItem<FileTree> rootItem = new TreeItem<>();
 
-    // Test files
-    Collection<File> files = Arrays.asList(
-        new TextFile("path/to/file.txt"),
-        new TextFile("path/to/another-file.txt"),
-        new TextFile("website/index.html")
-    );
+  @Override
+  public void updateFiles() {
+    Platform.runLater(() -> {
+      // Close tabs for removed files
+      project.getFiles().stream()
+          .map(tabs::get)
+          .filter(Objects::nonNull)
+          .forEach(TabController::fileDeleted);
 
-    DirectoryNode fileTree = FileTree.createFrom(files);
+      // Create root
+      TreeItem<FileTree> rootItem = new TreeItem<>();
 
-    // Add files
-    addNodesToFileTree(rootItem, fileTree);
+      // Test files
+      DirectoryNode fileTree = FileTree.createFrom(project.getFiles());
 
-    fileTreeView.setShowRoot(false);
-    fileTreeView.setRoot(rootItem);
+      // Add files
+      addNodesToFileTree(rootItem, fileTree);
 
-    MenuItem openBtn = new MenuItem("Open in editor");
-    openBtn.setOnAction(e -> {
-      FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
-      if (selected instanceof FileNode) {
-        File file = ((FileNode) selected).getFile();
-        if (file instanceof TextFile) {
-          openFile(((TextFile) file));
+      fileTreeView.setShowRoot(false);
+      fileTreeView.setRoot(rootItem);
+
+      MenuItem openBtn = new MenuItem("Open in editor");
+      openBtn.setOnAction(e -> {
+        FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+        if (selected instanceof FileNode) {
+          File file = ((FileNode) selected).getFile();
+          if (file instanceof TextFile) {
+            openFile(((TextFile) file));
+          }
         }
-      }
+      });
+      MenuItem removeBtn = new MenuItem("Remove file");
+      removeBtn.setOnAction(event -> {
+        FileTree selected = fileTreeView.getSelectionModel().getSelectedItem().getValue();
+        if (selected instanceof FileNode) {
+          File file = ((FileNode) selected).getFile();
+          projectController.deleteFile(file);
+        }
+      });
+      ContextMenu menu = new ContextMenu(openBtn, removeBtn);
+      fileTreeView.setContextMenu(menu);
     });
-    ContextMenu menu = new ContextMenu(openBtn);
-    fileTreeView.setContextMenu(menu);
   }
 
   private void addNodesToFileTree(TreeItem<FileTree> treeItem, DirectoryNode fileTree) {
@@ -167,8 +172,44 @@ public class EditorController implements Initializable {
     }
   }
 
-  public void showAnnotation(Annotation annotation) {
-    // FIXME: 7-5-2018 Update GUI
-    System.out.println("Annotation: " + new Gson().toJson(annotation));
+  @Override
+  public void updateCollaborators() {
+
+  }
+
+  public void newFile(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New file");
+    dialog.setHeaderText("New file");
+    dialog.setContentText("Filename:");
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(fileName -> {
+      if (fileName.isEmpty()) {
+        return;
+      }
+      projectController.createFile(new TextFile(0, fileName));
+    });
+  }
+
+  @FXML
+  private void newProject(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New Project");
+    dialog.setHeaderText("New Project");
+    dialog.setContentText("ProjectName");
+    Optional<String> result = dialog.showAndWait();
+    // todo
+  }
+
+  public void share(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("Share");
+    dialog.setHeaderText("Invite someone");
+    dialog.setContentText("E-mail");
+    CheckBox checkBox = new CheckBox("Give admin privileges");
+    checkBox.setSelected(true);
+    dialog.getDialogPane().getChildren().add(checkBox);
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(email -> projectController.share(email, checkBox.isSelected()));
   }
 }

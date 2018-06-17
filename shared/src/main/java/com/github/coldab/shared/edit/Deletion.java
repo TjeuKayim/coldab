@@ -1,11 +1,12 @@
 package com.github.coldab.shared.edit;
 
 import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.ws.MessageEncoder;
+import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -15,14 +16,19 @@ import javax.persistence.Transient;
 @Entity
 public class Deletion extends Edit {
 
+  @Expose
   private Position end;
 
   @Transient
-  private final List<Letter> deletedLetters = new ArrayList<>();
+  private List<Letter> deletedLetters = new ArrayList<>();
+
+  public Deletion() {
+  }
 
   /**
    * Create an deletion.
-   *  @param start the start position (exclusive), or null if adding at the start of the document
+   *
+   * @param start the start position (exclusive), or null if adding at the start of the document
    * @param end the end position (inclusive)
    */
   public Deletion(Account account, Position start, Position end) {
@@ -41,20 +47,31 @@ public class Deletion extends Edit {
     this.end = end;
   }
 
+  private List<Letter> getDeletedLetters() {
+    if (deletedLetters == null) {
+      deletedLetters = new ArrayList<>();
+    }
+    return deletedLetters;
+  }
+
   @Override
   public void apply(List<Letter> letters) {
-    // Find start
-    int startPosition = 0;
-    if (start != null) {
+    int startPosition;
+    int endPosition;
+    try {
+      // Find start
       // add 1 because it's exclusive
-      startPosition = indexOf(letters, start) + 1;
+      startPosition = start == null ? 0 : indexOf(letters, start) + 1;
+      // Find end
+      endPosition = indexOf(letters, end);
+    } catch (Exception e) {
+      LOGGER.info("Resolve conflict by not applying this addition");
+      return;
     }
-    // Find end
-    int endPosition = indexOf(letters, end);
     // Delete letters, but save deletedLetters
-    deletedLetters.clear();
+    getDeletedLetters().clear();
     for (int index = startPosition; index <= endPosition; index++) {
-      deletedLetters.add(letters.get(startPosition));
+      getDeletedLetters().add(letters.get(startPosition));
       letters.remove(startPosition);
     }
   }
@@ -62,13 +79,11 @@ public class Deletion extends Edit {
   @Override
   public void undo(List<Letter> letters) {
     int position = indexOf(letters, start);
-    letters.addAll(position + 1, deletedLetters);
+    letters.addAll(position + 1, getDeletedLetters());
   }
 
-  private int indexOf(List<Letter> letters, Position position) {
-    return IntStream.range(0, letters.size())
-        .filter(i -> letters.get(i).getPosition().equals(position))
-        .findAny().orElseThrow(IllegalStateException::new);
+  public Position getEnd() {
+    return end;
   }
 
   @Override
@@ -98,5 +113,10 @@ public class Deletion extends Edit {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), end);
+  }
+
+  @Override
+  public String toString() {
+    return MessageEncoder.getGson().toJson(this);
   }
 }

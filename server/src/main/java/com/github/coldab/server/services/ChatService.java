@@ -1,12 +1,12 @@
-package com.github.coldab.server.ws;
+package com.github.coldab.server.services;
 
+import com.github.coldab.server.ws.WebSocketEndpoint;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.ws.ChatClient;
 import com.github.coldab.shared.ws.ChatServer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,10 +36,11 @@ public class ChatService implements Service<ChatServer, ChatClient> {
       this.account = account;
     }
 
+
     @Override
     public void message(ChatMessage message) {
       // Check if author is correct
-      if (message.getAuthor() != account) {
+      if (!account.equals(message.getAuthor())) {
         LOGGER.severe("Message received with invalid author");
         return;
       }
@@ -47,9 +48,6 @@ public class ChatService implements Service<ChatServer, ChatClient> {
       for (ChatClient collaborator : projectClients) {
         collaborator.message(message);
       }
-      LOGGER.log(Level.INFO, "Received chat-message: {0}", message);
-      Account serverTest = new Account("Server test", "server@test.app");
-      client.message(new ChatMessage("Hi, I received your message!", serverTest));
     }
   }
 }

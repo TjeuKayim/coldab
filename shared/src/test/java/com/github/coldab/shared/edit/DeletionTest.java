@@ -10,7 +10,7 @@ public class DeletionTest {
   private List<Letter> letters;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     letters = new ArrayList<>();
     new Addition(null, null, "Hello #remove this#World").apply(letters);
   }
@@ -21,7 +21,7 @@ public class DeletionTest {
         letters.get(5).getPosition(),
         letters.get(18).getPosition());
     deletion.apply(letters);
-    EditTest.lettersEqual("Hello World", letters);
+    EditTestHelpers.lettersEqual("Hello World", letters);
   }
 
   @Test
@@ -30,9 +30,9 @@ public class DeletionTest {
         letters.get(5).getPosition(),
         letters.get(18).getPosition());
     deletion.apply(letters);
-    EditTest.lettersEqual("Hello World", letters);
+    EditTestHelpers.lettersEqual("Hello World", letters);
     deletion.undo(letters);
-    EditTest.lettersEqual("Hello #remove this#World", letters);
+    EditTestHelpers.lettersEqual("Hello #remove this#World", letters);
   }
 
 }

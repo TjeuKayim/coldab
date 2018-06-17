@@ -1,5 +1,6 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.services.ConnectionManager;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
@@ -32,11 +33,11 @@ public class SocketHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
-    // TODO: logged in account
-    Account account = new Account("HenkJan", "henk@jan.org");
+    Account account = (Account) session.getAttributes().get("account");
     int projectId = (int) session.getAttributes().get("projectId");
     Project project = connectionManager.getProject(projectId);
     if (project == null) {
+      LOGGER.info("ProjectId not found");
       session.close(new CloseStatus(1000, "ProjectId not found"));
       return;
     }
@@ -64,7 +65,9 @@ public class SocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     SocketSession socketSession = sessions.remove(session);
-    connectionManager.disconnect(socketSession.clientEndpoint);
+    if (socketSession != null) {
+      connectionManager.disconnect(socketSession.clientEndpoint);
+    }
   }
 
   private class SocketSession {

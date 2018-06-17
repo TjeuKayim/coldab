@@ -5,7 +5,7 @@ import com.github.coldab.shared.chat.ChatMessage;
 import com.github.coldab.shared.ws.ChatClient;
 import com.github.coldab.shared.ws.ChatServer;
 
-public class ChatComponent implements ChatClient {
+public class ChatComponent implements ChatClient, ChatController {
 
   private final Chat chat;
   private final ChatServer server;
@@ -20,6 +20,7 @@ public class ChatComponent implements ChatClient {
     chat.addMessage(message);
   }
 
+  @Override
   public void sendMessage(ChatMessage message) {
     server.message(message);
   }
