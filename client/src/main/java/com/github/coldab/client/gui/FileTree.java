@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-abstract class FileTree {
+interface FileTree {
 
   /**
    * Creates a file-tree from a list of files.
@@ -21,7 +21,8 @@ abstract class FileTree {
       for (int i = 0; i < path.length - 1; i++) {
         String dir = path[i];
         Optional<DirectoryNode> child = parent.children.stream()
-            .map(f -> (DirectoryNode) f)
+            .filter(DirectoryNode.class::isInstance)
+            .map(DirectoryNode.class::cast)
             .filter(f -> f.name.equals(dir))
             .findAny();
         if (!child.isPresent()) {
@@ -37,7 +38,7 @@ abstract class FileTree {
     return root;
   }
 
-  static class DirectoryNode extends FileTree {
+  class DirectoryNode implements FileTree {
 
     private final List<FileTree> children = new ArrayList<>();
 
@@ -57,12 +58,16 @@ abstract class FileTree {
     }
   }
 
-  static class FileNode extends FileTree {
+  class FileNode implements FileTree {
 
     private final File file;
 
     FileNode(File file) {
       this.file = file;
+    }
+
+    public File getFile() {
+      return file;
     }
 
     @Override

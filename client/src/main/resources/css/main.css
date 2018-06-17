@@ -1,4 +1,9 @@
-#leftStatusBar, #rightStatusBar {
+.status-bar > * {
   -fx-padding: 5;
   -fx-spacing: 15;
+}
+
+.text-field:error {
+  -fx-text-box-border: red ;
+  -fx-focus-color: red ;
 }
