@@ -7,7 +7,6 @@ import com.github.coldab.shared.project.TextFile;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import javafx.scene.control.Tab;
 import org.fxmisc.richtext.CodeArea;
@@ -76,6 +75,7 @@ public class TabController implements TextFileObserver {
 
   /**
    * this methode gets called if the are changes made to the file.
+   *
    * @param changes list of changes that are made to the file
    */
   private void textChanged(List<PlainTextChange> changes) {
@@ -108,57 +108,57 @@ public class TabController implements TextFileObserver {
   }
 
   /**
-   *this methode gets called if there are remote changes made to the file.
+   * Called if there are remote changes made to the file.
    */
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {
-    int caret = codeArea.getCaretPosition();
-    int posistion = 0;
-    AtomicInteger deleted = new AtomicInteger();
-    AtomicInteger largedeleted = new AtomicInteger();
-    AtomicInteger added = new AtomicInteger(-2);
-    AtomicInteger largeadded = new AtomicInteger();
-
     eventStream.suspendWhile(() -> {
+      int caret = codeArea.getCaretPosition();
+      int position = 0;
+      int deletion = 0;
+      int deletionLength = 0;
+      int addition = -2;
+      int additionLength = 0;
+
       MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
           .createMultiChange();
       for (RemoteDeletion d : deletions) {
         builder.deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1);
-        deleted.set(d.getStart());
-        largedeleted.set(d.getLength());
+        deletion = d.getStart();
+        deletionLength = d.getLength();
       }
       for (RemoteAddition a : additions) {
         builder.insertTextAbsolutely(a.getStart() + 1, a.getText());
-        added.set(a.getStart());
-        largeadded.set(a.getText().length());
+        addition = a.getStart();
+        additionLength = a.getText().length();
       }
       builder.commit();
+
+      if (deletion != 0) {
+        if (deletion <= caret) {
+          if (deletionLength > 1) {
+            position = -deletionLength;
+          } else {
+            caret = caret - 1;
+          }
+
+        }
+      }
+      if (addition != -2) {
+        if (addition <= caret) {
+          if (additionLength > 1) {
+            position = additionLength;
+          } else {
+            position = 1;
+          }
+        }
+      }
+      if (caret + position <= codeArea.getLength()) {
+        codeArea.moveTo(caret + position);
+      } else {
+        codeArea.moveTo(codeArea.getLength());
+      }
     });
-
-    if (deleted.get() != 0) {
-      if (deleted.get() <= caret) {
-        posistion = 0;
-
-        if (largedeleted.get() > 1) {
-          posistion = -largedeleted.get();
-        } else {
-          caret = caret - 1;
-        }
-
-      }
-    }
-    if (added.get() != -2) {
-      if (added.get() <= caret) {
-        if (largeadded.get() > 1) {
-          posistion = largeadded.get();
-        } else {
-          posistion = 1;
-        }
-      }
-    }
-    if(caret + posistion <= codeArea.getLength())
-    {codeArea.moveTo(caret + posistion);}
-    else {codeArea.moveTo(codeArea.getLength());}
   }
 }
