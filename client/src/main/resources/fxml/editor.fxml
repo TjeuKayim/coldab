@@ -23,9 +23,6 @@
         <MenuItem text="New File" onAction="#newFile" />
         <!-- "Keep things separated" - Marijn 2018 -->
         <SeparatorMenuItem />
-        <MenuItem text="New Project" onAction="#newProject"/>
-        <MenuItem text="Open Project" />
-        <MenuItem text="Open Recent" />
         <MenuItem text="Share project" onAction="#share" />
       </Menu>
       <Menu text="Edit">

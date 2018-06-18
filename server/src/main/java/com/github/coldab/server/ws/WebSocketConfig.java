@@ -60,6 +60,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
         WebSocketHandler wsHandler, Exception exception) {
+      // Nothing to do
     }
   }
 }

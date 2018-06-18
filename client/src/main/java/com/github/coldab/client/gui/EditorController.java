@@ -172,11 +172,6 @@ public class EditorController implements ProjectObserver {
     }
   }
 
-  @Override
-  public void updateCollaborators() {
-
-  }
-
   public void newFile(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("New file");
@@ -189,16 +184,6 @@ public class EditorController implements ProjectObserver {
       }
       projectController.createFile(new TextFile(0, fileName));
     });
-  }
-
-  @FXML
-  private void newProject(ActionEvent actionEvent) {
-    TextInputDialog dialog = new TextInputDialog("");
-    dialog.setTitle("New Project");
-    dialog.setHeaderText("New Project");
-    dialog.setContentText("ProjectName");
-    Optional<String> result = dialog.showAndWait();
-    // todo
   }
 
   public void share(ActionEvent actionEvent) {

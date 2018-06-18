@@ -19,7 +19,7 @@ public class ChatService implements Service<ChatServer, ChatClient> {
   @Override
   public ChatServer connect(ChatClient client, Account account) {
     projectClients.add(client);
-    return new MessageReceiver(client, account);
+    return new MessageReceiver(account);
   }
 
   @Override
@@ -28,11 +28,9 @@ public class ChatService implements Service<ChatServer, ChatClient> {
   }
 
   private class MessageReceiver implements ChatServer {
-    private final ChatClient client;
     private final Account account;
 
-    public MessageReceiver(ChatClient client, Account account) {
-      this.client = client;
+    public MessageReceiver(Account account) {
       this.account = account;
     }
 
