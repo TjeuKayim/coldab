@@ -116,49 +116,30 @@ public class TabController implements TextFileObserver {
     eventStream.suspendWhile(() -> {
       int caret = codeArea.getCaretPosition();
       int position = 0;
-      int deletion = 0;
-      int deletionLength = 0;
-      int addition = -2;
-      int additionLength = 0;
-
       MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
           .createMultiChange();
       for (RemoteDeletion d : deletions) {
         builder.deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1);
-        deletion = d.getStart();
-        deletionLength = d.getLength();
+        int index = d.getStart();
+        int length = d.getLength();
+        if (index != 0 && index <= caret) {
+          position -= length;
+        }
       }
       for (RemoteAddition a : additions) {
         builder.insertTextAbsolutely(a.getStart() + 1, a.getText());
-        addition = a.getStart();
-        additionLength = a.getText().length();
+        int index = a.getStart();
+        int length = a.getText().length();
+        if (index != -2 && index <= caret) {
+          position += length;
+        }
       }
       builder.commit();
-
-      if (deletion != 0) {
-        if (deletion <= caret) {
-          if (deletionLength > 1) {
-            position = -deletionLength;
-          } else {
-            caret = caret - 1;
-          }
-
-        }
+      caret += position;
+      if (caret <= codeArea.getLength()) {
+        caret = codeArea.getLength();
       }
-      if (addition != -2) {
-        if (addition <= caret) {
-          if (additionLength > 1) {
-            position = additionLength;
-          } else {
-            position = 1;
-          }
-        }
-      }
-      if (caret + position <= codeArea.getLength()) {
-        codeArea.moveTo(caret + position);
-      } else {
-        codeArea.moveTo(codeArea.getLength());
-      }
+      codeArea.moveTo(caret);
     });
   }
 }
