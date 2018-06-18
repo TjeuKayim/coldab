@@ -186,16 +186,6 @@ public class EditorController implements ProjectObserver {
     });
   }
 
-  @FXML
-  private void newProject(ActionEvent actionEvent) {
-    TextInputDialog dialog = new TextInputDialog("");
-    dialog.setTitle("New Project");
-    dialog.setHeaderText("New Project");
-    dialog.setContentText("ProjectName");
-    Optional<String> result = dialog.showAndWait();
-    // todo
-  }
-
   public void share(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("Share");
