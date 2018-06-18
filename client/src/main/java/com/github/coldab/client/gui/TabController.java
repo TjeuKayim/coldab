@@ -5,7 +5,6 @@ import com.github.coldab.client.project.TextFileController;
 import com.github.coldab.client.project.TextFileObserver;
 import com.github.coldab.shared.project.TextFile;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -98,10 +97,10 @@ public class TabController implements TextFileObserver {
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {
-    int  caret = codeArea.getCaretPosition();
+    int caret = codeArea.getCaretPosition();
     int posistion = 0;
     AtomicInteger deleted = new AtomicInteger();
-      AtomicInteger largedeleted = new AtomicInteger();
+    AtomicInteger largedeleted = new AtomicInteger();
     AtomicInteger added = new AtomicInteger(-2);
     AtomicInteger largeadded = new AtomicInteger();
 
@@ -121,25 +120,27 @@ public class TabController implements TextFileObserver {
       builder.commit();
     });
 
-  if (deleted.get() != 0) {
+    if (deleted.get() != 0) {
       if (deleted.get() <= caret) {
-          posistion = 0;
+        posistion = 0;
 
-          if (largedeleted.get() > 1){
-                  posistion =- largedeleted.get();
-          }
-          else {caret = caret - 1;}
+        if (largedeleted.get() > 1) {
+          posistion = -largedeleted.get();
+        } else {
+          caret = caret - 1;
+        }
 
-  }
-}
-if(added.get() != -2){
-    if (added.get() <= caret){
-    if(largeadded.get() > 1){
-      posistion = largeadded.get();
+      }
     }
-    else {posistion = 1;}
+    if (added.get() != -2) {
+      if (added.get() <= caret) {
+        if (largeadded.get() > 1) {
+          posistion = largeadded.get();
+        } else {
+          posistion = 1;
+        }
+      }
     }
-}
 
     codeArea.moveTo(caret + posistion);
   }
