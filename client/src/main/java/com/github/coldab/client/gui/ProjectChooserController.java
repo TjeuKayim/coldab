@@ -44,10 +44,6 @@ public class ProjectChooserController implements Initializable {
     refreshProjects();
   }
 
-  private void openProject(Project project) {
-    resultCallback.accept(project);
-  }
-
   @FXML
   private void addNewProject(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
@@ -101,6 +97,10 @@ public class ProjectChooserController implements Initializable {
         open.setOnAction(event -> openProject(project));
         setGraphic(box);
       }
+    }
+
+    private void openProject(Project project) {
+      resultCallback.accept(project);
     }
 
   }

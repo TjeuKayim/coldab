@@ -41,7 +41,6 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     project.getAdmins().addAll(admins);
     project.getCollaborators().clear();
     project.getCollaborators().addAll(collaborators);
-    projectObserver.updateCollaborators();
   }
 
   @Override

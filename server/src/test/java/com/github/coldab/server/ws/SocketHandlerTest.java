@@ -3,8 +3,12 @@ package com.github.coldab.server.ws;
 import static org.junit.Assert.assertEquals;
 
 import com.github.coldab.server.Main;
+import com.github.coldab.server.dal.AccountStore;
+import com.github.coldab.server.dal.ProjectStore;
+import com.github.coldab.server.services.LoginSessionManager;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.ChatMessage;
+import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ChatClient;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
@@ -17,10 +21,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -42,13 +46,33 @@ public class SocketHandlerTest {
   @LocalServerPort
   private int port;
 
+  @Autowired
+  private ProjectStore projectStore;
+
+  @Autowired
+  private AccountStore accountStore;
+
+  @Autowired
+  private LoginSessionManager loginSessionManager;
+
+  private Account account = new Account("Bob", "bob@email", "I'm a dummy");
   private Client client = new Client();
   private WebSocketConnectionManager connectionManager;
 
   @Before
   public void setUp() {
-    String url = String.format("ws://localhost:%d/ws/1", port);
+    // Save dummy account
+    accountStore.save(account);
+    // Add to project
+    Project project = new Project("Dummy Project");
+    project.getAdmins().add(account);
+    projectStore.save(project);
+    // Create session for user
+    loginSessionManager.login(account);
+    // Start WebSocket connection
+    String url = String.format("ws://localhost:%d/ws/" + project.getId(), port);
     connectionManager = new WebSocketConnectionManager(new StandardWebSocketClient(), client, url);
+    connectionManager.getHeaders().add("Session", account.getSessionId());
     connectionManager.start();
   }
 
@@ -58,15 +82,13 @@ public class SocketHandlerTest {
   }
 
   @Test
-  @Ignore
   public void connect() throws InterruptedException {
     ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
     ChatMessage result = client.chatMessage;
     assertEquals(message.getText(), result.getText());
-    Mockito.verify(client.projectMock).files(Mockito.any(), Mockito.any());
   }
 
-  private static class Client extends TextWebSocketHandler implements ClientEndpoint {
+  private class Client extends TextWebSocketHandler implements ClientEndpoint {
 
     private ServerEndpoint serverEndpoint;
     private SocketReceiver socketReceiver;
@@ -74,7 +96,7 @@ public class SocketHandlerTest {
     private final ChatClientMock chatMock = new ChatClientMock();
     private ProjectClient projectMock = Mockito.mock(ProjectClient.class);
     private ChatMessage chatMessage =
-        new ChatMessage("Hello World", new Account("HenkJan", "henk@jan.org", "1234"));
+        new ChatMessage("Hello World", account);
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
