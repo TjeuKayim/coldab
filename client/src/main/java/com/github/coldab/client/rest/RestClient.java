@@ -67,6 +67,9 @@ public class RestClient implements AccountServer {
   public Account register(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/register", credentials, Account.class);
+    if (account == null) {
+      return null;
+    }
     setSessionId(account.getSessionId());
     return account;
   }
@@ -75,6 +78,9 @@ public class RestClient implements AccountServer {
   public Account login(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/login", credentials, Account.class);
+    if (account == null) {
+      return null;
+    }
     setSessionId(account.getSessionId());
     return account;
   }
