@@ -24,7 +24,6 @@ public class WebSocketConnection extends TextWebSocketHandler {
 
   private WebSocketSession session;
   private SocketReceiver socketReceiver;
-  private ServerEndpoint serverEndpoint;
   private final Function<ServerEndpoint, ClientEndpoint> endpointFactory;
   private static final Logger LOGGER = Logger.getLogger(WebSocketConnection.class.getName());
   private final WebSocketConnectionManager manager;
@@ -44,7 +43,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
   public void afterConnectionEstablished(WebSocketSession session) {
     LOGGER.info("WebSocket connection established");
     this.session = session;
-    serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
+    ServerEndpoint serverEndpoint = SocketSender.create(ServerEndpoint.class, this::sendMessage);
     ClientEndpoint clientEndpoint = endpointFactory.apply(serverEndpoint);
     socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
   }
