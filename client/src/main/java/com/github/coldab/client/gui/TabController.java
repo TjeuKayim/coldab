@@ -141,7 +141,8 @@ public class TabController implements TextFileObserver {
         }
       }
     }
-
-    codeArea.moveTo(caret + posistion);
+    if(caret + posistion <= codeArea.getLength())
+    {codeArea.moveTo(caret + posistion);}
+    else {codeArea.moveTo(codeArea.getLength());}
   }
 }
