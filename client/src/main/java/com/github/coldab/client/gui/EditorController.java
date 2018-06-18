@@ -172,11 +172,6 @@ public class EditorController implements ProjectObserver {
     }
   }
 
-  @Override
-  public void updateCollaborators() {
-
-  }
-
   public void newFile(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("New file");
