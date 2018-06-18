@@ -25,12 +25,14 @@ public class WebSocketConnection extends TextWebSocketHandler {
   private WebSocketSession session;
   private SocketReceiver socketReceiver;
   private final Function<ServerEndpoint, ClientEndpoint> endpointFactory;
+  private final Runnable disconnectedCallback;
   private static final Logger LOGGER = Logger.getLogger(WebSocketConnection.class.getName());
   private final WebSocketConnectionManager manager;
 
-  public WebSocketConnection(Project project,
-      String sessionId, Function<ServerEndpoint, ClientEndpoint> endpointFactory) {
+  public WebSocketConnection(Project project, String sessionId, Function<ServerEndpoint,
+      ClientEndpoint> endpointFactory, Runnable disconnectedCallback) {
     this.endpointFactory = endpointFactory;
+    this.disconnectedCallback = disconnectedCallback;
     WebSocketClient client = new StandardWebSocketClient();
     String url = Main.getWebSocketEndpoint() + project.getId();
     manager = new WebSocketConnectionManager(client, this, url);
@@ -58,7 +60,7 @@ public class WebSocketConnection extends TextWebSocketHandler {
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
     LOGGER.log(Level.INFO, "WebSocket disconnected, status: {0}", status);
     this.session = null;
-    // todo: Close editor
+    disconnectedCallback.run();
   }
 
   public void disconnect() {
