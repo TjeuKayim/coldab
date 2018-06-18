@@ -16,5 +16,9 @@ public interface Service<S, C> {
    */
   S connect(C client, Account account);
 
+  /**
+   * Notifies that a client has disconnected.
+   * @param client the client that has disconnected.
+   */
   void disconnect(C client);
 }
