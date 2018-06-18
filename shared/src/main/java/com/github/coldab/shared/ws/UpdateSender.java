@@ -12,7 +12,6 @@ public interface UpdateSender {
 
   /**
    * remove a file.
-   * @param fileId the id of the file that gets removed.
    */
   void removeFile(int fileId);
 

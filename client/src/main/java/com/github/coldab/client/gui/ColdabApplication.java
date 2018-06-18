@@ -25,6 +25,9 @@ public class ColdabApplication extends Application {
 
   private static final Logger LOGGER = Logger.getLogger(ColdabApplication.class.getName());
 
+  /**
+   * open the login/register screen, if te login/regiser is successful, open the project chooser.
+   */
   @Override
   public void start(Stage primaryStage) throws IOException {
     this.authenticationStage = primaryStage;
@@ -38,6 +41,10 @@ public class ColdabApplication extends Application {
     authenticationStage.show();
   }
 
+  /**
+   * open the project chooser ,if you picked a project it will open the editor.
+   * you can open projects you are a collaborator/admin off , or create new ones.
+   */
   private void startProjectChooser(Account account) {
     authenticationStage.hide();
     this.projectChooserStage = new Stage();
@@ -57,6 +64,10 @@ public class ColdabApplication extends Application {
     projectChooserStage.show();
   }
 
+  /**
+   * open the editor for the project you selected.
+   * create /open files in the project, send chatmessage in the project chat.
+   */
   private void startEditor(Project project, Account account) {
     projectChooserStage.hide();
     EditorController controller = new EditorController(project, account);

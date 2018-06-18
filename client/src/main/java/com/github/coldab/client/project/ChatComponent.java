@@ -15,6 +15,7 @@ public class ChatComponent implements ChatClient, ChatController {
     this.server = server;
   }
 
+
   @Override
   public void message(ChatMessage message) {
     chat.addMessage(message);

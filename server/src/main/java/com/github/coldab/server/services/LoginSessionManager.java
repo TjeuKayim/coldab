@@ -26,6 +26,11 @@ public class LoginSessionManager {
     return sessions.get(sessionId);
   }
 
+  /**
+   * logout a account , and delete the session.
+   * @param sessionId the session id you want to delete.
+   * @return the account you logged out, null if the sessionid dosn`t exist.
+   */
   public Account logout(String sessionId) {
     return sessions.remove(sessionId);
   }

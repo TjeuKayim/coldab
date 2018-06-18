@@ -7,5 +7,8 @@ public interface ProjectObserver {
    */
   void updateFiles();
 
+  /**
+   * collaborators are added or removed.
+   */
   void updateCollaborators();
 }

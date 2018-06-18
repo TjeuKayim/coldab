@@ -46,6 +46,10 @@ public class AuthenticationController implements Initializable {
     login.setOnAction(this::loginButtonClicked);
   }
 
+  /**
+   * try to login using the credentials filled in on the gui.
+   * if the login is unsuccessful show an alert.
+   */
   private void loginButtonClicked(ActionEvent actionEvent) {
     if (checkInput()) {
       Account account = accountServer.login(new Credentials(email.getText(), password.getText()));
@@ -58,6 +62,11 @@ public class AuthenticationController implements Initializable {
     }
   }
 
+  /**
+   * register a new account  with te credentials from the gui.
+   * if the registration fails , show an alert.
+   * @param actionEvent
+   */
   private void registerButtonClicked(ActionEvent actionEvent) {
     if (checkInput()) {
       Account account = accountServer

@@ -24,7 +24,7 @@ public class AccountController {
   /**
    * Login with account
    *
-   * @return account met SID
+   * @return account with SID
    */
   @PostMapping("login")
   public Account login(@RequestBody Credentials credentials) {
