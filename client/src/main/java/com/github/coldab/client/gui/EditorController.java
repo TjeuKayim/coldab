@@ -77,12 +77,17 @@ public class EditorController implements ProjectObserver {
     btnChatMessage.setOnAction(this::btnChatMessagePressed);
   }
 
+  /**
+   * methode that gets called of the there is a new chat message.
+   */
   private void receiveChatMessage(ChatMessage message) {
     Platform.runLater(() ->
         chatPane.getItems().add(message));
   }
 
-
+  /**
+   * send a new chatmessage, to the server.
+   */
   private void btnChatMessagePressed(ActionEvent actionEvent) {
     String messageText = textFieldChatMessage.getText();
     if (messageText.length() < 1) {
@@ -93,6 +98,9 @@ public class EditorController implements ProjectObserver {
     textFieldChatMessage.setText("");
   }
 
+  /**
+   *  hide or show the chat element in the editor
+   */
   private void toggleChat(ActionEvent actionEvent) {
     if (chatVBox.getMaxWidth() == 0) {
       chatVBox.setMaxWidth(Double.MAX_VALUE);
@@ -101,6 +109,9 @@ public class EditorController implements ProjectObserver {
     }
   }
 
+  /**
+   * open a file from the project in the editor.
+   */
   private void openFile(TextFile file) {
     Tab tab = new Tab();
     tabPane.getTabs().add(tab);
@@ -108,6 +119,9 @@ public class EditorController implements ProjectObserver {
   }
 
 
+  /**
+   * refresh the  list of files on the project.
+   */
   @Override
   public void updateFiles() {
     Platform.runLater(() -> {
@@ -172,6 +186,9 @@ public class EditorController implements ProjectObserver {
     }
   }
 
+  /**
+   *  create a new file inside the project
+   */
   public void newFile(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("New file");
@@ -186,6 +203,9 @@ public class EditorController implements ProjectObserver {
     });
   }
 
+  /**
+   * share the current project with a diffrent user using there email address.
+   */
   public void share(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
     dialog.setTitle("Share");

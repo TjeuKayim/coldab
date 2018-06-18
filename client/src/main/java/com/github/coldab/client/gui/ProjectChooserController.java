@@ -44,6 +44,9 @@ public class ProjectChooserController implements Initializable {
     refreshProjects();
   }
 
+  /**
+   * create a new project, where you are the admin.
+   */
   @FXML
   private void addNewProject(ActionEvent actionEvent) {
     TextInputDialog dialog = new TextInputDialog("");
@@ -60,6 +63,9 @@ public class ProjectChooserController implements Initializable {
     });
   }
 
+  /**
+   * refresh the list of projects in the gui.
+   */
   @FXML
   public void refreshProjects() {
     projectsListView.getItems().clear();
@@ -99,6 +105,9 @@ public class ProjectChooserController implements Initializable {
       }
     }
 
+    /**
+     * open the editor with the selected project.
+     */
     private void openProject(Project project) {
       resultCallback.accept(project);
     }

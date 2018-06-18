@@ -17,13 +17,24 @@ public interface AccountServer {
   /**
    * Save a new project in the database and generate id.
    *
-   * @return true if successful
    */
   boolean createProject(String projectName);
 
+  /**
+   * Register a new user.
+   */
   Account register(Credentials credentials);
 
+  /**
+   * login with an account.
+   *
+   * @return the account that matches the credentials , if no account matches the credentials return
+   * null.
+   */
   Account login(Credentials credentials);
 
+  /**
+   * logout from the application.
+   */
   void logout(String sessionId);
 }
