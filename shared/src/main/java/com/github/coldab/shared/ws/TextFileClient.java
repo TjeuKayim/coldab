@@ -7,7 +7,6 @@ public interface TextFileClient {
 
   /**
    * Send a new edit to the client.
-   * @param edit the edit that gets send to the client.
    */
   void newEdit(Edit edit);
 

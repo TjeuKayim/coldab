@@ -17,22 +17,17 @@ public interface AccountServer {
   /**
    * Save a new project in the database and generate id.
    *
-   * @return true if successful
    */
   boolean createProject(String projectName);
 
   /**
    * Register a new user.
-   *
-   * @param credentials containing the username and password.
-   * @return the new account.
    */
   Account register(Credentials credentials);
 
   /**
    * login with an account.
    *
-   * @param credentials the username and password of the account.
    * @return the account that matches the credentials , if no account matches the credentials return
    * null.
    */
@@ -40,7 +35,6 @@ public interface AccountServer {
 
   /**
    * logout from the application.
-   * @param sessionId the id of the current session.
    */
   void logout(String sessionId);
 }

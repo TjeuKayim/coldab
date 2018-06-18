@@ -18,7 +18,6 @@ public interface Service<S, C> {
 
   /**
    * Notifies that a client has disconnected.
-   * @param client the client that has disconnected.
    */
   void disconnect(C client);
 }

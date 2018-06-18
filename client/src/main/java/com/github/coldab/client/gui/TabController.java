@@ -35,6 +35,9 @@ public class TabController implements TextFileObserver {
     this.textFileController = projectController.openFile(file, this);
   }
 
+  /**
+   * update the gui if a file is deleted.
+   */
   public void fileDeleted() {
     tab.getTabPane().getTabs().remove(tab);
   }
@@ -62,10 +65,17 @@ public class TabController implements TextFileObserver {
     codeArea.getStylesheets().add("css/manual-highlighting.css");
   }
 
+  /**
+   * close a file tab in the editor, and update this in the gui.
+   */
   private void closeTab() {
     projectController.closeFile(file);
   }
 
+  /**
+   * this methode gets called if the are changes made to the file.
+   * @param changes list of changes that are made to the file
+   */
   private void textChanged(List<PlainTextChange> changes) {
     for (PlainTextChange change : changes) {
       String inserted = change.getInserted();
@@ -82,6 +92,9 @@ public class TabController implements TextFileObserver {
     }
   }
 
+  /**
+   * update the text of the file inside the gui
+   */
   @Override
   public void updateText(String text) {
     if (!codeArea.getText().equals(text)) {
@@ -92,6 +105,9 @@ public class TabController implements TextFileObserver {
     }
   }
 
+  /**
+   *this methode gets called if there are remote changes made to the file.
+   */
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {

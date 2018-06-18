@@ -10,7 +10,6 @@ public interface ProjectStore {
 
   /**
    * find the recently opend projects.
-   * @return a collection of recent projects.
    */
   Collection<Project> recentProjects();
 }

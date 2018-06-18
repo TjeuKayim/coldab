@@ -59,6 +59,7 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     projectObserver.updateFiles();
   }
 
+
   @Override
   public void removeFile(int fileId) {
     project.getFiles().removeIf(f -> f.getId() == fileId);
@@ -73,18 +74,28 @@ public class ProjectComponent implements ProjectClient, ProjectController {
             .forEach(e -> textFileServices.get(fileId).newEdit(e)));
   }
 
+  /**
+   *confirm a addition to a file.
+   */
   @Override
   public void confirmAddition(int fileId, Addition addition) {
     Platform.runLater(() ->
         textFileServices.get(fileId).confirmEdit(addition));
   }
 
+  /**
+   * confrim a deletion to file
+   */
   @Override
   public void confirmDeletion(int fileId, Deletion deletion) {
     Platform.runLater(() ->
         textFileServices.get(fileId).confirmEdit(deletion));
   }
 
+  /**
+   * open a file
+   * @return
+   */
   @Override
   public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
     file.reset();
