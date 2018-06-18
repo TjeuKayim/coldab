@@ -1,0 +1,5 @@
+GET http://localhost:8080/account/project
+Session: fdba56ed-0cb3-4208-9add-d53040b27194
+Accept: application/json
+
+###

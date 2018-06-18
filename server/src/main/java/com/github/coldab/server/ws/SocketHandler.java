@@ -1,5 +1,8 @@
 package com.github.coldab.server.ws;
 
+import com.github.coldab.server.services.ConnectionManager;
+import com.github.coldab.shared.account.Account;
+import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
 import com.github.coldab.shared.ws.ServerEndpoint;
@@ -7,7 +10,9 @@ import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -17,25 +22,37 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 public class SocketHandler extends TextWebSocketHandler {
 
-  private final HashMap<WebSocketSession, SocketSession> sessions = new HashMap<>();
+  private final Map<WebSocketSession, SocketSession> sessions = new HashMap<>();
+  private final ConnectionManager connectionManager;
+
+  private static final Logger LOGGER = Logger.getLogger(SocketHandler.class.getName());
+
+  public SocketHandler(ConnectionManager connectionManager) {
+    this.connectionManager = connectionManager;
+  }
 
   @Override
-  public void afterConnectionEstablished(WebSocketSession session) {
-    System.out.println("Connected WebSocket");
+  public void afterConnectionEstablished(WebSocketSession session) throws IOException {
+    Account account = (Account) session.getAttributes().get("account");
     int projectId = (int) session.getAttributes().get("projectId");
-    // TODO: get project somewhere and create ClientEndpoint
-    ClientEndpoint clientEndpoint = null;
-    ServerEndpoint serverEndpoint = SocketSender.create(ServerEndpoint.class,
+    Project project = connectionManager.getProject(projectId);
+    if (project == null) {
+      LOGGER.info("ProjectId not found");
+      session.close(new CloseStatus(1000, "ProjectId not found"));
+      return;
+    }
+    ClientEndpoint clientEndpoint = SocketSender.create(ClientEndpoint.class,
         socketMessage -> {
           try {
             byte[] payload = MessageEncoder.encodeMessage(socketMessage);
             session.sendMessage(new TextMessage(payload));
           } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
           }
         });
-    SocketReceiver socketReceiver = new SocketReceiver(ClientEndpoint.class, clientEndpoint);
-    sessions.put(session, new SocketSession(socketReceiver));
+    ServerEndpoint serverEndpoint = connectionManager.connect(project, account, clientEndpoint);
+    SocketReceiver socketReceiver = new SocketReceiver(ServerEndpoint.class, serverEndpoint);
+    sessions.put(session, new SocketSession(socketReceiver, clientEndpoint));
   }
 
   @Override
@@ -47,15 +64,21 @@ public class SocketHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-    sessions.remove(session);
+    SocketSession socketSession = sessions.remove(session);
+    if (socketSession != null) {
+      connectionManager.disconnect(socketSession.clientEndpoint);
+    }
   }
 
   private class SocketSession {
 
     final SocketReceiver socketReceiver;
+    final ClientEndpoint clientEndpoint;
 
-    private SocketSession(SocketReceiver socketReceiver) {
+    private SocketSession(SocketReceiver socketReceiver,
+        ClientEndpoint clientEndpoint) {
       this.socketReceiver = socketReceiver;
+      this.clientEndpoint = clientEndpoint;
     }
   }
 

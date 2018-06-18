@@ -26,8 +26,6 @@ public class BinaryController {
    *   Which MIME type to use?
    *   https://stackoverflow.com/a/6783972/5537074
    * </p>
-   * @param fileId
-   * @return
    */
   @GetMapping(value = "download/{fileId}", produces = "application/octet-stream")
   byte[] download(@PathVariable Integer fileId) {

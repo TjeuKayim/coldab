@@ -1,17 +1,22 @@
 package com.github.coldab.client.gui;
 
 import com.github.coldab.shared.project.Project;
+import com.github.coldab.shared.rest.AccountServer;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -24,26 +29,53 @@ public class ProjectChooserController implements Initializable {
   @FXML
   public ListView<Project> projectsListView;
 
-  private ObservableList<Project> projects = FXCollections.observableArrayList();
+  private final ObservableList<Project> projects = FXCollections.observableArrayList();
 
-  public ProjectChooserController(Consumer<Project> resultCallback) {
+  private final AccountServer accountServer;
+
+  public ProjectChooserController(AccountServer accountServer,
+      Consumer<Project> resultCallback) {
+    this.accountServer = accountServer;
     this.resultCallback = resultCallback;
   }
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-    projectsListView.setItems(projects);
-    projectsListView.setCellFactory(ProjectRow::new);
-
-    projects.addAll(
-        new Project("Hello World"),
-        new Project("My first project!")
-    );
+    refreshProjects();
   }
 
   private void openProject(Project project) {
     resultCallback.accept(project);
   }
+
+  @FXML
+  private void addNewProject(ActionEvent actionEvent) {
+    TextInputDialog dialog = new TextInputDialog("");
+    dialog.setTitle("New Project");
+    dialog.setHeaderText("New Project");
+    dialog.setContentText("ProjectName");
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(projectName -> {
+      if (projectName.isEmpty()) {
+        return;
+      }
+      accountServer.createProject(result.get());
+      refreshProjects();
+    });
+  }
+
+  @FXML
+  public void refreshProjects() {
+    projectsListView.getItems().clear();
+    projectsListView.setItems(projects);
+    projectsListView.setCellFactory(ProjectRow::new);
+
+    List<Project> updatedProjects = accountServer.getProjects();
+    if (updatedProjects != null) {
+      this.projects.addAll(updatedProjects);
+    }
+  }
+
 
   private class ProjectRow extends ListCell<Project> {
 
@@ -70,5 +102,6 @@ public class ProjectChooserController implements Initializable {
         setGraphic(box);
       }
     }
+
   }
 }

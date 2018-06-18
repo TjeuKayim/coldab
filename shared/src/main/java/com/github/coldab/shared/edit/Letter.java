@@ -4,12 +4,25 @@ import java.util.Objects;
 
 public class Letter {
 
-  private char character;
-  private int position;
+  private final Position position;
+  private final char character;
 
-  public Letter(char c, int position) {
-    this.character = c;
+  public Letter(Position position, char character) {
     this.position = position;
+    this.character = character;
+  }
+
+  public Letter(int additionIndex, int position, char character) {
+    this.position = new Position(additionIndex, position);
+    this.character = character;
+  }
+
+  public Position getPosition() {
+    return position;
+  }
+
+  public char getCharacter() {
+    return character;
   }
 
   @Override
@@ -21,13 +34,12 @@ public class Letter {
       return false;
     }
     Letter letter = (Letter) o;
-    return character == letter.character
-        && position == letter.position;
+    return character == letter.character &&
+        Objects.equals(position, letter.position);
   }
 
   @Override
   public int hashCode() {
-
-    return Objects.hash(character, position);
+    return Objects.hash(position, character);
   }
 }
