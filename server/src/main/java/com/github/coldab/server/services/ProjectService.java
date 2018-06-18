@@ -56,29 +56,6 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
         .unsubscribeAll();
   }
 
-  private void notifyFiles(Collection<ProjectClient> clients, File... files) {
-    List<TextFile> textFiles = new ArrayList<>();
-    List<BinaryFile> binaryFiles = new ArrayList<>();
-    for (File file : files) {
-      if (file instanceof TextFile) {
-        TextFile textFile = (TextFile) file;
-        textFiles.add(textFile);
-        textFileServices.computeIfAbsent(file.getId(),
-            id -> new TextFileService(textFile, fileStore));
-      } else if (file instanceof BinaryFile) {
-        binaryFiles.add(((BinaryFile) file));
-      }
-    }
-    if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
-      return;
-    }
-    // Notify clients
-    for (ProjectClient projectClient : clients) {
-      projectClient
-          .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
-    }
-  }
-
   private class MessageReceiver implements ProjectServer {
 
     private final ProjectClient client;
@@ -253,5 +230,27 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       fileStore.deleteById(fileId);
     }
 
+    private void notifyFiles(Collection<ProjectClient> clients, File... files) {
+      List<TextFile> textFiles = new ArrayList<>();
+      List<BinaryFile> binaryFiles = new ArrayList<>();
+      for (File file : files) {
+        if (file instanceof TextFile) {
+          TextFile textFile = (TextFile) file;
+          textFiles.add(textFile);
+          textFileServices.computeIfAbsent(file.getId(),
+              id -> new TextFileService(textFile, fileStore));
+        } else if (file instanceof BinaryFile) {
+          binaryFiles.add(((BinaryFile) file));
+        }
+      }
+      if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
+        return;
+      }
+      // Notify clients
+      for (ProjectClient projectClient : clients) {
+        projectClient
+            .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
+      }
+    }
   }
 }
