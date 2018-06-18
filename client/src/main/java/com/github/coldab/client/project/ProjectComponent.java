@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class ProjectComponent implements ProjectClient, ProjectController {
 
@@ -41,6 +43,19 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     project.getAdmins().addAll(admins);
     project.getCollaborators().clear();
     project.getCollaborators().addAll(collaborators);
+  }
+
+  /**
+   * Display error to user.
+   */
+  @Override
+  public void error(String message) {
+    Platform.runLater(() -> {
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setContentText(message);
+      alert.show();
+    });
   }
 
   @Override

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -59,7 +60,14 @@ public class SocketHandler extends TextWebSocketHandler {
   public void handleTextMessage(WebSocketSession session, TextMessage message) {
     byte[] bytes = message.asBytes();
     Optional.ofNullable(sessions.get(session)).ifPresent(
-        socketSession -> MessageEncoder.decodeMessage(bytes, socketSession.socketReceiver));
+        socketSession -> {
+          try {
+            MessageEncoder.decodeMessage(bytes, socketSession.socketReceiver);
+          } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e, () -> "Error handling message: " + message.toString());
+            socketSession.clientEndpoint.project().error(e.getMessage());
+          }
+        });
   }
 
   @Override

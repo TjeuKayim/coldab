@@ -27,4 +27,9 @@ public interface ProjectClient extends UpdateSender {
    */
 
   void collaborators(List<Account> admins, List<Account> collaborators);
+
+  /**
+   * Display error to user.
+   */
+  void error(String message);
 }
