@@ -5,6 +5,7 @@ import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.ws.ClientEndpoint;
 import com.github.coldab.shared.ws.MessageEncoder;
+import com.github.coldab.shared.ws.ProjectClient.ProjectException;
 import com.github.coldab.shared.ws.ServerEndpoint;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
@@ -63,9 +64,13 @@ public class SocketHandler extends TextWebSocketHandler {
         socketSession -> {
           try {
             MessageEncoder.decodeMessage(bytes, socketSession.socketReceiver);
-          } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e, () -> "Error handling message: " + message.toString());
-            socketSession.clientEndpoint.project().error(e.getMessage());
+          } catch (IllegalStateException e) {
+            if (e.getCause() instanceof ProjectException) {
+              socketSession.clientEndpoint.project().error(e.getCause().getMessage());
+            } else {
+              LOGGER.log(Level.SEVERE, e, () -> "Error handling message: " + message.toString());
+              socketSession.clientEndpoint.project().error(e.getCause().getMessage());
+            }
           }
         });
   }

@@ -11,6 +11,7 @@ import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ProjectClient;
+import com.github.coldab.shared.ws.ProjectClient.ProjectException;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
@@ -100,17 +101,17 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can share
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to share");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       // You cannot share with yourself
       if (account.getEmail().equals(email)) {
         LOGGER.info(() -> email + " tried to share with himself");
-        return;
+        throw new ProjectException("You can't share with yourself");
       }
       Account accountToShare = accountStore.findAccountByEmail(email);
       if (accountToShare == null) {
         LOGGER.info("account to share not found");
-        return;
+        throw new ProjectException("Email not found");
       }
       if (admin) {
         project.getAdmins().add(accountToShare);
@@ -125,7 +126,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can unshare
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to unshare");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       removeAccount(project.getCollaborators(), accountId);
       removeAccount(project.getAdmins(), accountId);
@@ -147,12 +148,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can promote someone
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to promote someone");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       Optional<Account> accountToPromote = removeAccount(project.getCollaborators(), accountId);
       if (!accountToPromote.isPresent()) {
         LOGGER.info("account to promote is not a collaborator");
-        return;
+        throw new ProjectException("Account to promote is not a collaborator");
       }
       project.getAdmins().add(accountToPromote.get());
     }
@@ -162,17 +163,17 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can demote someone
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to promote someone");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       Optional<Account> accountToDemote = removeAccount(project.getAdmins(), accountId);
       if (!accountToDemote.isPresent()) {
         LOGGER.info("account to demote is not an admin");
-        return;
+        throw new ProjectException("Account to demote is not an admin");
       }
       // Anti lockout
       if (project.getAdmins().size() == 1) {
         LOGGER.info("Cannot demote the only admin left");
-        return;
+        throw new ProjectException("You're the only admin left");
       }
       project.getCollaborators().add(accountToDemote.get());
     }

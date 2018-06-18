@@ -32,4 +32,11 @@ public interface ProjectClient extends UpdateSender {
    * Display error to user.
    */
   void error(String message);
+
+  class ProjectException extends RuntimeException {
+
+    public ProjectException(String message) {
+      super(message);
+    }
+  }
 }
