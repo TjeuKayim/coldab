@@ -88,7 +88,7 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
 
     @Override
     public void updateTextFile(TextFile updatedFile) {
-
+      // Not used yet
     }
 
     private void notifyOthers(Consumer<TextFileClient> message) {
