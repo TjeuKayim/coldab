@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class TextFileService implements Service<TextFileServer, TextFileClient> {
 
-  private final TextFile file;
+  private TextFile file;
   private final FileStore fileStore;
   private final List<TextFileClient> clients = new ArrayList<>();
   private static final Logger LOGGER = Logger.getLogger(TextFileService.class.getName());
@@ -77,7 +77,7 @@ public class TextFileService implements Service<TextFileServer, TextFileClient> 
       notifyOthers(c -> c.newEdit(edit));
       while (true) {
         try {
-          fileStore.save(file);
+          file = fileStore.save(file);
           break;
         } catch (ConcurrentModificationException e) {
           LOGGER.severe("ConcurrentModificationException while saving edit");
