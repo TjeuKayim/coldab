@@ -11,9 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -24,7 +22,6 @@ public class RestClient implements AccountServer {
   private String sessionId;
 
   public RestClient() {
-    restTemplate.setErrorHandler(new ErrorHandler());
     restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(Main.getRestEndpoint()));
     restTemplate.setInterceptors(Collections.singletonList((request, body, execution) -> {
       request.getHeaders().add("Session", getSessionId());
@@ -67,6 +64,9 @@ public class RestClient implements AccountServer {
   public Account register(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/register", credentials, Account.class);
+    if (account == null) {
+      return null;
+    }
     setSessionId(account.getSessionId());
     return account;
   }
@@ -75,6 +75,9 @@ public class RestClient implements AccountServer {
   public Account login(Credentials credentials) {
     Account account = restTemplate
         .postForObject("/account/login", credentials, Account.class);
+    if (account == null) {
+      return null;
+    }
     setSessionId(account.getSessionId());
     return account;
   }
@@ -83,18 +86,5 @@ public class RestClient implements AccountServer {
   public void logout(String sessionId) {
     restTemplate
         .postForEntity("/account/logout", sessionId, Boolean.TYPE);
-  }
-
-  private class ErrorHandler implements ResponseErrorHandler {
-
-    @Override
-    public void handleError(ClientHttpResponse response) {
-      LOGGER.severe("HTTP error");
-    }
-
-    @Override
-    public boolean hasError(ClientHttpResponse response) {
-      return false;
-    }
   }
 }
