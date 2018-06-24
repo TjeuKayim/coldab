@@ -40,7 +40,7 @@ public class ShareTest {
   private AccountStore accountStore;
 
   @Test
-  public void shareProject() {
+  public void share_project_and_create_file() {
     // Create two accounts
     Account bob = accountStore.save(new Account("bob", "bob", "bob"));
     Account alice = accountStore.save(new Account("alice", "alice", "alice"));
@@ -58,6 +58,30 @@ public class ShareTest {
     Connection aliceCon = new Connection(alice, projectService);
     // Bob creates a file
     bobCon.server.files(new TextFile[]{new TextFile(0, "myFile")}, null);
+    // Verify that alice receives it
+    verify(aliceCon.mock)
+        .files(argThat(x -> x[0].getName().equals("myFile")), eq(new BinaryFile[0]));
+  }
+
+  @Test
+  public void create_file_and_share_project() {
+    // Create two accounts
+    Account bob = accountStore.save(new Account("bob", "bob", "bob"));
+    Account alice = accountStore.save(new Account("alice", "alice", "alice"));
+    // Create a project and add Bob as admin
+    Project project = new Project("ProjectToShare");
+    project.getAdmins().add(bob);
+    project = projectStore.save(project);
+    ProjectService projectService =
+        new ProjectService(project, projectStore, fileStore, accountStore);
+    // Connect Bob
+    Connection bobCon = new Connection(bob, projectService);
+    // Bob creates a file
+    bobCon.server.files(new TextFile[]{new TextFile(0, "myFile")}, null);
+    // Bob shares the project with alice
+    bobCon.server.share("alice", true);
+    // Alice connects
+    Connection aliceCon = new Connection(alice, projectService);
     // Verify that alice receives it
     verify(aliceCon.mock)
         .files(argThat(x -> x[0].getName().equals("myFile")), eq(new BinaryFile[0]));
