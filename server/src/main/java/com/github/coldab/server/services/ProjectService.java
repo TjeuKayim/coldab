@@ -209,8 +209,8 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     private void file(File file) {
       // Update
+      file = fileStore.save(file);
       project.getFiles().add(file);
-      fileStore.save(file);
       projectStore.save(project);
       // Notify all clients about it
       notifyFiles(clients.keySet(), file);
