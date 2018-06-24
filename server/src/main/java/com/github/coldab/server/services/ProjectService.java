@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Each project is managed by a ProjectService.
@@ -118,7 +120,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       } else {
         project.getCollaborators().add(accountToShare);
       }
-      projectStore.save(project);
+      try {
+        projectStore.save(project);
+      } catch (DataIntegrityViolationException e) {
+        LOGGER.log(Level.SEVERE, e, () -> "Exception while sharing");
+        // fixme
+      }
     }
 
     @Override
@@ -211,7 +218,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Update
       file = fileStore.save(file);
       project.getFiles().add(file);
-      projectStore.save(project);
+      try {
+        projectStore.save(project);
+      } catch (DataIntegrityViolationException e) {
+        LOGGER.log(Level.SEVERE, e, () -> "Exception while saving file");
+        // fixme
+      }
       // Notify all clients about it
       notifyFiles(clients.keySet(), file);
     }
