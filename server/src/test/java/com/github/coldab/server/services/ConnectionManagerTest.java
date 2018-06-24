@@ -75,11 +75,12 @@ public class ConnectionManagerTest {
 
   @Test
   public void share_project() {
-    // John shares the project with alice
-    Account john = new AccountBuilder("John").makeAdminOf(project).build();
+    // Bob shares the project with alice
+    Account bob = new AccountBuilder("John").makeAdminOf(project).build();
     Account alice = new AccountBuilder("Alice").build();
-    Connection johnCon = new Connection(john);
-    johnCon.server.project().share(alice.getEmail(), true);
+    Connection bobCon = new Connection(bob);
+    // Bob shares the project with alice
+    bobCon.server.project().share(alice.getEmail(), true);
     Connection aliceCon = new Connection(alice);
   }
 
