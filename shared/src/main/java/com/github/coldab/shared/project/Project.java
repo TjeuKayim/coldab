@@ -6,9 +6,8 @@ import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.chat.Chat;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +42,7 @@ public class Project {
 
   @OneToMany(fetch = FetchType.EAGER)
   @JsonIgnore
-  private List<File> files = new ArrayList<>();
+  private Set<File> files = new HashSet<>();
 
   @Transient
   @JsonIgnore
@@ -56,7 +55,7 @@ public class Project {
     this.name = name;
   }
 
-  public List<File> getFiles() {
+  public Set<File> getFiles() {
     return files;
   }
 
@@ -98,5 +97,29 @@ public class Project {
         .findAny()
         .ifPresent(files::remove);
     files.add(file);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Project)) {
+      return false;
+    }
+    Project project = (Project) o;
+    return id == project.id &&
+        Objects.equals(name, project.name) &&
+        Objects.equals(admins, project.admins) &&
+        Objects.equals(collaborators, project.collaborators) &&
+        Objects.equals(creationDate, project.creationDate) &&
+        Objects.equals(files, project.files) &&
+        Objects.equals(chat, project.chat);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(id, name, admins, collaborators, creationDate, files, chat);
   }
 }

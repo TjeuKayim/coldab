@@ -59,7 +59,7 @@ public class ProjectStoreTest {
     // After saving everything, get it back and assert if equal
     project = projects.findById(id).orElseThrow(NullPointerException::new);
     assertEquals(1, project.getFiles().size());
-    TextFile actual = (TextFile) project.getFiles().get(0);
+    TextFile actual = (TextFile) project.getFiles().iterator().next();
     assertEquals(textFile.getId(), actual.getId());
     assertArrayEquals(textFile.getPath(), actual.getPath());
     assertEquals(textFile.getEdits().get(0), actual.getEdits().get(0));
