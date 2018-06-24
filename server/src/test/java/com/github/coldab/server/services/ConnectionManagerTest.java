@@ -46,21 +46,21 @@ public class ConnectionManagerTest {
   public void is_no_member() {
     // If account isn't a member, it shouldn't be allowed to connect
     Account account = new Account("noMember", "noMember", "noMember");
-    Project result = connectionManager.getProject(this.project.getId(), account);
+    Project result = connectionManager.validateConnection(this.project.getId(), account);
     assertNull(result);
   }
 
   @Test
   public void project_doesnt_exist() {
     Account account = new Account("noMember", "noMember", "noMember");
-    Project result = connectionManager.getProject(12345, account);
+    Project result = connectionManager.validateConnection(12345, account);
     assertNull(result);
   }
 
   @Test
   public void valid_account() {
     Account john = new AccountBuilder("John").makeAdminOf(project).build();
-    Project result = connectionManager.getProject(this.project.getId(), john);
+    Project result = connectionManager.validateConnection(this.project.getId(), john);
     assertEquals(project, result);
   }
 
@@ -91,7 +91,7 @@ public class ConnectionManagerTest {
     final ChatClient chatClientMock = mock(ChatClient.class);
 
     Connection(Account account) {
-      Project connectionProject = connectionManager.getProject(project.getId(), account);
+      Project connectionProject = connectionManager.validateConnection(project.getId(), account);
       assertNotNull(connectionProject);
       server = connectionManager.connect(connectionProject, account, this);
     }

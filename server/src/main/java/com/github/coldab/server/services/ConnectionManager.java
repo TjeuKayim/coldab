@@ -12,7 +12,6 @@ import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.ServerEndpoint;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,7 +34,12 @@ public class ConnectionManager {
    * Connect client to a project.
    */
   public ServerEndpoint connect(Project project, Account account, ClientEndpoint clientEndpoint) {
-    ProjectSession projectSession = projects.get(project.getId());
+    int projectId = project.getId();
+    ProjectSession projectSession = projects.computeIfAbsent(projectId, i ->
+        new ProjectSession(projectId,
+            new ProjectService(project, projectStore, fileStore, accountStore),
+            new ChatService()
+        ));
     clients.put(clientEndpoint, projectSession);
     ProjectServer projectServer =
         projectSession.projectService.connect(clientEndpoint.project(), account);
@@ -49,41 +53,20 @@ public class ConnectionManager {
     projectSession.projectService.disconnect(clientEndpoint.project());
     if (!clients.containsValue(projectSession)) {
       // No one left in this project, so unload it
-      projects.remove(projectSession.project.getId());
+      projects.remove(projectSession.projectId);
     }
   }
 
   /**
-   * Get project from database, and construct a service.
+   * Validates if project exist, and if account is a member.
    *
-   * @return null if project doesn't exist, or account isn't a member
+   * @return Project if valid
    */
-  public Project getProject(int projectId, Account account) {
-    ProjectSession projectSession = projects.get(projectId);
-    if (projectSession == null) {
-      // Load from database
-      Optional<Project> optionalProject = projectStore.findById(projectId);
-      if (optionalProject.isPresent()) {
-        Project project = optionalProject.get();
-        // Check if client is member of this project
-        if (!account.isMemberOf(project)) {
-          return null;
-        }
-        // Create session
-        projectSession = new ProjectSession(project,
-            new ProjectService(project, projectStore, fileStore, accountStore),
-            new ChatService()
-        );
-        projects.put(projectId, projectSession);
-      } else {
-        return null;
-      }
-    }
-    // Check if client is member of this project
-    if (!account.isMemberOf(projectSession.project)) {
-      return null;
-    }
-    return projectSession.project;
+  public Project validateConnection(int projectId, Account account) {
+    // Load from database
+    return projectStore.findById(projectId)
+        // Check if account is member
+        .filter(account::isMemberOf).orElse(null);
   }
 
   /**
@@ -91,15 +74,15 @@ public class ConnectionManager {
    */
   private static class ProjectSession {
 
+    final int projectId;
     final ProjectService projectService;
     final ChatService chatService;
-    final Project project;
 
-    private ProjectSession(Project project, ProjectService projectService,
+    private ProjectSession(int projectId, ProjectService projectService,
         ChatService chatService) {
+      this.projectId = projectId;
       this.projectService = projectService;
       this.chatService = chatService;
-      this.project = project;
     }
   }
 }

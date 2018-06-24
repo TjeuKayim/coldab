@@ -37,7 +37,7 @@ public class SocketHandler extends TextWebSocketHandler {
   public void afterConnectionEstablished(WebSocketSession session) throws IOException {
     Account account = (Account) session.getAttributes().get("account");
     int projectId = (int) session.getAttributes().get("projectId");
-    Project project = connectionManager.getProject(projectId, account);
+    Project project = connectionManager.validateConnection(projectId, account);
     if (project == null) {
       LOGGER.info("ProjectId not found");
       session.close(new CloseStatus(1000, "ProjectId not found"));
