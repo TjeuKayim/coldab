@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class ProjectComponent implements ProjectClient, ProjectController {
 
@@ -43,6 +45,19 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     project.getCollaborators().addAll(collaborators);
   }
 
+  /**
+   * Display error to user.
+   */
+  @Override
+  public void error(String message) {
+    Platform.runLater(() -> {
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setContentText(message);
+      alert.show();
+    });
+  }
+
   @Override
   public void files(TextFile[] textFiles, BinaryFile[] binaryFiles) {
     if (textFiles != null) {
@@ -58,6 +73,7 @@ public class ProjectComponent implements ProjectClient, ProjectController {
     projectObserver.updateFiles();
   }
 
+
   @Override
   public void removeFile(int fileId) {
     project.getFiles().removeIf(f -> f.getId() == fileId);
@@ -72,18 +88,28 @@ public class ProjectComponent implements ProjectClient, ProjectController {
             .forEach(e -> textFileServices.get(fileId).newEdit(e)));
   }
 
+  /**
+   *confirm a addition to a file.
+   */
   @Override
   public void confirmAddition(int fileId, Addition addition) {
     Platform.runLater(() ->
         textFileServices.get(fileId).confirmEdit(addition));
   }
 
+  /**
+   * confrim a deletion to file
+   */
   @Override
   public void confirmDeletion(int fileId, Deletion deletion) {
     Platform.runLater(() ->
         textFileServices.get(fileId).confirmEdit(deletion));
   }
 
+  /**
+   * open a file
+   * @return
+   */
   @Override
   public TextFileController openFile(TextFile file, TextFileObserver textFileObserver) {
     file.reset();
