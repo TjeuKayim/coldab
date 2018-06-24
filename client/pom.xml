@@ -22,22 +22,21 @@
       <artifactId>spring-context</artifactId>
       <version>5.0.5.RELEASE</version>
     </dependency>
-    <!-- Icons http://aalmiray.github.io/ikonli/cheat-sheet-fontawesome5.html -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
       <version>5.0.5.RELEASE</version>
     </dependency>
+    <!-- Icons http://aalmiray.github.io/ikonli/cheat-sheet-fontawesome5.html -->
     <dependency>
-      <!-- Icons -->
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-javafx</artifactId>
-      <version>2.1.1</version>
+      <version>2.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.kordamp.ikonli</groupId>
       <artifactId>ikonli-fontawesome5-pack</artifactId>
-      <version>2.1.1</version>
+      <version>2.3.0</version>
     </dependency>
     <dependency>
       <groupId>javax.websocket</groupId>
@@ -58,6 +57,30 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>com.github.coldab.client.Main</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>com.zenjava</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
