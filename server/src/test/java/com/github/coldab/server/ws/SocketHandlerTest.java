@@ -55,7 +55,7 @@ public class SocketHandlerTest {
   @Autowired
   private LoginSessionManager loginSessionManager;
 
-  private Account account = new Account("Bob", "bob@email", "I'm a dummy");
+  private Account account = new Account("Bob4", "bob@email", "I'm a dummy");
   private Client client = new Client();
   private WebSocketConnectionManager connectionManager;
 
