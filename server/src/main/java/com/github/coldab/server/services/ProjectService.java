@@ -21,16 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Each project is managed by a ProjectService.
  */
 public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
-  private final Project project;
+  private Project project;
   private final Map<ProjectClient, MessageReceiver> clients = new HashMap<>();
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
@@ -120,12 +118,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       } else {
         project.getCollaborators().add(accountToShare);
       }
-      try {
-        projectStore.save(project);
-      } catch (DataIntegrityViolationException e) {
-        LOGGER.log(Level.SEVERE, e, () -> "Exception while sharing");
-        // fixme
-      }
+      project = projectStore.save(project);
     }
 
     @Override
@@ -218,12 +211,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Update
       file = fileStore.save(file);
       project.getFiles().add(file);
-      try {
-        projectStore.save(project);
-      } catch (DataIntegrityViolationException e) {
-        LOGGER.log(Level.SEVERE, e, () -> "Exception while saving file");
-        // fixme
-      }
+      project = projectStore.save(project);
       // Notify all clients about it
       notifyFiles(clients.keySet(), file);
     }
@@ -239,7 +227,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       });
       textFileServices.remove(fileId);
       project.getFiles().removeIf(f -> f.getId() == fileId);
-      projectStore.save(project);
+      project = projectStore.save(project);
       fileStore.deleteById(fileId);
     }
 

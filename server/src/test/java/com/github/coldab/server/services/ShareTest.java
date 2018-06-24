@@ -1,5 +1,7 @@
 package com.github.coldab.server.services;
 
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -73,14 +75,15 @@ public class ShareTest {
     // Connect Bob
     Connection bobCon = new Connection(bob, projectService);
     // Bob creates a file
-    TextFile[] files = {new TextFile(0, "myFile")};
-    bobCon.server.files(files, null);
+    TextFile file = new TextFile(0, "myFile");
+    bobCon.server.files(new TextFile[]{file}, null);
     // Bob shares the project with alice
     bobCon.server.share(alice.getEmail(), true);
     // Alice connects
     Connection aliceCon = new Connection(alice, projectService);
     // Verify that alice receives it
-    verify(aliceCon.mock).files(files, new BinaryFile[0]);
+    verify(aliceCon.mock)
+        .files(argThat(f -> f[0].getName().equals(file.getName())), eq(new BinaryFile[0]));
   }
 
   private Account createAccount(String name) {

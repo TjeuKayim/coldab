@@ -64,23 +64,6 @@ public class ProjectStoreTest {
     assertEquals(textFile.getEdits().get(0), actual.getEdits().get(0));
   }
 
-  @Test
-  public void reproduce_issue_20() {
-    // Bob creates a project
-    Account bob = createAccount("Bob");
-    Project project = projectStore.save(new Project("MyProject"));
-    project.getAdmins().add(bob);
-    // Add a file
-    TextFile file = new TextFile(0, "hello.world");
-    fileStore.save(file);
-    project.getFiles().add(file);
-    projectStore.save(project);
-    // Share with alice
-    Account alice = createAccount("Alice");
-    project.getAdmins().add(alice);
-    projectStore.save(project);
-  }
-
   private Account createAccount(String name) {
     return accountStore.save(new Account(name, name, name));
   }
