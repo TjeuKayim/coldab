@@ -1,6 +1,7 @@
 package com.github.coldab.server.ws;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 import com.github.coldab.server.Main;
 import com.github.coldab.server.dal.AccountStore;
@@ -18,7 +19,6 @@ import com.github.tjeukayim.socketinterface.SocketMessage;
 import com.github.tjeukayim.socketinterface.SocketReceiver;
 import com.github.tjeukayim.socketinterface.SocketSender;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,10 +82,8 @@ public class SocketHandlerTest {
   }
 
   @Test
-  public void connect() throws InterruptedException {
-    ChatMessage message = client.chatMock.messages.poll(20, TimeUnit.SECONDS);
-    ChatMessage result = client.chatMessage;
-    assertEquals(message.getText(), result.getText());
+  public void connect() {
+    verify(client.chatMock, timeout(9000)).message(client.chatMessage);
   }
 
   private class Client extends TextWebSocketHandler implements ClientEndpoint {
@@ -93,7 +91,7 @@ public class SocketHandlerTest {
     private ServerEndpoint serverEndpoint;
     private SocketReceiver socketReceiver;
     private WebSocketSession session;
-    private final ChatClientMock chatMock = new ChatClientMock();
+    private final ChatClient chatMock = Mockito.mock(ChatClient.class);
     private ProjectClient projectMock = Mockito.mock(ProjectClient.class);
     private ChatMessage chatMessage =
         new ChatMessage("Hello World", account);
