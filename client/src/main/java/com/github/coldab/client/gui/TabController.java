@@ -122,7 +122,7 @@ public class TabController implements TextFileObserver {
         builder.deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1);
         int index = d.getStart();
         int length = d.getLength();
-        if (index != 0 && index <= caret) {
+        if (index < caret) {
           position -= length;
         }
       }
@@ -130,14 +130,16 @@ public class TabController implements TextFileObserver {
         builder.insertTextAbsolutely(a.getStart() + 1, a.getText());
         int index = a.getStart();
         int length = a.getText().length();
-        if (index != -2 && index <= caret) {
+        if (index < caret) {
           position += length;
         }
       }
       builder.commit();
       caret += position;
-      if (caret <= codeArea.getLength()) {
+      if (caret > codeArea.getLength()) {
         caret = codeArea.getLength();
+      } else if (caret < 0) {
+        caret = 0;
       }
       codeArea.moveTo(caret);
     });
