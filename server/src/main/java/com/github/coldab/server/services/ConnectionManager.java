@@ -56,15 +56,20 @@ public class ConnectionManager {
   /**
    * Get project from database, and construct a service.
    *
-   * @return null if project doesn't exist
+   * @return null if project doesn't exist, or account isn't a member
    */
-  public Project getProject(int projectId) {
+  public Project getProject(int projectId, Account account) {
     ProjectSession projectSession = projects.get(projectId);
     if (projectSession == null) {
       // Load from database
       Optional<Project> optionalProject = projectStore.findById(projectId);
       if (optionalProject.isPresent()) {
         Project project = optionalProject.get();
+        // Check if client is member of this project
+        if (!account.isMemberOf(project)) {
+          return null;
+        }
+        // Create session
         projectSession = new ProjectSession(project,
             new ProjectService(project, projectStore, fileStore, accountStore),
             new ChatService()
@@ -73,6 +78,10 @@ public class ConnectionManager {
       } else {
         return null;
       }
+    }
+    // Check if client is member of this project
+    if (!account.isMemberOf(projectSession.project)) {
+      return null;
     }
     return projectSession.project;
   }

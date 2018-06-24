@@ -1,6 +1,7 @@
 package com.github.coldab.shared.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.coldab.shared.project.Project;
 import com.google.gson.annotations.Expose;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -66,6 +67,23 @@ public class Account {
     this.sessionId = sessionId;
   }
 
+  /**
+   * validate if a given password matches the password of the account.
+   *
+   * @param password the input password
+   * @return Boolean true if the passwords match, else returns false.
+   */
+  public boolean validatePassword(String password) {
+    return this.password.equals(password);
+  }
+
+  /**
+   * Checks if this account is either collaborator or admin in the project.
+   */
+  public boolean isMemberOf(Project project) {
+    return project.getAdmins().contains(this) || project.getCollaborators().contains(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -83,14 +101,5 @@ public class Account {
   @Override
   public int hashCode() {
     return Objects.hash(id, nickName, email);
-  }
-
-  /**
-   * validate if a given password matches the password of the account
-   * @param password the input password
-   * @return Boolean true if the passwords match, else returns false.
-   */
-  public Boolean validatePassword(String password) {
-    return this.password.equals(password);
   }
 }
