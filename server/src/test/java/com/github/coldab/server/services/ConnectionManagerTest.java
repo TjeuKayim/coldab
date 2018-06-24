@@ -59,32 +59,35 @@ public class ConnectionManagerTest {
 
   @Test
   public void valid_account() {
-    Account john = addAdmin("John");
+    Account john = new AccountBuilder("John").makeAdminOf(project).build();
     Project result = connectionManager.getProject(this.project.getId(), john);
     assertEquals(project, result);
   }
 
   @Test
   public void connect_and_message() {
-    Account john = addAdmin("John");
-    Connection johnCon = new Connection(john);
+    Account john = new AccountBuilder("John").makeAdminOf(project).build();
+    Connection connection = new Connection(john);
     ChatMessage chatMessage = new ChatMessage("Hello World", john);
-    johnCon.server.chat().message(chatMessage);
-    verify(johnCon.chat()).message(chatMessage);
+    connection.server.chat().message(chatMessage);
+    verify(connection.chat()).message(chatMessage);
   }
 
-  private Account addAdmin(String name) {
-    Account account = accountStore.save(new Account(name, name, name));
-    project.getAdmins().add(account);
-    projectStore.save(project);
-    return account;
+  @Test
+  public void share_project() {
+    // John shares the project with alice
+    Account john = new AccountBuilder("John").makeAdminOf(project).build();
+    Account alice = new AccountBuilder("Alice").build();
+    Connection johnCon = new Connection(john);
+    johnCon.server.project().share(alice.getEmail(), true);
+    Connection aliceCon = new Connection(alice);
   }
 
   private class Connection implements ClientEndpoint {
 
     final ServerEndpoint server;
-    private final ProjectClient projectClient = mock(ProjectClient.class);
-    private final ChatClient chatClient = mock(ChatClient.class);
+    final ProjectClient projectClientMock = mock(ProjectClient.class);
+    final ChatClient chatClientMock = mock(ChatClient.class);
 
     Connection(Account account) {
       Project connectionProject = connectionManager.getProject(project.getId(), account);
@@ -94,12 +97,31 @@ public class ConnectionManagerTest {
 
     @Override
     public ProjectClient project() {
-      return projectClient;
+      return projectClientMock;
     }
 
     @Override
     public ChatClient chat() {
-      return chatClient;
+      return chatClientMock;
+    }
+  }
+
+  private class AccountBuilder {
+
+    final Account account;
+
+    AccountBuilder(String name) {
+      this.account = accountStore.save(new Account(name, name, name));
+    }
+
+    AccountBuilder makeAdminOf(Project project) {
+      project.getAdmins().add(account);
+      projectStore.save(project);
+      return this;
+    }
+
+    Account build() {
+      return account;
     }
   }
 }
