@@ -84,13 +84,14 @@ public class ProjectChooserController implements Initializable {
     private final HBox box;
     private final Label label;
     private final Button open;
+    private final Button remove;
 
     ProjectRow(ListView<Project> listView) {
       label = new Label();
       Pane pane = new Pane();
       HBox.setHgrow(pane, Priority.ALWAYS);
       open = new Button("Open");
-      Button remove = new Button(null, new FontIcon(FontAwesomeRegular.TRASH_ALT));
+      remove = new Button(null, new FontIcon(FontAwesomeRegular.TRASH_ALT));
       box = new HBox(label, pane, open, remove);
     }
 
@@ -101,6 +102,7 @@ public class ProjectChooserController implements Initializable {
         setText(null);
         label.setText(project.getName());
         open.setOnAction(event -> openProject(project));
+        remove.setOnAction(event -> removeProject(project));
         setGraphic(box);
       }
     }
@@ -112,5 +114,10 @@ public class ProjectChooserController implements Initializable {
       resultCallback.accept(project);
     }
 
+    private void removeProject(Project project) {
+      if (accountServer.removeProject(project)) {
+        projectsListView.getItems().remove(project);
+      }
+    }
   }
 }

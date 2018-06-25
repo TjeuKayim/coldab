@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -86,5 +87,15 @@ public class RestClient implements AccountServer {
   public void logout(String sessionId) {
     restTemplate
         .postForEntity("/account/logout", sessionId, Boolean.TYPE);
+  }
+
+  @Override
+  public boolean removeProject(Project project) {
+    try {
+      restTemplate.delete("/account/project/{id}", project.getId());
+      return true;
+    } catch (HttpServerErrorException e) {
+      return false;
+    }
   }
 }
