@@ -2,19 +2,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-
 <GridPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.coldab.client.gui.ProjectChooserController">
-  <ListView fx:id="projectsListView" prefHeight="364.0" prefWidth="248.0" GridPane.rowIndex="1" />
-    <Button alignment="BASELINE_RIGHT" onAction="#addNewProject">Create New Project</Button>
-<Button alignment="CENTER_RIGHT" onAction="#refreshProjects">Refresh</Button>
-   <columnConstraints>
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-      <RowConstraints />
-   </rowConstraints>
+  <Button onAction="#addNewProject" GridPane.columnIndex="0">
+    Create New Project
+  </Button>
+  <Button onAction="#refreshProjects" GridPane.columnIndex="1">
+    Refresh
+  </Button>
+  <ListView fx:id="projectsListView" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
 </GridPane>
