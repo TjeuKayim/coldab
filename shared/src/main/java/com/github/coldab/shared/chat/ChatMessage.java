@@ -4,6 +4,7 @@ import com.github.coldab.shared.TimeProvider;
 import com.github.coldab.shared.account.Account;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ChatMessage implements Comparable<ChatMessage> {
   @Expose
@@ -45,5 +46,25 @@ public class ChatMessage implements Comparable<ChatMessage> {
   @Override
   public String toString() {
     return author.getEmail() + ": " + text;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ChatMessage)) {
+      return false;
+    }
+    ChatMessage that = (ChatMessage) o;
+    return index == that.index &&
+        Objects.equals(postDate, that.postDate) &&
+        Objects.equals(text, that.text) &&
+        Objects.equals(author, that.author);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(postDate, index, text, author);
   }
 }

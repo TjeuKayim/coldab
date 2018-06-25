@@ -37,4 +37,6 @@ public interface AccountServer {
    * logout from the application.
    */
   void logout(String sessionId);
+
+  boolean removeProject(Project project);
 }

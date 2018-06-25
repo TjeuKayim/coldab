@@ -24,6 +24,7 @@ public class ColdabApplication extends Application {
   private RestClient restClient = new RestClient();
 
   private static final Logger LOGGER = Logger.getLogger(ColdabApplication.class.getName());
+  private Stage editorStage;
 
   /**
    * open the login/register screen, if te login/regiser is successful, open the project chooser.
@@ -79,11 +80,11 @@ public class ColdabApplication extends Application {
     } catch (IOException e) {
       throw new IllegalStateException("Could not load FXML");
     }
-    Stage stage = new Stage();
-    stage.setTitle(String.format("%s - Coldab text", project.getName()));
+    editorStage = new Stage();
+    editorStage.setTitle(String.format("%s - Coldab text", project.getName()));
     Scene scene = new Scene(root);
-    stage.setScene(scene);
-    stage.show();
+    editorStage.setScene(scene);
+    editorStage.show();
     WebSocketConnection webSocketConnection = new WebSocketConnection(
         project,
         restClient.getSessionId(),
@@ -94,9 +95,20 @@ public class ColdabApplication extends Application {
           Platform.runLater(() ->
               controller.afterConnectionEstablished(chatComponent, projectComponent));
           return new WebSocketEndpoint(chatComponent, projectComponent);
-        });
-    stage.setOnCloseRequest(event -> {
+        }, this::webSocketDisconnected);
+    editorStage.setOnCloseRequest(event -> {
       webSocketConnection.disconnect();
+      projectChooserStage.show();
+    });
+  }
+
+  /**
+   * Close editor when webSocket disconnects.
+   */
+  private void webSocketDisconnected() {
+    Platform.runLater(() -> {
+      LOGGER.warning("Close editor due to network error");
+      editorStage.close();
       projectChooserStage.show();
     });
   }

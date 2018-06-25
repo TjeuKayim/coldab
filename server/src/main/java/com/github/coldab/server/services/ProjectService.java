@@ -11,6 +11,7 @@ import com.github.coldab.shared.project.File;
 import com.github.coldab.shared.project.Project;
 import com.github.coldab.shared.project.TextFile;
 import com.github.coldab.shared.ws.ProjectClient;
+import com.github.coldab.shared.ws.ProjectClient.ProjectException;
 import com.github.coldab.shared.ws.ProjectServer;
 import com.github.coldab.shared.ws.TextFileServer;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
-  private final Project project;
+  private Project project;
   private final Map<ProjectClient, MessageReceiver> clients = new HashMap<>();
   private final Map<Integer, TextFileService> textFileServices = new HashMap<>();
   private final ProjectStore projectStore;
@@ -54,29 +55,6 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
   public void disconnect(ProjectClient projectClient) {
     clients.remove(projectClient)
         .unsubscribeAll();
-  }
-
-  private void notifyFiles(Collection<ProjectClient> clients, File... files) {
-    List<TextFile> textFiles = new ArrayList<>();
-    List<BinaryFile> binaryFiles = new ArrayList<>();
-    for (File file : files) {
-      if (file instanceof TextFile) {
-        TextFile textFile = (TextFile) file;
-        textFiles.add(textFile);
-        textFileServices.computeIfAbsent(file.getId(),
-            id -> new TextFileService(textFile, fileStore));
-      } else if (file instanceof BinaryFile) {
-        binaryFiles.add(((BinaryFile) file));
-      }
-    }
-    if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
-      return;
-    }
-    // Notify clients
-    for (ProjectClient projectClient : clients) {
-      projectClient
-          .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
-    }
   }
 
   private class MessageReceiver implements ProjectServer {
@@ -123,24 +101,24 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can share
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to share");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       // You cannot share with yourself
       if (account.getEmail().equals(email)) {
         LOGGER.info(() -> email + " tried to share with himself");
-        return;
+        throw new ProjectException("You can't share with yourself");
       }
       Account accountToShare = accountStore.findAccountByEmail(email);
       if (accountToShare == null) {
         LOGGER.info("account to share not found");
-        return;
+        throw new ProjectException("Email not found");
       }
       if (admin) {
         project.getAdmins().add(accountToShare);
       } else {
         project.getCollaborators().add(accountToShare);
       }
-      projectStore.save(project);
+      project = projectStore.save(project);
     }
 
     @Override
@@ -148,7 +126,7 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can unshare
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to unshare");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       removeAccount(project.getCollaborators(), accountId);
       removeAccount(project.getAdmins(), accountId);
@@ -170,12 +148,12 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can promote someone
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to promote someone");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       Optional<Account> accountToPromote = removeAccount(project.getCollaborators(), accountId);
       if (!accountToPromote.isPresent()) {
         LOGGER.info("account to promote is not a collaborator");
-        return;
+        throw new ProjectException("Account to promote is not a collaborator");
       }
       project.getAdmins().add(accountToPromote.get());
     }
@@ -185,17 +163,17 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       // Only admins can demote someone
       if (!isAdmin()) {
         LOGGER.info("Non admin tries to promote someone");
-        return;
+        throw new ProjectException("You must be admin to do this");
       }
       Optional<Account> accountToDemote = removeAccount(project.getAdmins(), accountId);
       if (!accountToDemote.isPresent()) {
         LOGGER.info("account to demote is not an admin");
-        return;
+        throw new ProjectException("Account to demote is not an admin");
       }
       // Anti lockout
       if (project.getAdmins().size() == 1) {
         LOGGER.info("Cannot demote the only admin left");
-        return;
+        throw new ProjectException("You're the only admin left");
       }
       project.getCollaborators().add(accountToDemote.get());
     }
@@ -231,9 +209,9 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
 
     private void file(File file) {
       // Update
+      file = fileStore.save(file);
       project.getFiles().add(file);
-      fileStore.save(file);
-      projectStore.save(project);
+      project = projectStore.save(project);
       // Notify all clients about it
       notifyFiles(clients.keySet(), file);
     }
@@ -249,9 +227,31 @@ public class ProjectService implements Service<ProjectServer, ProjectClient> {
       });
       textFileServices.remove(fileId);
       project.getFiles().removeIf(f -> f.getId() == fileId);
-      projectStore.save(project);
+      project = projectStore.save(project);
       fileStore.deleteById(fileId);
     }
 
+    private void notifyFiles(Collection<ProjectClient> clients, File... files) {
+      List<TextFile> textFiles = new ArrayList<>();
+      List<BinaryFile> binaryFiles = new ArrayList<>();
+      for (File file : files) {
+        if (file instanceof TextFile) {
+          TextFile textFile = (TextFile) file;
+          textFiles.add(textFile);
+          textFileServices.computeIfAbsent(file.getId(),
+              id -> new TextFileService(textFile, fileStore));
+        } else if (file instanceof BinaryFile) {
+          binaryFiles.add(((BinaryFile) file));
+        }
+      }
+      if (textFiles.isEmpty() && binaryFiles.isEmpty()) {
+        return;
+      }
+      // Notify clients
+      for (ProjectClient projectClient : clients) {
+        projectClient
+            .files(textFiles.toArray(new TextFile[0]), binaryFiles.toArray(new BinaryFile[0]));
+      }
+    }
   }
 }

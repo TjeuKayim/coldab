@@ -45,7 +45,11 @@ public class AccountController {
   @PostMapping("register")
   public Account register(@RequestBody Credentials credentials) {
     Account account = new Account(null, credentials.getEmail(), credentials.getPassword());
-    account = accountStore.save(account);
+    try {
+      account = accountStore.save(account);
+    } catch (Exception e) {
+      return null;
+    }
     sessionManager.login(account);
     return account;
   }

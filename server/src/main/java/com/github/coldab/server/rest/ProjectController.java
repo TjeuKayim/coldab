@@ -5,8 +5,11 @@ import com.github.coldab.server.services.LoginSessionManager;
 import com.github.coldab.shared.account.Account;
 import com.github.coldab.shared.project.Project;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,6 +31,7 @@ public class ProjectController {
 
   /**
    * Create a new project.
+   *
    * @param input contains the project name, and current user as admin
    * @return a empty project with the current user as admin
    */
@@ -51,5 +55,19 @@ public class ProjectController {
     return Optional.ofNullable(sessionManager.validateSessionId(sessionId))
         .map(projectStore::findProjectsByUser)
         .orElse(null);
+  }
+
+  /**
+   * Remove project.
+   */
+  @DeleteMapping("/{id}")
+  ResponseEntity removeProject(
+      @PathVariable int id,
+      @RequestHeader("Session") String sessionId) {
+    Account account = sessionManager.validateSessionId(sessionId);
+    Optional<Project> project = projectStore.findById(id)
+        .filter(account::isMemberOf);
+    project.ifPresent(projectStore::delete);
+    return new ResponseEntity(project.isPresent() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED);
   }
 }

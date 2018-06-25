@@ -27,6 +27,7 @@ public class TabController implements TextFileObserver {
   private SuspendableEventStream<List<PlainTextChange>> eventStream;
   private static final Logger LOGGER = Logger.getLogger(TabController.class.getName());
 
+
   public TabController(TextFile file, Tab tab, ProjectController projectController) {
     this.file = file;
     this.tab = tab;
@@ -74,6 +75,7 @@ public class TabController implements TextFileObserver {
 
   /**
    * this methode gets called if the are changes made to the file.
+   *
    * @param changes list of changes that are made to the file
    */
   private void textChanged(List<PlainTextChange> changes) {
@@ -106,21 +108,40 @@ public class TabController implements TextFileObserver {
   }
 
   /**
-   *this methode gets called if there are remote changes made to the file.
+   * Called if there are remote changes made to the file.
    */
   @Override
   public void remoteEdits(Collection<RemoteDeletion> deletions,
       Collection<RemoteAddition> additions) {
-    int caret = codeArea.getCaretPosition();
     eventStream.suspendWhile(() -> {
+      int caret = codeArea.getCaretPosition();
+      int position = 0;
       MultiChangeBuilder<Collection<String>, String, Collection<String>> builder = codeArea
           .createMultiChange();
-      deletions.forEach(d -> builder
-          .deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1));
-      additions.forEach(a -> builder
-          .insertTextAbsolutely(a.getStart() + 1, a.getText()));
+      for (RemoteDeletion d : deletions) {
+        builder.deleteTextAbsolutely(d.getStart() + 1, d.getStart() + d.getLength() + 1);
+        int index = d.getStart();
+        int length = d.getLength();
+        if (index < caret) {
+          position -= length;
+        }
+      }
+      for (RemoteAddition a : additions) {
+        builder.insertTextAbsolutely(a.getStart() + 1, a.getText());
+        int index = a.getStart();
+        int length = a.getText().length();
+        if (index < caret) {
+          position += length;
+        }
+      }
       builder.commit();
-      codeArea.moveTo(caret + 1);
+      caret += position;
+      if (caret > codeArea.getLength()) {
+        caret = codeArea.getLength();
+      } else if (caret < 0) {
+        caret = 0;
+      }
+      codeArea.moveTo(caret);
     });
   }
 }
